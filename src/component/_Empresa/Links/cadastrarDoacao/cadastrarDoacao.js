@@ -3,7 +3,7 @@ import "./cadastrarDoacao.css"
 
 const cadastrarDoacao = () => {
   return (
-    <div>
+    <div class="cadastrarDoacaoDiv">
       adadadssdad
     </div>
   )
