@@ -105,7 +105,7 @@ const CadastrarDoacao = ({ onPublicar }) => {
 
             <div className="doacaoInputGroup">
               <label>Urgência</label>
-              <div className="doacaoInputWrapper urgencyWrapper">
+              <div className={`doacaoInputWrapper urgencyWrapper ${urgencia.toLowerCase()}`}>
                 <span className="urgencyDot"></span>
                 <select value={urgencia} onChange={(e) => setUrgencia(e.target.value)}>
                   <option value="Alta">Alta</option>
