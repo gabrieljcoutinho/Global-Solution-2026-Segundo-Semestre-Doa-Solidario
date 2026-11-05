@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import './App.css';
 
@@ -10,7 +9,6 @@ import HomeUsuario from './component/_Usuario/homeUsuario/HomeUsuario';
 
 function App() {
     const [tela, setTela] = useState('login');
-
     const [usuarioLogado, setUsuarioLogado] = useState(null);
 
     const handleLogin = (email) => {
@@ -19,14 +17,12 @@ function App() {
                 email,
                 tipo: 'empresa'
             });
-
             setTela('homeEmpresa');
         } else {
             setUsuarioLogado({
                 email,
                 tipo: 'usuario'
             });
-
             setTela('homeUsuario');
         }
     };
