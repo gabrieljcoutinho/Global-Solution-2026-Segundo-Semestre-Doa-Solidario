@@ -3,7 +3,7 @@ import SidebarEmpresa from '../navBar/SidebarEmpresa';
 import './HomeEmpresa.css';
 
 function HomeEmpresa({ usuario }) {
-    const [abaAtiva, setAbaAtiva] = useState('dashboard');
+    const [abaAtiva, setAbaAtiva] = useState('cadastrar-doacao');
 
     return (
         <div className="home-empresa-container">
@@ -14,26 +14,19 @@ function HomeEmpresa({ usuario }) {
                 setAbaAtiva={setAbaAtiva}
             />
 
-            {/* Conteúdo Dinâmico com base na aba selecionada */}
+            {/* Conteúdo Dinâmico */}
             <main className="content-empresa">
-                {abaAtiva === 'dashboard' && (
+                {abaAtiva === 'cadastrar-doacao' && (
                     <div className="secao-conteudo">
-                        <h1>Visão Geral</h1>
-                        <p>Bem-vindo ao painel corporativo. Aqui você acompanha as principais métricas.</p>
+                        <h1>Cadastrar Doação</h1>
+                        <p>Preencha as informações necessárias para registrar uma nova doação no sistema.</p>
                     </div>
                 )}
 
-                {abaAtiva === 'produtos' && (
+                {abaAtiva === 'minhas-doacoes' && (
                     <div className="secao-conteudo">
-                        <h1>Gerenciar Produtos</h1>
-                        <p>Adicione, edite ou remova os produtos cadastrados pela sua empresa.</p>
-                    </div>
-                )}
-
-                {abaAtiva === 'configuracoes' && (
-                    <div className="secao-conteudo">
-                        <h1>Configurações da Conta</h1>
-                        <p>Atualize as informações corporativas e preferências de acesso.</p>
+                        <h1>Minhas Doações</h1>
+                        <p>Acompanhe o histórico e o status de todas as doações cadastradas pela sua empresa.</p>
                     </div>
                 )}
             </main>

@@ -10,24 +10,26 @@ function SidebarEmpresa({ usuario, abaAtiva, setAbaAtiva }) {
 
             <nav className="sidebar-nav">
                 <button
-                    className={abaAtiva === 'dashboard' ? 'nav-item active' : 'nav-item'}
-                    onClick={() => setAbaAtiva('dashboard')}
+                    className={abaAtiva === 'cadastrar-doacao' ? 'nav-item active' : 'nav-item'}
+                    onClick={() => setAbaAtiva('cadastrar-doacao')}
                 >
-                    Visão Geral
+                    <span className="nav-icon">📢</span>
+                    Cadastrar Doação
                 </button>
+
                 <button
-                    className={abaAtiva === 'produtos' ? 'nav-item active' : 'nav-item'}
-                    onClick={() => setAbaAtiva('produtos')}
+                    className={abaAtiva === 'minhas-doacoes' ? 'nav-item active' : 'nav-item'}
+                    onClick={() => setAbaAtiva('minhas-doacoes')}
                 >
-                    Gerenciar Produtos
-                </button>
-                <button
-                    className={abaAtiva === 'configuracoes' ? 'nav-item active' : 'nav-item'}
-                    onClick={() => setAbaAtiva('configuracoes')}
-                >
-                    Configurações
+                    <span className="nav-icon">❤️</span>
+                    Minhas Doações
                 </button>
             </nav>
+
+            <div className="sidebar-footer-card">
+                <div className="footer-card-icon">❤️</div>
+                <p>Juntos por uma sociedade mais solidária.</p>
+            </div>
         </aside>
     );
 }
