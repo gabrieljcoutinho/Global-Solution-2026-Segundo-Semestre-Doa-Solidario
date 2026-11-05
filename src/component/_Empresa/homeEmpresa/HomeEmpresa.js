@@ -18,6 +18,11 @@ function HomeEmpresa({ usuario }) {
         ]);
     };
 
+    // Função para excluir a doação pelo ID dentro da HomeEmpresa
+    const excluirDoacao = (idParaExcluir) => {
+        setDoacoes(prev => prev.filter(doacao => doacao.id !== idParaExcluir));
+    };
+
     return (
         <div className="home-empresa-container">
             <SidebarEmpresa
@@ -32,7 +37,10 @@ function HomeEmpresa({ usuario }) {
                 )}
 
                 {abaAtiva === 'minhas-doacoes' && (
-                    <MinhasDoacoes doacoes={doacoes} />
+                    <MinhasDoacoes 
+                        doacoes={doacoes} 
+                        onExcluir={excluirDoacao} 
+                    />
                 )}
             </main>
         </div>
