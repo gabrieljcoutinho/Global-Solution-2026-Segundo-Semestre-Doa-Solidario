@@ -235,11 +235,7 @@ const CadastrarDoacao = ({ onPublicar }) => {
               </div>
               <div className="previewDetailRow">
                 <span className="listLabel">Local</span>
-                <span>
-                  {localizacao.includes('-')
-                    ? localizacao.split('-')[1].trim()
-                    : localizacao}
-                </span>
+                <span>{localizacao}</span>
               </div>
             </div>
 

@@ -130,6 +130,8 @@
 .doacaoInfo strong {
   color: #e5e7eb;
   font-weight: 500;
+  text-align: right;
+  max-width: 180px;
 }
 
 .doacaoDescricao {

@@ -45,11 +45,7 @@ const MinhasDoacoes = ({ doacoes = [] }) => {
                   </div>
                   <div>
                     <span>Local</span>
-                    <strong>
-                      {doacao.localizacao.includes('-')
-                        ? doacao.localizacao.split('-')[1].trim()
-                        : doacao.localizacao}
-                    </strong>
+                    <strong>{doacao.localizacao}</strong>
                   </div>
                 </div>
 
