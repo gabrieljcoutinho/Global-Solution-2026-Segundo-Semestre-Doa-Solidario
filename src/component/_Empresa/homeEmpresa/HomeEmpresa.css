@@ -1,4 +1,6 @@
-/* Layout Principal - Flexbox dividindo Sidebar e Conteúdo */
+/* ==========================================================================
+   HOME, CONTAINER PRINCIPAL E ÁREA DE CONTEÚDO
+   ========================================================================== */
 .home-empresa-container {
     display: flex;
     height: 100vh;
@@ -8,109 +10,6 @@
     overflow: hidden;
 }
 
-/* Sidebar Esquerda (Estilo Escuro com Detalhes em Vermelho) */
-.sidebar-empresa {
-    width: 280px;
-    background-color: #120e14;
-    background-image: linear-gradient(180deg, #181016 0%, #0d0b0e 100%);
-    color: #ffffff;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.4);
-    border-right: 1px solid rgba(255, 255, 255, 0.05);
-    z-index: 10;
-    padding-bottom: 20px;
-}
-
-.sidebar-header {
-    padding: 28px 20px 20px 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.sidebar-header h2 {
-    font-size: 1.3rem;
-    margin: 0 0 6px 0;
-    color: #ffffff;
-    font-weight: 600;
-}
-
-.sidebar-user-email {
-    font-size: 0.85rem;
-    color: #8c8592;
-    margin: 0;
-    word-break: break-all;
-}
-
-/* Navegação do Menu Lateral */
-.sidebar-nav {
-    display: flex;
-    flex-direction: column;
-    padding: 20px 16px;
-    gap: 12px;
-    flex-grow: 1;
-}
-
-.nav-item {
-    background: transparent;
-    border: none;
-    color: #a8a2af;
-    padding: 14px 18px;
-    text-align: left;
-    font-size: 0.95rem;
-    font-weight: 500;
-    border-radius: 12px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    transition: all 0.25s ease-in-out;
-}
-
-.nav-icon {
-    font-size: 1.1rem;
-}
-
-.nav-item:hover {
-    background-color: rgba(255, 255, 255, 0.03);
-    color: #ffffff;
-}
-
-/* Item Ativo com Estilo Arredondado Vermelho da Imagem */
-.nav-item.active {
-    background-color: #c91c38;
-    background-image: linear-gradient(135deg, #e62243 0%, #a8122a 100%);
-    color: #ffffff;
-    box-shadow: 0 6px 20px rgba(201, 28, 56, 0.4);
-    font-weight: 600;
-}
-
-/* Card Inferior da Sidebar (igual ao modelo) */
-.sidebar-footer-card {
-    margin: 0 16px;
-    background-color: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 16px;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.footer-card-icon {
-    font-size: 1.2rem;
-    color: #e62243;
-    filter: drop-shadow(0 0 8px rgba(230, 34, 67, 0.6));
-}
-
-.sidebar-footer-card p {
-    color: #9e95a5;
-    font-size: 0.82rem;
-    line-height: 1.4;
-    margin: 0;
-}
-
-/* Área de Conteúdo Principal à Direita */
 .content-empresa {
     flex-grow: 1;
     padding: 40px;
@@ -140,34 +39,12 @@
     margin: 0;
 }
 
-/* Responsividade Completa para Telas Menores (Tablets e Celulares) */
+/* Responsividade do Container Principal e Conteúdo */
 @media (max-width: 768px) {
     .home-empresa-container {
         flex-direction: column;
         height: 100vh;
         overflow-y: auto;
-    }
-
-    .sidebar-empresa {
-        width: 100%;
-        height: auto;
-    }
-
-    .sidebar-nav {
-        flex-direction: row;
-        overflow-x: auto;
-        padding: 12px;
-        gap: 8px;
-    }
-
-    .nav-item {
-        white-space: nowrap;
-        padding: 10px 14px;
-        font-size: 0.85rem;
-    }
-
-    .sidebar-footer-card {
-        display: none;
     }
 
     .content-empresa {
