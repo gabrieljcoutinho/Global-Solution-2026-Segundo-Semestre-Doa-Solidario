@@ -1,21 +1,9 @@
 import React from 'react';
+import "./sidebar.css";
 
-import "./sidebar.css"
-
-function SidebarEmpresa({ usuario, abaAtiva, setAbaAtiva }) {
+function SidebarEmpresa({ abaAtiva, setAbaAtiva }) {
     return (
         <aside className="sidebar-empresa">
-            {/* Cabeçalho inspirado na nova imagem */}
-            <div className="sidebar-header-custom">
-                <div className="logo-container">
-                    <span className="logo-letter">D</span>
-                </div>
-                <h2>HADES<br /><span>Solidário</span></h2>
-                <p className="sidebar-subtitle">Conectando doações,<br />transformando vidas.</p>
-                {usuario?.email && <p className="sidebar-user-email">{usuario.email}</p>}
-            </div>
-
-            {/* Navegação com os dois links solicitados */}
             <nav className="sidebar-nav">
                 <button
                     className={abaAtiva === 'cadastrar-doacao' ? 'nav-item active' : 'nav-item'}
@@ -33,12 +21,6 @@ function SidebarEmpresa({ usuario, abaAtiva, setAbaAtiva }) {
                     Minhas Doações
                 </button>
             </nav>
-
-            {/* Card Inferior */}
-            <div className="sidebar-footer-card">
-                <div className="footer-card-icon">❤️</div>
-                <p>Juntos por uma sociedade mais solidária.</p>
-            </div>
         </aside>
     );
 }

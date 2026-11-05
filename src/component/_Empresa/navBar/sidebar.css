@@ -1,189 +1,99 @@
-.sidebar-empresa{
-    width:280px;
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
+.sidebar-empresa {
+    width: 280px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* agora só o menu */
 
     background:
-    radial-gradient(circle at top left,
-    rgba(255,0,85,.18),
-    transparent 35%),
-    linear-gradient(
-    180deg,
-    #140d15 0%,
-    #09080d 100%);
+        radial-gradient(circle at top left,
+            rgba(255, 0, 85, .18),
+            transparent 35%),
+        linear-gradient(
+            180deg,
+            #140d15 0%,
+            #09080d 100%);
 
-    color:#fff;
-    position:relative;
-    overflow:hidden;
-    border-right:1px solid rgba(255,255,255,.05);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    border-right: 1px solid rgba(255, 255, 255, .05);
+    padding-top: 30px; /* espaço no topo */
 }
 
-.sidebar-empresa::after{
-    content:"";
-    position:absolute;
-    left:-80px;
-    bottom:-80px;
-    width:450px;
-    height:180px;
-
+/* efeito de brilho rosa no canto inferior esquerdo (igual ao da imagem) */
+.sidebar-empresa::after {
+    content: "";
+    position: absolute;
+    left: -80px;
+    bottom: -80px;
+    width: 450px;
+    height: 180px;
     background:
-    radial-gradient(
-    ellipse at center,
-    rgba(255,0,85,.7),
-    transparent 70%);
+        radial-gradient(
+            ellipse at center,
+            rgba(255, 0, 85, .7),
+            transparent 70%);
+    pointer-events: none;
 }
 
-.sidebar-header-custom{
-    margin:18px;
-    padding:25px;
-    border-radius:30px;
-
-    background:rgba(255,255,255,.02);
-
-    border:1px solid rgba(255,255,255,.05);
-
-    backdrop-filter:blur(8px);
+/* ===== NAVEGAÇÃO ===== */
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 15px;
 }
 
-.logo-container{
-    width:70px;
-    height:70px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    margin-bottom:10px;
+.nav-item {
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 18px;
+    border-radius: 18px;
+    color: #c5bdcb;
+    background: transparent;
+    font-size: .95rem;
+    transition: .3s;
+    width: 100%;
+    text-align: left;
 }
 
-.logo-letter{
-    font-size:4rem;
-    font-weight:700;
-    color:#ff2b67;
-
-    text-shadow:
-    0 0 10px rgba(255,0,85,.9),
-    0 0 20px rgba(255,0,85,.8),
-    0 0 35px rgba(255,0,85,.6);
+.nav-item:hover {
+    background: rgba(255, 255, 255, .05);
+    color: #fff;
 }
 
-.sidebar-header-custom h2{
-    margin:0;
-    font-size:2rem;
-    line-height:1;
-    color:#fff;
+.nav-item.active {
+    background: linear-gradient(180deg, #ff2969, #cb0043);
+    color: white;
+    box-shadow: 0 0 25px rgba(255, 0, 85, .4);
 }
 
-.sidebar-header-custom h2 span{
-    color:#fff;
+.nav-icon {
+    font-size: 1.2rem;
 }
 
-.sidebar-subtitle{
-    margin-top:15px;
-    color:#d7cfdc;
-    font-size:.9rem;
-    line-height:1.5;
-}
-
-.sidebar-user-email{
-    margin-top:10px;
-    color:#8d8693;
-    font-size:.75rem;
-    word-break:break-all;
-}
-
-.sidebar-nav{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-    padding:0 15px;
-}
-
-.nav-item{
-    border:none;
-    cursor:pointer;
-
-    display:flex;
-    align-items:center;
-    gap:12px;
-
-    padding:16px 18px;
-
-    border-radius:18px;
-
-    color:#c5bdcb;
-    background:transparent;
-
-    font-size:.95rem;
-    transition:.3s;
-}
-
-.nav-item:hover{
-    background:rgba(255,255,255,.05);
-    color:#fff;
-}
-
-.nav-item.active{
-    background:
-    linear-gradient(
-    180deg,
-    #ff2969,
-    #cb0043);
-
-    color:white;
-
-    box-shadow:
-    0 0 25px rgba(255,0,85,.4);
-}
-
-.nav-icon{
-    font-size:1.2rem;
-}
-
-.sidebar-footer-card{
-    margin:18px;
-    padding:20px;
-
-    border-radius:24px;
-
-    background:rgba(255,255,255,.02);
-
-    border:1px solid rgba(255,255,255,.05);
-}
-
-.footer-card-icon{
-    font-size:2rem;
-    color:#ff2b67;
-
-    margin-bottom:10px;
-
-    filter:drop-shadow(
-    0 0 12px rgba(255,0,85,.9));
-}
-
-.sidebar-footer-card p{
-    margin:0;
-    color:#d7cfdc;
-    font-size:.95rem;
-    line-height:1.5;
-}
-
-@media (max-width:768px){
-
-    .sidebar-empresa{
-        width:100%;
-        min-height:auto;
+/* ===== RESPONSIVO ===== */
+@media (max-width: 768px) {
+    .sidebar-empresa {
+        width: 100%;
+        min-height: auto;
+        padding: 15px 0;
     }
 
-    .sidebar-nav{
-        flex-direction:row;
-        overflow-x:auto;
+    .sidebar-nav {
+        flex-direction: row;
+        overflow-x: auto;
+        padding: 0 10px;
+        gap: 8px;
     }
 
-    .sidebar-footer-card{
-        display:none;
+    .nav-item {
+        white-space: nowrap;
+        padding: 12px 16px;
+        font-size: .9rem;
     }
-
 }
