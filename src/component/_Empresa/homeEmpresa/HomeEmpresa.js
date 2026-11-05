@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import SidebarEmpresa from '../navBar/SidebarEmpresa';
+import CadastrarDoacao from '../../../component/_Empresa/Links/cadastrarDoacao/cadastrarDoacao';   // ← importa a página
+import MinhasDoacoes from '../../../component/_Empresa/Links/minhasDoacoes/minhasDoacoes';       // ← importa a página
 import './HomeEmpresa.css';
 
 function HomeEmpresa({ usuario }) {
@@ -14,21 +16,10 @@ function HomeEmpresa({ usuario }) {
                 setAbaAtiva={setAbaAtiva}
             />
 
-            {/* Conteúdo Dinâmico */}
+            {/* Conteúdo Dinâmico - páginas separadas */}
             <main className="content-empresa">
-                {abaAtiva === 'cadastrar-doacao' && (
-                    <div className="secao-conteudo">
-                        <h1>Cadastrar Doação</h1>
-                        <p>Preencha as informações necessárias para registrar uma nova doação no sistema.</p>
-                    </div>
-                )}
-
-                {abaAtiva === 'minhas-doacoes' && (
-                    <div className="secao-conteudo">
-                        <h1>Minhas Doações</h1>
-                        <p>Acompanhe o histórico e o status de todas as doações cadastradas pela sua empresa.</p>
-                    </div>
-                )}
+                {abaAtiva === 'cadastrar-doacao' && <CadastrarDoacao />}
+                {abaAtiva === 'minhas-doacoes' && <MinhasDoacoes />}
             </main>
         </div>
     );

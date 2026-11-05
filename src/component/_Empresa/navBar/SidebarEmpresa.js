@@ -9,7 +9,6 @@ function SidebarEmpresa({ abaAtiva, setAbaAtiva }) {
                     className={abaAtiva === 'cadastrar-doacao' ? 'nav-item active' : 'nav-item'}
                     onClick={() => setAbaAtiva('cadastrar-doacao')}
                 >
-                    
                     Cadastrar Doação
                 </button>
 
