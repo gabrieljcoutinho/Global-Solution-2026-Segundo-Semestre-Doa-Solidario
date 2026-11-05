@@ -1,7 +1,7 @@
 import React from 'react';
 import './minhasDoacoes.css';
 
-const MinhasDoacoes = ({ doacoes = [] }) => {
+const MinhasDoacoes = ({ doacoes = [], onExcluir }) => {
   return (
     <div className="minhasDoacoesContainer">
       <h2 className="minhasDoacoesTitulo">Minhas Doações</h2>
@@ -20,12 +20,22 @@ const MinhasDoacoes = ({ doacoes = [] }) => {
                 ) : (
                   <div className="doacaoCardPlaceholder">Sem imagem</div>
                 )}
+                
+                {/* Botão de Excluir (X com fundo branco e borda vermelha) */}
+                <button 
+                  type="button"
+                  className="doacaoBtnExcluir"
+                  onClick={() => onExcluir && onExcluir(doacao.id)}
+                  title="Excluir doação"
+                >
+                  ✕
+                </button>
               </div>
 
               <div className="doacaoCardBody">
                 <h3>{doacao.item}</h3>
 
-                <div className={`doacaoBadge ${doacao.urgencia.toLowerCase()}`}>
+                <div className={`doacaoBadge ${doacao.urgencia ? doacao.urgencia.toLowerCase() : ''}`}>
                   <span className="dot"></span>
                   {doacao.urgencia} Prioridade
                 </div>

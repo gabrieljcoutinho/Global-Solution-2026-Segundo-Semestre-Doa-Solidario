@@ -1,11 +1,19 @@
+/* ==========================================
+   CONTAINER PRINCIPAL
+   ========================================== */
 .minhasDoacoesContainer {
   padding: 32px 24px;
   color: #fff;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   min-height: 100vh;
   background-color: #0b0d10;
+  width: 100%;
+  box-sizing: border-box;
 }
 
+/* ==========================================
+   TÍTULOS E ESTADOS VAZIOS
+   ========================================== */
 .minhasDoacoesTitulo {
   font-size: 22px;
   font-weight: 600;
@@ -18,28 +26,40 @@
   font-size: 15px;
 }
 
-/* Grid com flex + wrap */
+/* ==========================================
+   GRID DE CARDS (RESPONSIVO)
+   ========================================== */
 .minhasDoacoesGrid {
   display: flex;
   flex-wrap: wrap;
   gap: 24px;
+  width: 100%;
 }
 
-/* Card */
+/* ==========================================
+   CARD DE DOAÇÃO
+   ========================================== */
 .doacaoCard {
   width: 320px;
+  max-width: 100%;
   background-color: #16101a;
   border: 1px solid #3a1f2e;
   border-radius: 18px;
   overflow: hidden;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   transition: transform 0.15s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .doacaoCard:hover {
   transform: translateY(-3px);
 }
 
+/* ==========================================
+   BANNER E BOTÃO DE EXCLUSÃO
+   ========================================== */
 .doacaoCardBanner {
   height: 140px;
   background: linear-gradient(160deg, #ff7a95 0%, #ff6b9d 100%);
@@ -47,6 +67,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  position: relative;
 }
 
 .doacaoCardBanner img {
@@ -60,8 +81,42 @@
   font-size: 14px;
 }
 
+/* Botão de Excluir (X com bola vermelha e fundo branco) */
+.doacaoBtnExcluir {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 2px solid #e11d48;
+  color: #e11d48;
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  z-index: 2;
+}
+
+.doacaoBtnExcluir:hover {
+  background-color: #e11d48;
+  color: #ffffff;
+  transform: scale(1.08);
+}
+
+/* ==========================================
+   CORPO DO CARD E INFORMAÇÕES
+   ========================================== */
 .doacaoCardBody {
   padding: 18px 18px 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .doacaoCardBody h3 {
@@ -71,7 +126,7 @@
   color: #fff;
 }
 
-/* Badge de urgência */
+/* Badge de Urgência */
 .doacaoBadge {
   display: inline-flex;
   align-items: center;
@@ -81,6 +136,7 @@
   font-size: 12px;
   font-weight: 500;
   margin-bottom: 14px;
+  width: fit-content;
 }
 
 .doacaoBadge.alta {
@@ -109,7 +165,7 @@
   background-color: currentColor;
 }
 
-/* Informações */
+/* Seção de Informações */
 .doacaoInfo {
   display: flex;
   flex-direction: column;
@@ -132,6 +188,7 @@
   font-weight: 500;
   text-align: right;
   max-width: 180px;
+  word-break: break-word;
 }
 
 .doacaoDescricao {
@@ -144,9 +201,31 @@
   border-radius: 10px;
 }
 
-/* Responsivo */
-@media (max-width: 700px) {
+/* ==========================================
+   RESPONSIVIDADE PARA QUALQUER TELA
+   ========================================== */
+@media (max-width: 768px) {
+  .minhasDoacoesContainer {
+    padding: 16px 12px;
+  }
+
+  .minhasDoacoesGrid {
+    justify-content: center;
+    gap: 16px;
+  }
+
   .doacaoCard {
     width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .minhasDoacoesTitulo {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .doacaoCardBody {
+    padding: 14px;
   }
 }
