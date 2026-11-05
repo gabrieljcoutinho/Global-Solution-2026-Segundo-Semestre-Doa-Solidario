@@ -8,7 +8,7 @@ function SidebarEmpresa({ usuario, abaAtiva, setAbaAtiva }) {
             {/* Cabeçalho inspirado na nova imagem */}
             <div className="sidebar-header-custom">
                 <div className="logo-container">
-                    <span className="logo-letter">H</span>
+                    <span className="logo-letter">D</span>
                 </div>
                 <h2>HADES<br /><span>Solidário</span></h2>
                 <p className="sidebar-subtitle">Conectando doações,<br />transformando vidas.</p>
