@@ -56,7 +56,7 @@ const Login = ({ onMudarTela, onLogin }) => {
                         <h1>Que bom ter você aqui.</h1>
 
                         <p>
-                            Entre para continuar conectando cuidado.
+                            Entre para continuar conectando.
                         </p>
                     </div>
 
