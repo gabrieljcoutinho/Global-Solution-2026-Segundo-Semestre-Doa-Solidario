@@ -1,25 +1,39 @@
 import React, { useState } from 'react';
 import SidebarEmpresa from '../navBar/SidebarEmpresa';
-import CadastrarDoacao from '../../../component/_Empresa/Links/cadastrarDoacao/cadastrarDoacao';   // ← importa a página
-import MinhasDoacoes from '../../../component/_Empresa/Links/minhasDoacoes/minhasDoacoes';       // ← importa a página
+import CadastrarDoacao from '../../../component/_Empresa/Links/cadastrarDoacao/cadastrarDoacao';
+import MinhasDoacoes from '../../../component/_Empresa/Links/minhasDoacoes/minhasDoacoes';
 import './HomeEmpresa.css';
 
 function HomeEmpresa({ usuario }) {
     const [abaAtiva, setAbaAtiva] = useState('cadastrar-doacao');
+    const [doacoes, setDoacoes] = useState([]);
+
+    const adicionarDoacao = (novaDoacao) => {
+        setDoacoes(prev => [
+            {
+                id: Date.now(),
+                ...novaDoacao
+            },
+            ...prev
+        ]);
+    };
 
     return (
         <div className="home-empresa-container">
-            {/* Sidebar Isolada */}
             <SidebarEmpresa
                 usuario={usuario}
                 abaAtiva={abaAtiva}
                 setAbaAtiva={setAbaAtiva}
             />
 
-            {/* Conteúdo Dinâmico - páginas separadas */}
             <main className="content-empresa">
-                {abaAtiva === 'cadastrar-doacao' && <CadastrarDoacao />}
-                {abaAtiva === 'minhas-doacoes' && <MinhasDoacoes />}
+                {abaAtiva === 'cadastrar-doacao' && (
+                    <CadastrarDoacao onPublicar={adicionarDoacao} />
+                )}
+
+                {abaAtiva === 'minhas-doacoes' && (
+                    <MinhasDoacoes doacoes={doacoes} />
+                )}
             </main>
         </div>
     );

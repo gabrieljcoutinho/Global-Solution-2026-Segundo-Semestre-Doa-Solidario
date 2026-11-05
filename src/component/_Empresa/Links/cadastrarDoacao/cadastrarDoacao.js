@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import './cadastrarDoacao.css';
 
-const CadastrarDoacao = () => {
+const CadastrarDoacao = ({ onPublicar }) => {
   const [item, setItem] = useState('Roupas Infantis');
   const [tamanho, setTamanho] = useState('2 a 8 anos');
   const [quantidade, setQuantidade] = useState('100');
@@ -26,6 +26,37 @@ const CadastrarDoacao = () => {
   const removeImage = () => {
     setImagem(null);
     if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const handlePublicar = () => {
+    if (!item || !quantidade) {
+      alert('Preencha pelo menos o Item e a Quantidade.');
+      return;
+    }
+
+    onPublicar({
+      item,
+      tamanho,
+      quantidade,
+      urgencia,
+      prazo,
+      localizacao,
+      descricao,
+      imagem
+    });
+
+    // Limpa o formulário depois de publicar
+    setItem('Roupas Infantis');
+    setTamanho('2 a 8 anos');
+    setQuantidade('100');
+    setUrgencia('Alta');
+    setPrazo('15/05/2025');
+    setLocalizacao('Av. Solidariedade, 123 - São Paulo/SP');
+    setDescricao('');
+    setImagem(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+
+    alert('Necessidade publicada com sucesso!');
   };
 
   return (
@@ -155,7 +186,7 @@ const CadastrarDoacao = () => {
 
           <button
             className="doacaoSubmitBtn"
-            onClick={() => alert('Necessidade publicada com sucesso!')}
+            onClick={handlePublicar}
           >
             Publicar Necessidade
             <span className="btnArrow">→</span>
