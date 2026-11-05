@@ -5,8 +5,8 @@ import './App.css';
 import Login from './component/login/Login';
 import Cadastro from './component/cadastro/Cadastro';
 
-import HomeEmpresa from './component/homeEmpresa/HomeEmpresa';
-import HomeUsuario from './component/homeUsuario/HomeUsuario';
+import HomeEmpresa from './component/_Empresa/homeEmpresa/HomeEmpresa';
+import HomeUsuario from './component/_Usuario/homeUsuario/HomeUsuario';
 
 function App() {
     const [tela, setTela] = useState('login');
