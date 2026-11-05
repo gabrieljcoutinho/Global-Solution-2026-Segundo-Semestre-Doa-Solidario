@@ -215,8 +215,8 @@ const CadastrarDoacao = ({ onPublicar }) => {
           <div className="previewCardBody">
             <h3>{item || 'Item'}</h3>
 
-            <div className="previewBadgeHigh">
-              <span className="dotRed"></span>
+            <div className={`previewBadge ${urgencia.toLowerCase()}`}>
+              <span className="dot"></span>
               {urgencia} Prioridade
             </div>
 
