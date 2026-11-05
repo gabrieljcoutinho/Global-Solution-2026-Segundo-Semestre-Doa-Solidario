@@ -9,7 +9,7 @@ function SidebarEmpresa({ abaAtiva, setAbaAtiva }) {
                     className={abaAtiva === 'cadastrar-doacao' ? 'nav-item active' : 'nav-item'}
                     onClick={() => setAbaAtiva('cadastrar-doacao')}
                 >
-                    <span className="nav-icon">📢</span>
+                    
                     Cadastrar Doação
                 </button>
 
@@ -17,7 +17,6 @@ function SidebarEmpresa({ abaAtiva, setAbaAtiva }) {
                     className={abaAtiva === 'minhas-doacoes' ? 'nav-item active' : 'nav-item'}
                     onClick={() => setAbaAtiva('minhas-doacoes')}
                 >
-                    <span className="nav-icon">❤️</span>
                     Minhas Doações
                 </button>
             </nav>
