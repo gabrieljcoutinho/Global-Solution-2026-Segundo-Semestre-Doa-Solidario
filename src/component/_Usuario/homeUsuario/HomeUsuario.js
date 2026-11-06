@@ -4,6 +4,7 @@ import './HomeUsuario.css';
 import SidebarUsuario from '../navBar/SidebarUsuario';
 import InicioUsuario from '../links/Inicio/InicioUsuario';
 import MinhasDoacoes from '../links/minhasDoacoes/MinhasDoacoes';
+import MapaDoacoes from '../links/mapa/MapaDoacoes';
 
 function HomeUsuario({ usuario, onLogout, doacoes = [] }) {
     const [abaAtiva, setAbaAtiva] = useState('inicio');
@@ -29,6 +30,12 @@ function HomeUsuario({ usuario, onLogout, doacoes = [] }) {
                 {abaAtiva === 'minhas-doacoes' && (
                     <MinhasDoacoes
                         usuario={usuario}
+                        doacoes={doacoes}
+                    />
+                )}
+
+                {abaAtiva === 'mapa' && (
+                    <MapaDoacoes
                         doacoes={doacoes}
                     />
                 )}

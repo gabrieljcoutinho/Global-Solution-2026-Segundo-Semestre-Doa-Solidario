@@ -20,6 +20,14 @@ function SidebarUsuario({ abaAtiva, setAbaAtiva, onLogout }) {
                 >
                     Minhas Doações
                 </button>
+
+                <button
+                    type="button"
+                    className={abaAtiva === 'mapa' ? 'nav-usuario-item active' : 'nav-usuario-item'}
+                    onClick={() => setAbaAtiva('mapa')}
+                >
+                    Mapa de Doações
+                </button>
             </nav>
 
             <div className="sidebar-usuario-footer">
