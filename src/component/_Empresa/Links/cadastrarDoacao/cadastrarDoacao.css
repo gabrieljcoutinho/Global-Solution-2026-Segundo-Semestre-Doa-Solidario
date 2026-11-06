@@ -1,25 +1,30 @@
 /* ===================== LAYOUT ===================== */
 .cadastrarDoacaoContainer {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: flex-start;
+  gap: 32px;
   background-color: #0b0d10;
   color: #fff;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   padding: 40px 24px;
   min-height: 100vh;
   box-sizing: border-box;
-  gap: 32px;
 }
 
+/* Formulário: cresce até 680px e encolhe conforme o espaço */
 .cadastrarDoacaoContent {
-  flex: 0 1 680px;
+  flex: 1 1 460px;
   max-width: 680px;
+  min-width: 0;
 }
 
+/* Prévia: ocupa até 340px; quando não cabe ao lado, vai para baixo */
 .cadastrarDoacaoPreview {
-  width: 340px;
-  flex-shrink: 0;
+  flex: 1 1 260px;
+  max-width: 340px;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -31,6 +36,7 @@
   border: 1px solid #22262f;
   border-radius: 18px;
   padding: 28px 30px 30px;
+  box-sizing: border-box;
 }
 
 .doacaoFormCard h2 {
@@ -41,20 +47,22 @@
   letter-spacing: -0.2px;
 }
 
+/* Colunas automáticas: 2 colunas quando cabe, 1 quando não cabe */
 .doacaoGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px 18px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 18px;
 }
 
 .doacaoInputGroup {
   display: flex;
   flex-direction: column;
   gap: 7px;
+  min-width: 0;
 }
 
 .doacaoInputGroup.fullWidth {
-  grid-column: span 2;
+  grid-column: 1 / -1;
   margin-top: 8px;
 }
 
@@ -74,6 +82,8 @@
   border-radius: 11px;
   padding: 0 14px;
   height: 46px;
+  box-sizing: border-box;
+  min-width: 0;
   transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
@@ -85,6 +95,7 @@
 .doacaoInputWrapper input,
 .doacaoInputWrapper select {
   width: 100%;
+  min-width: 0;
   background: transparent;
   border: none;
   outline: none;
@@ -176,6 +187,7 @@
   font-size: 13.5px;
   color: #e5e7eb;
   font-weight: 500;
+  text-align: center;
 }
 
 .imageUploadArea span {
@@ -242,7 +254,7 @@
   outline: none;
   color: #f3f4f6;
   font-size: 14px;
-  resize: none;
+  resize: vertical;
   font-family: inherit;
   box-sizing: border-box;
   line-height: 1.5;
@@ -282,6 +294,11 @@
 
 .doacaoSubmitBtn:active {
   transform: scale(0.985);
+}
+
+.doacaoSubmitBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .btnArrow {
@@ -361,27 +378,7 @@
   margin: 0 0 10px 0;
   color: #fff;
   letter-spacing: -0.3px;
-}
-
-.previewBadgeHigh {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background-color: rgba(225, 29, 72, 0.18);
-  border: 1px solid rgba(225, 29, 72, 0.35);
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 12px;
-  color: #ff8aa6;
-  font-weight: 500;
-  margin-bottom: 16px;
-}
-
-.dotRed {
-  width: 6px;
-  height: 6px;
-  background-color: #e11d48;
-  border-radius: 50%;
+  word-break: break-word;
 }
 
 .previewDetails {
@@ -395,16 +392,22 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   font-size: 13.5px;
   color: #e5e7eb;
+}
+
+.previewDetailRow > span:last-child {
+  text-align: right;
+  word-break: break-word;
 }
 
 .listLabel {
   color: #9ca3af;
   font-size: 13px;
+  flex-shrink: 0;
 }
 
-/* Descrição */
 .previewDescription {
   margin-bottom: 14px;
   padding: 12px 13px;
@@ -418,9 +421,9 @@
   font-size: 13px;
   color: #d1d5db;
   line-height: 1.45;
+  word-break: break-word;
 }
 
-/* Footer alert */
 .previewFooterAlert {
   background-color: rgba(0, 0, 0, 0.28);
   border-radius: 10px;
@@ -452,37 +455,7 @@
   line-height: 1.4;
 }
 
-/* ===================== RESPONSIVO ===================== */
-@media (max-width: 1024px) {
-  .cadastrarDoacaoContainer {
-    flex-direction: column;
-    align-items: center;
-    padding: 24px 20px;
-  }
-
-  .cadastrarDoacaoContent,
-  .cadastrarDoacaoPreview {
-    width: 100%;
-    max-width: 100%;
-  }
-}
-
-@media (max-width: 640px) {
-  .doacaoGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .doacaoInputGroup.fullWidth {
-    grid-column: span 1;
-  }
-
-  .doacaoFormCard {
-    padding: 20px;
-  }
-}
-
-
-/* ===================== BADGE PRIORIDADE DINÂMICO ===================== */
+/* ===================== BADGE PRIORIDADE (PREVIEW) ===================== */
 .previewBadge {
   display: inline-flex;
   align-items: center;
@@ -501,14 +474,12 @@
   background-color: currentColor;
 }
 
-/* Alta - Vermelho */
 .previewBadge.alta {
   background-color: rgba(225, 29, 72, 0.18);
   border: 1px solid rgba(225, 29, 72, 0.35);
   color: #ff8aa6;
 }
 
-/* Média - Amarelo */
 .previewBadge.média,
 .previewBadge.media {
   background-color: rgba(234, 179, 8, 0.15);
@@ -516,49 +487,6 @@
   color: #fbbf24;
 }
 
-/* Baixa - Verde */
-.previewBadge.baixa {
-  background-color: rgba(34, 197, 94, 0.15);
-  border: 1px solid rgba(34, 197, 94, 0.3);
-  color: #4ade80;
-}
-
-
-/* ===================== BADGE PRIORIDADE DINÂMICO (PREVIEW) ===================== */
-.previewBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 500;
-  margin-bottom: 16px;
-}
-
-.previewBadge .dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: currentColor;
-}
-
-/* Alta - Vermelho */
-.previewBadge.alta {
-  background-color: rgba(225, 29, 72, 0.18);
-  border: 1px solid rgba(225, 29, 72, 0.35);
-  color: #ff8aa6;
-}
-
-/* Média - Amarelo */
-.previewBadge.média,
-.previewBadge.media {
-  background-color: rgba(234, 179, 8, 0.15);
-  border: 1px solid rgba(234, 179, 8, 0.3);
-  color: #fbbf24;
-}
-
-/* Baixa - Verde */
 .previewBadge.baixa {
   background-color: rgba(34, 197, 94, 0.15);
   border: 1px solid rgba(34, 197, 94, 0.3);
@@ -566,11 +494,6 @@
 }
 
 /* ===================== COR DA URGÊNCIA NO FORMULÁRIO ===================== */
-.urgencyWrapper .urgencyDot {
-  background-color: #e11d48; /* padrão = Alta */
-}
-
-/* Alta - Vermelho */
 .urgencyWrapper.alta {
   border-color: #e11d48;
 }
@@ -578,7 +501,6 @@
   background-color: #e11d48;
 }
 
-/* Média - Amarelo */
 .urgencyWrapper.média,
 .urgencyWrapper.media {
   border-color: #eab308;
@@ -588,10 +510,21 @@
   background-color: #eab308;
 }
 
-/* Baixa - Verde */
 .urgencyWrapper.baixa {
   border-color: #22c55e;
 }
 .urgencyWrapper.baixa .urgencyDot {
   background-color: #22c55e;
+}
+
+/* ===================== TELAS MUITO PEQUENAS ===================== */
+@media (max-width: 480px) {
+  .cadastrarDoacaoContainer {
+    padding: 16px 12px;
+    gap: 20px;
+  }
+
+  .doacaoFormCard {
+    padding: 20px;
+  }
 }

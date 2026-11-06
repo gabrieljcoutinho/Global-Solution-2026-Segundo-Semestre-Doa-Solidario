@@ -30,18 +30,19 @@
    GRID DE CARDS (RESPONSIVO)
    ========================================== */
 .minhasDoacoesGrid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
   gap: 24px;
   width: 100%;
+  align-items: start;
 }
 
 /* ==========================================
    CARD DE DOAÇÃO
    ========================================== */
 .doacaoCard {
-  width: 320px;
-  max-width: 100%;
+  width: auto;
+  max-width: none;
   background-color: #16101a;
   border: 1px solid #3a1f2e;
   border-radius: 18px;
@@ -202,35 +203,8 @@
 }
 
 /* ==========================================
-   RESPONSIVIDADE PARA QUALQUER TELA
+   BOTÃO QUERO DOAR
    ========================================== */
-@media (max-width: 768px) {
-  .minhasDoacoesContainer {
-    padding: 16px 12px;
-  }
-
-  .minhasDoacoesGrid {
-    justify-content: center;
-    gap: 16px;
-  }
-
-  .doacaoCard {
-    width: 100%;
-  }
-}
-
-@media (max-width: 480px) {
-  .minhasDoacoesTitulo {
-    font-size: 20px;
-    margin-bottom: 20px;
-  }
-
-  .doacaoCardBody {
-    padding: 14px;
-  }
-}
-
-
 .btnQueroDoar {
   display: block;
   width: 100%;
@@ -269,4 +243,28 @@
   box-shadow: none;
   cursor: not-allowed;
   opacity: 0.9;
+}
+
+/* ==========================================
+   RESPONSIVIDADE
+   ========================================== */
+@media (max-width: 768px) {
+  .minhasDoacoesContainer {
+    padding: 16px 12px;
+  }
+
+  .minhasDoacoesGrid {
+    gap: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .minhasDoacoesTitulo {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .doacaoCardBody {
+    padding: 14px;
+  }
 }
