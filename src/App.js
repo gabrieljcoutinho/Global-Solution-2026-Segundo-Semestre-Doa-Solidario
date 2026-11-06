@@ -230,13 +230,17 @@ function App() {
         }
 
         const mudancas = aceitar
-            ? { status: 'concluida' }
+            ? {
+                status: 'concluida',
+                dataConclusao: new Date().toISOString()
+            }
             : {
                 status: 'disponivel',
                 doadorId: null,
                 doadorNome: null,
                 doadorEmail: null,
-                dataOferta: null
+                dataOferta: null,
+                dataConclusao: null
             };
 
         const ok = await atualizarDoacao(id, mudancas);

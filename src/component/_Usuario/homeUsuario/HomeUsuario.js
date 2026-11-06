@@ -5,6 +5,7 @@ import SidebarUsuario from '../navBar/SidebarUsuario';
 import InicioUsuario from '../links/Inicio/InicioUsuario';
 import MinhasDoacoes from '../links/minhasDoacoes/MinhasDoacoes';
 import MapaDoacoes from '../links/mapa/MapaDoacoes';
+import DoacoesConcluidas from '../links/doacoesConcluidas/DoacoesConcluidas';
 
 function HomeUsuario({ usuario, onLogout, doacoes = [], onOferecerDoacao }) {
     const [abaAtiva, setAbaAtiva] = useState('inicio');
@@ -37,6 +38,13 @@ function HomeUsuario({ usuario, onLogout, doacoes = [], onOferecerDoacao }) {
 
                 {abaAtiva === 'mapa' && (
                     <MapaDoacoes
+                        doacoes={doacoes}
+                    />
+                )}
+
+                {abaAtiva === 'doacoes-concluidas' && (
+                    <DoacoesConcluidas
+                        usuario={usuario}
                         doacoes={doacoes}
                     />
                 )}

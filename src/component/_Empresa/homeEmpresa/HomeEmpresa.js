@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import SidebarEmpresa from '../navBar/SidebarEmpresa';
 
 import CadastrarDoacao from '../../../component/_Empresa/Links/cadastrarDoacao/cadastrarDoacao';
-
 import MinhasDoacoes from '../../../component/_Empresa/Links/minhasDoacoes/minhasDoacoes';
+import DoacoesConcluidas from '../../../component/_Empresa/Links/doacoesConcluidas/DoacoesConcluidas';
 
 import './HomeEmpresa.css';
 
@@ -46,6 +46,12 @@ function HomeEmpresa({
                         doacoes={minhasDoacoes}
                         onExcluir={onExcluirDoacao}
                         onResponder={onResponderDoacao}
+                    />
+                )}
+
+                {abaAtiva === 'doacoes-concluidas' && (
+                    <DoacoesConcluidas
+                        doacoes={minhasDoacoes}
                     />
                 )}
 

@@ -1,0 +1,14 @@
+.doacoesConcluidasResumo {
+  margin: 0 0 20px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  background: #f1f8f4;
+  border-left: 4px solid #2e7d32;
+  font-size: 1rem;
+  color: #333;
+}
+
+.doacoesConcluidasResumo strong {
+  color: #2e7d32;
+  font-size: 1.2rem;
+}
