@@ -1,7 +1,7 @@
 import React from 'react';
 import "./sidebar.css";
 
-function SidebarEmpresa({ abaAtiva, setAbaAtiva }) {
+function SidebarEmpresa({ abaAtiva, setAbaAtiva, onLogout }) {
     return (
         <aside className="sidebar-empresa">
             <nav className="sidebar-nav">
@@ -19,6 +19,16 @@ function SidebarEmpresa({ abaAtiva, setAbaAtiva }) {
                     Doações Cadastradas
                 </button>
             </nav>
+
+            {/* Container do botão de logout fixado na parte inferior */}
+            <div className="sidebar-footer">
+                <button 
+                    className="btn-logout" 
+                    onClick={onLogout}
+                >
+                    Deslogar
+                </button>
+            </div>
         </aside>
     );
 }

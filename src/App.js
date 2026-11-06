@@ -47,6 +47,12 @@ function App() {
         }
     };
 
+    // Função para deslogar: limpa o usuário e volta para a tela de login
+    const handleLogout = () => {
+        setUsuarioLogado(null);
+        setTela('login');
+    };
+
     return (
         <div>
             {tela === 'login' && (
@@ -65,6 +71,8 @@ function App() {
             {tela === 'homeEmpresa' && (
                 <HomeEmpresa
                     usuario={usuarioLogado}
+                    onLogout={handleLogout}
+                    onMudarTela={setTela}
                 />
             )}
 
@@ -73,6 +81,7 @@ function App() {
                     usuario={usuarioLogado}
                     doacoes={doacoes}
                     onExcluirDoacao={handleExcluirDoacao}
+                    onLogout={handleLogout}
                 />
             )}
         </div>
