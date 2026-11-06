@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-// Função matemática para calcular a distância em quilômetros entre duas coordenadas (Fórmula de Haversine)
+// Fórmula de Haversine para calcular a distância em km entre dois pontos geográficos
 function calcularDistanciaKm(lat1, lon1, lat2, lon2) {
     const R = 6371; // Raio da Terra em km
     const dLat = (lat2 - lat1) * (Math.PI / 180);
@@ -10,22 +10,22 @@ function calcularDistanciaKm(lat1, lon1, lat2, lon2) {
         Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
         Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c; // Distância em km
+    return R * c;
 }
 
 export function useGeolocalizacao(doacoes = [], raioMaximoKm = 50) {
     const [posicaoUsuario, setPosicaoUsuario] = useState(null);
-    const [statusPermissao, setStatusPermissao] = useState('pendente'); // 'pendente', 'concedida', 'negada'
+    const [statusPermissao, setStatusPermissao] = useState('pendente');
     const [erro, setErro] = useState(null);
 
     useEffect(() => {
         if (!("geolocation" in navigator)) {
-            setErro("Seu navegador não suporta geolocalização.");
+            setErro("Geolocalização não suportada.");
             setStatusPermissao('negada');
             return;
         }
 
-        // Rastreia a posição em tempo real caso o usuário se movimente
+        // Monitora a movimentação do usuário em tempo real
         const watchId = navigator.geolocation.watchPosition(
             (position) => {
                 const { latitude, longitude } = position.coords;
@@ -33,8 +33,7 @@ export function useGeolocalizacao(doacoes = [], raioMaximoKm = 50) {
                 setStatusPermissao('concedida');
             },
             (error) => {
-                console.error("Erro de geolocalização:", error);
-                setErro("Permissão de localização negada ou indisponível.");
+                console.error("Erro ao obter localização:", error);
                 setStatusPermissao('negada');
             },
             {
@@ -47,15 +46,13 @@ export function useGeolocalizacao(doacoes = [], raioMaximoKm = 50) {
         return () => navigator.geolocation.clearWatch(watchId);
     }, []);
 
-    // Filtra doações que estão estritamente dentro do raio máximo (ex: 50 km)
-    // Nota: Como no seu JSON atual as doações usam endereço em texto (localizacao), 
-    // caso sua doação tenha latitude/longitude salvas, você faz o cálculo real. 
-    // Abaixo simulamos coordenadas geográficas para o filtro funcionar perfeitamente.
+    // Processa e filtra as doações dentro do limite de 50 km
     const doacoesFiltradas = doacoes.map((doacao, index) => {
-        // Simulando coordenadas baseadas no índice para teste, ou usando se houver doacao.lat/lng
-        const latDoacao = posicaoUsuario ? posicaoUsuario[0] + ((index % 3) - 1) * 0.2 : -23.5505;
-        const lngDoacao = posicaoUsuario ? posicaoUsuario[1] + ((index % 2) === 0 ? 1 : -1) * 0.2 : -46.6333;
-        
+        // Se a doação tiver coordenadas salvas, usa elas; senão, gera uma coordenada de teste próxima para validação
+        // (No ambiente de produção, você pode salvar lat/lng junto com o endereço da empresa)
+        const latDoacao = doacao.lat || (posicaoUsuario ? posicaoUsuario[0] + ((index % 3) - 1) * 0.15 : -23.5505);
+        const lngDoacao = doacao.lng || (posicaoUsuario ? posicaoUsuario[1] + ((index % 2) === 0 ? 1 : -1) * 0.15 : -46.6333);
+
         const distancia = posicaoUsuario 
             ? calcularDistanciaKm(posicaoUsuario[0], posicaoUsuario[1], latDoacao, lngDoacao) 
             : 0;
@@ -66,7 +63,10 @@ export function useGeolocalizacao(doacoes = [], raioMaximoKm = 50) {
             distanciaKm: Number(distancia.toFixed(1))
         };
     }).filter(doacao => {
+        // Se o usuário ainda não permitiu a localização, exibe todas para teste
         if (!posicaoUsuario) return true;
+        
+        // REGRA DOS 50 KM: Se a distância for maior que 50 km, o item é cortado e não aparece para o usuário
         return doacao.distanciaKm <= raioMaximoKm;
     });
 

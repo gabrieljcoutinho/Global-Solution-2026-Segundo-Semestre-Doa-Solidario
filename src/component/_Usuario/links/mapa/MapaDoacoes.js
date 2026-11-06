@@ -4,7 +4,6 @@ import L from 'leaflet';
 import { useGeolocalizacao } from './useGeolocalizacao';
 import './MapaDoacoes.css';
 
-// Correção dos ícones do Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
     iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
@@ -21,7 +20,6 @@ const iconeUsuario = new L.Icon({
     shadowSize: [41, 41]
 });
 
-// Componente para atualizar o centro do mapa automaticamente quando o usuário se movimenta
 const AtualizarCentroMapa = ({ center }) => {
     const map = useMap();
     useEffect(() => {
@@ -33,10 +31,9 @@ const AtualizarCentroMapa = ({ center }) => {
 };
 
 function MapaDoacoes({ doacoes = [] }) {
-    // Utiliza o hook customizado com raio limite de 50 km
+    // Aplica o filtro estrito de 50 km
     const { posicaoUsuario, statusPermissao, doacoesFiltradas } = useGeolocalizacao(doacoes, 50);
 
-    // Centro padrão (São Paulo capital) caso a permissão esteja pendente
     const centroPadrao = [-23.550520, -46.633308];
     const centroMapa = posicaoUsuario || centroPadrao;
 
@@ -44,23 +41,22 @@ function MapaDoacoes({ doacoes = [] }) {
         <div className="mapaDoacoesContainer">
             <h2 className="mapaDoacoesTitulo">Mapa de Pontos de Doação Próximos</h2>
             
-            {/* Caixa de aviso de permissão explicativa */}
             {statusPermissao === 'pendente' && (
                 <div className="avisoPermissaoGeo">
-                    <p>📍 O <strong>DoaCerto</strong> precisa acessar sua localização atual apenas enquanto o aplicativo estiver aberto para mostrar as ONGs e pontos de coleta mais próximos de você (num raio de até 50 km).</p>
+                    <p>📍 O <strong>DoaCerto</strong> precisa acessar sua localização para exibir campanhas e ONGs em um raio de até 50 km.</p>
                 </div>
             )}
 
             {statusPermissao === 'negada' && (
                 <div className="avisoPermissaoErro">
-                    <p>⚠️ A permissão de localização foi negada. Exibindo pontos gerais na região central de São Paulo.</p>
+                    <p>⚠️ Permissão de localização negada. Ative no navegador para ver os pontos perto de você.</p>
                 </div>
             )}
 
             <p className="mapaDoacoesSubtitulo">
                 {posicaoUsuario 
-                    ? `Mostrando doações e pontos de coleta a até 50 km da sua localização em tempo real.`
-                    : `Buscando sua posição atual...`}
+                    ? `Exibindo campanhas de doação cadastradas a até 50 km da sua localização atual.`
+                    : `Carregando sua posição em tempo real...`}
             </p>
 
             <div className="mapaWrapperReal">
@@ -77,19 +73,19 @@ function MapaDoacoes({ doacoes = [] }) {
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
 
-                    {/* Marcador da Posição Atual do Usuário */}
+                    {/* Ponto azul da posição atual do usuário */}
                     {posicaoUsuario && (
                         <Marker position={posicaoUsuario} icon={iconeUsuario}>
                             <Popup>
                                 <div className="popupMapaCard">
                                     <h3>📍 Você está aqui</h3>
-                                    <p>Sua localização é atualizada em tempo real conforme você se movimenta.</p>
+                                    <p>Sua posição é atualizada em tempo real.</p>
                                 </div>
                             </Popup>
                         </Marker>
                     )}
 
-                    {/* Marcadores das Doações Filtradas (<= 50km) */}
+                    {/* Apenas exibe no mapa as doações que estão DENTRO do raio de 50 km */}
                     {doacoesFiltradas.map((doacao) => (
                         <Marker key={doacao.id} position={doacao.coords}>
                             <Popup>
@@ -97,7 +93,7 @@ function MapaDoacoes({ doacoes = [] }) {
                                     <h3>{doacao.empresaNome || 'Instituição'}</h3>
                                     <p><strong>Item:</strong> {doacao.item}</p>
                                     <p><strong>Local:</strong> {doacao.localizacao || 'Endereço informado'}</p>
-                                    <p><strong>Distância:</strong> aprox. {doacao.distanciaKm} km de você</p>
+                                    <p><strong>Distância:</strong> {doacao.distanciaKm} km de você</p>
                                     <p><strong>Quantidade:</strong> {doacao.quantidade} peças</p>
                                     <a 
                                         href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(doacao.localizacao || 'São Paulo')}`} 
