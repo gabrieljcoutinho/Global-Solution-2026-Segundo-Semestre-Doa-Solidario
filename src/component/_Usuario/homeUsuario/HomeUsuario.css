@@ -1,0 +1,9 @@
+.layout-usuario{
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    background-color: #0d0b0e;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+    color: #fff;
+}
