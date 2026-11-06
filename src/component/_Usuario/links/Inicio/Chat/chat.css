@@ -16,15 +16,15 @@
 }
 
 /* ==========================================================================
-   2. LAYOUT MASTER (ALINHADO EMBAIXO DO TOPO, IA À ESQUERDA)
+   2. LAYOUT MASTER (COLADO NA ESQUERDA)
    ================================================================---------- */
 .chat-master-container {
   display: flex;
   flex-direction: row;
   width: 100%;
-  max-width: 950px;      /* Largura ampla conforme solicitado */
-  height: 400px;         /* Altura compacta */
-  margin: 20px auto 0 auto; /* Alinhado logo abaixo do início do bloco superior */
+  max-width: 950px;      
+  height: 400px;         
+  margin: 20px 0 0 0;    /* Alinhado na esquerda (sem margem automática nas laterais) */
   background-color: var(--chat-bg-dark);
   font-family: var(--chat-font);
   color: var(--chat-text-main);

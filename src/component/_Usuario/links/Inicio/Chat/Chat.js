@@ -36,7 +36,7 @@ const Chat = () => {
 
   return (
     <div className="chat-master-container">
-      {/* Bloco da IA à Esquerda (Posicionado embaixo do início superior) */}
+      {/* Bloco da IA à Esquerda */}
       <aside className="chat-sidebar-left">
         <div className="chat-brand-box">
           <div className="chat-avatar-glow"></div>
