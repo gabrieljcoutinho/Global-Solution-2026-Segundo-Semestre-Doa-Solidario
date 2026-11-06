@@ -15,5 +15,23 @@
       "tipo": "empresa"
     }
   ],
-  "doacoes": []
+  "doacoes": [
+    {
+      "item": "23423",
+      "tamanho": "23423",
+      "quantidade": "234234",
+      "urgencia": "Alta",
+      "prazo": "34234",
+      "localizacao": "Av. Paulista, 1106 - Bela Vista",
+      "descricao": "23423423",
+      "imagem": "",
+      "lat": -23.564324,
+      "lng": -46.6527132,
+      "id": "doacao-1793991769946-lyrc4nb",
+      "empresaId": "conta-1793988871297-r09neb3",
+      "empresaNome": "1",
+      "empresaEmail": "1@gmail.com",
+      "dataCadastro": "2026-11-06T19:02:49.946Z"
+    }
+  ]
 }
