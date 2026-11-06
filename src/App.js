@@ -70,49 +70,36 @@ function App() {
         };
     };
 
-    // Login validando diretamente no servidor Node.js
-    const handleLogin = async (email, senha) => {
+    // Login validando diretamente no estado atualizado de contas
+    const handleLogin = (email, senha) => {
         const emailNormalizado = email.trim().toLowerCase();
 
-        try {
-            const resposta = await fetch('http://localhost:3001/api/dados');
-            const dados = await resposta.json();
-            
-            const contasServidor = dados.contas || [];
+        const contaEncontrada = contas.find(
+            conta =>
+                conta.email.toLowerCase() === emailNormalizado &&
+                conta.senha === senha
+        );
 
-            const contaEncontrada = contasServidor.find(
-                conta =>
-                    conta.email.toLowerCase() === emailNormalizado &&
-                    conta.senha === senha
-            );
-
-            if (!contaEncontrada) {
-                return {
-                    sucesso: false,
-                    mensagem: 'E-mail ou senha incorretos.'
-                };
-            }
-
-            const { senha: senhaSalva, ...dadosUsuario } = contaEncontrada;
-
-            setUsuarioLogado(dadosUsuario);
-
-            if (dadosUsuario.tipo === 'empresa') {
-                setTela('homeEmpresa');
-            } else {
-                setTela('homeUsuario');
-            }
-
-            return {
-                sucesso: true
-            };
-        } catch (erro) {
-            console.error('Erro ao conectar com o servidor de login:', erro);
+        if (!contaEncontrada) {
             return {
                 sucesso: false,
-                mensagem: 'Erro ao conectar com o servidor.'
+                mensagem: 'E-mail ou senha incorretos.'
             };
         }
+
+        const { senha: senhaSalva, ...dadosUsuario } = contaEncontrada;
+
+        setUsuarioLogado(dadosUsuario);
+
+        if (dadosUsuario.tipo === 'empresa') {
+            setTela('homeEmpresa');
+        } else {
+            setTela('homeUsuario');
+        }
+
+        return {
+            sucesso: true
+        };
     };
 
     // Publicar doação / produto
