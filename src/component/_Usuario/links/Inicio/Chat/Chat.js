@@ -2,264 +2,176 @@ import React, { useState, useRef, useEffect } from 'react';
 import './chat.css';
 
 const Chat = () => {
-  const [messages, setMessages] = useState([
-    {
-      sender: 'bot',
-      text: 'Olá! 👋\n\nComo posso ajudar você hoje? Você pode tirar dúvidas sobre doações, encontrar campanhas ou descobrir instituições que precisam de ajuda.',
-      time: new Date().toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit'
-      })
-    }
-  ]);
+    const [messages, setMessages] = useState([
+        {
+            sender: 'bot',
+            text: 'Olá! 👋\n\nComo posso ajudar você hoje? Você pode tirar dúvidas sobre doações, encontrar campanhas ou descobrir instituições que precisam de ajuda.',
+            time: new Date().toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit'
+            })
+        }
+    ]);
 
-  const [inputText, setInputText] = useState('');
-  const messagesEndRef = useRef(null);
+    const [inputText, setInputText] = useState('');
+    const messagesEndRef = useRef(null);
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [messages]);
 
-  const handleSendMessage = (e) => {
-    e.preventDefault();
+    const handleSendMessage = (e) => {
+        e.preventDefault();
 
-    if (!inputText.trim()) return;
+        if (!inputText.trim()) return;
 
-    const newMessage = {
-      sender: 'user',
-      text: inputText.trim(),
-      time: new Date().toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit'
-      })
+        const newMessage = {
+            sender: 'user',
+            text: inputText.trim(),
+            time: new Date().toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit'
+            })
+        };
+
+        setMessages(prev => [...prev, newMessage]);
+        setInputText('');
     };
 
-    setMessages(prev => [...prev, newMessage]);
-    setInputText('');
-  };
+    return (
+        <div className="chat-master-container">
 
-  const handleActionClick = (actionName) => {
-    setMessages(prev => [
-      ...prev,
-      {
-        sender: 'user',
-        text: actionName,
-        time: new Date().toLocaleTimeString([], {
-          hour: '2-digit',
-          minute: '2-digit'
-        })
-      }
-    ]);
-  };
+            <main className="chat-main-panel">
 
-  return (
-    <div className="chat-master-container">
+                <header className="chat-top-header">
 
-      <main className="chat-main-panel">
+                    <div className="chat-header-info">
 
-        <header className="chat-top-header">
-          <div className="chat-header-info">
+                        <div className="chat-header-avatar">
+                            <svg viewBox="0 0 24 24" width="22" height="22"
+                                fill="none" stroke="currentColor" strokeWidth="1.8"
+                                strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M2 12h20" />
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                            </svg>
+                        </div>
 
-            <div className="chat-header-avatar">
-              <svg viewBox="0 0 24 24" width="22" height="22"
-                fill="none" stroke="currentColor" strokeWidth="1.8"
-                strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M2 12h20" />
-                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-              </svg>
-            </div>
+                        <div>
+                            <h2>Assistente Virtual</h2>
 
-            <div>
-              <h2>Assistente Virtual</h2>
-              <div className="chat-header-status">
-                <span></span>
-                Online
-              </div>
-            </div>
+                            <div className="chat-header-status">
+                                <span></span>
+                                Online
+                            </div>
+                        </div>
 
-          </div>
+                    </div>
 
-          <div className="chat-header-tag">
-            <span></span>
-            Atendimento digital
-          </div>
-        </header>
+                    <div className="chat-header-tag">
+                        <span></span>
+                        Atendimento digital
+                    </div>
 
-        <section className="chat-body-content">
+                </header>
 
-          <div className="chat-date-divider">
-            <span>CONVERSA</span>
-          </div>
+                <section className="chat-body-content">
 
-          {messages.map((msg, index) => (
-            <div key={index} className={`chat-msg-row ${msg.sender}`}>
+                    <div className="chat-date-divider">
+                        <span>CONVERSA</span>
+                    </div>
 
-              {msg.sender === 'bot' && (
-                <div className="chat-message-avatar">
-                  <svg viewBox="0 0 24 24" width="19" height="19"
-                    fill="none" stroke="currentColor" strokeWidth="1.8"
-                    strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M2 12h20" />
-                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                  </svg>
-                </div>
-              )}
+                    {messages.map((msg, index) => (
+                        <div key={index} className={`chat-msg-row ${msg.sender}`}>
 
-              <div className={`chat-bubble-box ${msg.sender}`}>
-                <span className="chat-sender-name">
-                  {msg.sender === 'bot' ? 'Assistente' : 'Você'}
-                </span>
+                            {msg.sender === 'bot' && (
+                                <div className="chat-message-avatar">
+                                    <svg viewBox="0 0 24 24" width="19" height="19"
+                                        fill="none" stroke="currentColor" strokeWidth="1.8"
+                                        strokeLinecap="round" strokeLinejoin="round">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <path d="M2 12h20" />
+                                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                                    </svg>
+                                </div>
+                            )}
 
-                <p>{msg.text}</p>
+                            <div className={`chat-bubble-box ${msg.sender}`}>
 
-                <span className="chat-msg-time">{msg.time}</span>
-              </div>
+                                <span className="chat-sender-name">
+                                    {msg.sender === 'bot' ? 'Assistente' : 'Você'}
+                                </span>
 
-            </div>
-          ))}
+                                <p>{msg.text}</p>
 
-          {messages.length === 1 && (
-            <div className="chat-suggestions">
+                                <span className="chat-msg-time">
+                                    {msg.time}
+                                </span>
 
-              <div className="chat-suggestions-heading">
-                <span>COMO POSSO AJUDAR?</span>
-                <p>Selecione uma opção para começar.</p>
-              </div>
+                            </div>
 
-              <div className="chat-action-buttons-row">
+                        </div>
+                    ))}
 
-                <button
-                  className="chat-action-chip"
-                  onClick={() => handleActionClick('Quero enviar uma foto dos itens que desejo doar.')}
-                >
-                  <div className="chat-action-icon photo">
-                    <svg viewBox="0 0 24 24" width="21" height="21"
-                      fill="none" stroke="currentColor" strokeWidth="1.8"
-                      strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="3" y="3" width="18" height="18" rx="3" />
-                      <circle cx="8.5" cy="8.5" r="1.5" />
-                      <path d="m21 15-5-5L5 21" />
-                    </svg>
-                  </div>
+                    <div ref={messagesEndRef} />
 
-                  <div>
-                    <strong>Enviar uma foto</strong>
-                    <span>Compartilhe seus itens para doação.</span>
-                  </div>
+                </section>
 
-                  <span className="chat-action-arrow">›</span>
-                </button>
+                <footer className="chat-bottom-footer">
 
-                <button
-                  className="chat-action-chip"
-                  onClick={() => handleActionClick('Quero conhecer as campanhas disponíveis.')}
-                >
-                  <div className="chat-action-icon campaign">
-                    <svg viewBox="0 0 24 24" width="21" height="21"
-                      fill="none" stroke="currentColor" strokeWidth="1.8"
-                      strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M20 12v10H4V12" />
-                      <path d="M2 7h20v5H2z" />
-                      <path d="M12 22V7" />
-                      <path d="M12 7H7.5a2.5 2.5 0 1 1 2.5-2.5V7" />
-                      <path d="M12 7h4.5A2.5 2.5 0 1 0 14 4.5V7" />
-                    </svg>
-                  </div>
+                    <form className="chat-input-wrapper-form" onSubmit={handleSendMessage}>
 
-                  <div>
-                    <strong>Ver campanhas</strong>
-                    <span>Conheça iniciativas solidárias.</span>
-                  </div>
+                        <button
+                            type="button"
+                            className="chat-tool-icon-btn"
+                            title="Falar por voz"
+                        >
+                            <svg viewBox="0 0 24 24" width="21" height="21"
+                                fill="none" stroke="currentColor" strokeWidth="1.8"
+                                strokeLinecap="round" strokeLinejoin="round">
+                                <rect x="9" y="2" width="6" height="13" rx="3" />
+                                <path d="M5 10v2a7 7 0 0 0 14 0v-2" />
+                                <path d="M12 19v3" />
+                                <path d="M8 22h8" />
+                            </svg>
+                        </button>
 
-                  <span className="chat-action-arrow">›</span>
-                </button>
+                        <input
+                            type="text"
+                            className="chat-text-field-input"
+                            placeholder="Escreva sua mensagem..."
+                            value={inputText}
+                            onChange={(e) => setInputText(e.target.value)}
+                        />
 
-                <button
-                  className="chat-action-chip"
-                  onClick={() => handleActionClick('Quero encontrar instituições próximas.')}
-                >
-                  <div className="chat-action-icon institution">
-                    <svg viewBox="0 0 24 24" width="21" height="21"
-                      fill="none" stroke="currentColor" strokeWidth="1.8"
-                      strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" />
-                      <circle cx="12" cy="10" r="2.5" />
-                    </svg>
-                  </div>
+                        <span className="chat-input-separator"></span>
 
-                  <div>
-                    <strong>Encontrar instituições</strong>
-                    <span>Descubra onde sua ajuda é necessária.</span>
-                  </div>
+                        <button
+                            type="submit"
+                            className="chat-submit-btn"
+                            title="Enviar mensagem"
+                            disabled={!inputText.trim()}
+                        >
+                            <svg viewBox="0 0 24 24" width="20" height="20"
+                                fill="none" stroke="currentColor" strokeWidth="2"
+                                strokeLinecap="round" strokeLinejoin="round">
+                                <path d="m22 2-7 20-4-9-9-4Z" />
+                                <path d="M22 2 11 13" />
+                            </svg>
+                        </button>
 
-                  <span className="chat-action-arrow">›</span>
-                </button>
+                    </form>
 
-              </div>
-            </div>
-          )}
+                    <p className="chat-footer-caption">
+                        Suas mensagens ajudam a conectar solidariedade e transformação.
+                    </p>
 
-          <div ref={messagesEndRef} />
+                </footer>
 
-        </section>
+            </main>
 
-        <footer className="chat-bottom-footer">
-
-          <form className="chat-input-wrapper-form" onSubmit={handleSendMessage}>
-
-            <button
-              type="button"
-              className="chat-tool-icon-btn"
-              title="Falar por voz"
-            >
-              <svg viewBox="0 0 24 24" width="21" height="21"
-                fill="none" stroke="currentColor" strokeWidth="1.8"
-                strokeLinecap="round" strokeLinejoin="round">
-                <rect x="9" y="2" width="6" height="13" rx="3" />
-                <path d="M5 10v2a7 7 0 0 0 14 0v-2" />
-                <path d="M12 19v3" />
-                <path d="M8 22h8" />
-              </svg>
-            </button>
-
-            <input
-              type="text"
-              className="chat-text-field-input"
-              placeholder="Escreva sua mensagem..."
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-            />
-
-            <span className="chat-input-separator"></span>
-
-            <button
-              type="submit"
-              className="chat-submit-btn"
-              title="Enviar mensagem"
-              disabled={!inputText.trim()}
-            >
-              <svg viewBox="0 0 24 24" width="20" height="20"
-                fill="none" stroke="currentColor" strokeWidth="2"
-                strokeLinecap="round" strokeLinejoin="round">
-                <path d="m22 2-7 20-4-9-9-4Z" />
-                <path d="M22 2 11 13" />
-              </svg>
-            </button>
-
-          </form>
-
-          <p className="chat-footer-caption">
-            Suas mensagens ajudam a conectar solidariedade e transformação.
-          </p>
-
-        </footer>
-
-      </main>
-
-    </div>
-  );
+        </div>
+    );
 };
 
 export default Chat;

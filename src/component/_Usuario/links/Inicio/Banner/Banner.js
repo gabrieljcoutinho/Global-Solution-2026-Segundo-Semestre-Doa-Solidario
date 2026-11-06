@@ -13,9 +13,7 @@ const Banner = () => {
                     <p className="banner-descricao">
                         Ajude pessoas em situação de vulnerabilidade com um simples gesto.
                     </p>
-                    <p className="banner-botao">
-                        Doe Agora &rarr;
-                    </p>
+                    
                 </div>
             </div>
     </div>
