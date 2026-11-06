@@ -5,7 +5,7 @@ const Chat = () => {
   const [messages, setMessages] = useState([
     {
       sender: 'bot',
-      text: 'Olá! Seja bem-vindo ao Lúmen IA. 👋\n\nEstou aqui para ajudar você a encontrar oportunidades de doação, conhecer campanhas e conectar pessoas que precisam de ajuda.',
+      text: 'Olá! 👋\n\nComo posso ajudar você hoje? Você pode tirar dúvidas sobre doações, encontrar campanhas ou descobrir instituições que precisam de ajuda.',
       time: new Date().toLocaleTimeString([], {
         hour: '2-digit',
         minute: '2-digit'
@@ -39,86 +39,27 @@ const Chat = () => {
   };
 
   const handleActionClick = (actionName) => {
-    const actionMessage = {
-      sender: 'user',
-      text: actionName,
-      time: new Date().toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit'
-      })
-    };
-
-    setMessages(prev => [...prev, actionMessage]);
+    setMessages(prev => [
+      ...prev,
+      {
+        sender: 'user',
+        text: actionName,
+        time: new Date().toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit'
+        })
+      }
+    ]);
   };
 
   return (
     <div className="chat-master-container">
 
-      <aside className="chat-sidebar-left">
-
-        <div className="chat-sidebar-brand">
-          <div className="chat-brand-avatar">
-            <svg viewBox="0 0 24 24" width="27" height="27"
-              fill="none" stroke="currentColor" strokeWidth="1.7"
-              strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10" />
-              <path d="M2 12h20" />
-              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-            </svg>
-          </div>
-
-          <div>
-            <h2>Lúmen IA</h2>
-            <span>Assistente inteligente</span>
-          </div>
-        </div>
-
-        <div className="chat-sidebar-divider"></div>
-
-        <div className="chat-sidebar-profile">
-          <span className="chat-sidebar-label">SEU ASSISTENTE</span>
-
-          <div className="chat-profile-card">
-            <div className="chat-profile-icon">
-              <svg viewBox="0 0 24 24" width="23" height="23"
-                fill="none" stroke="currentColor" strokeWidth="1.8"
-                strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 3v2" />
-                <path d="M12 19v2" />
-                <path d="M3 12h2" />
-                <path d="M19 12h2" />
-                <circle cx="12" cy="12" r="6" />
-                <path d="m9.5 12 1.7 1.7 3.5-3.5" />
-              </svg>
-            </div>
-
-            <div>
-              <strong>Lúmen</strong>
-              <span>Pronto para ajudar</span>
-            </div>
-
-            <span className="chat-online-indicator"></span>
-          </div>
-        </div>
-
-        <div className="chat-sidebar-bottom">
-          <div className="chat-sidebar-help-icon">
-            ?
-          </div>
-
-          <div>
-            <strong>Estamos aqui por você</strong>
-            <span>Conectando solidariedade.</span>
-          </div>
-        </div>
-
-      </aside>
-
       <main className="chat-main-panel">
 
         <header className="chat-top-header">
-
           <div className="chat-header-info">
+
             <div className="chat-header-avatar">
               <svg viewBox="0 0 24 24" width="22" height="22"
                 fill="none" stroke="currentColor" strokeWidth="1.8"
@@ -133,16 +74,16 @@ const Chat = () => {
               <h2>Assistente Virtual</h2>
               <div className="chat-header-status">
                 <span></span>
-                Lúmen IA está online
+                Online
               </div>
             </div>
+
           </div>
 
           <div className="chat-header-tag">
             <span></span>
             Atendimento digital
           </div>
-
         </header>
 
         <section className="chat-body-content">
@@ -168,14 +109,12 @@ const Chat = () => {
 
               <div className={`chat-bubble-box ${msg.sender}`}>
                 <span className="chat-sender-name">
-                  {msg.sender === 'bot' ? 'Lúmen IA' : 'Você'}
+                  {msg.sender === 'bot' ? 'Assistente' : 'Você'}
                 </span>
 
                 <p>{msg.text}</p>
 
-                <span className="chat-msg-time">
-                  {msg.time}
-                </span>
+                <span className="chat-msg-time">{msg.time}</span>
               </div>
 
             </div>
@@ -186,7 +125,7 @@ const Chat = () => {
 
               <div className="chat-suggestions-heading">
                 <span>COMO POSSO AJUDAR?</span>
-                <p>Escolha uma opção para começar.</p>
+                <p>Selecione uma opção para começar.</p>
               </div>
 
               <div className="chat-action-buttons-row">
@@ -312,7 +251,7 @@ const Chat = () => {
           </form>
 
           <p className="chat-footer-caption">
-            O Lúmen IA pode ajudar você a transformar solidariedade em ação.
+            Suas mensagens ajudam a conectar solidariedade e transformação.
           </p>
 
         </footer>
