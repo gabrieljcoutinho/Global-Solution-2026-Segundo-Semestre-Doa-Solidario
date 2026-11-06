@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
 import Login from './component/login/Login';
@@ -7,16 +7,33 @@ import Cadastro from './component/cadastro/Cadastro';
 import HomeEmpresa from './component/_Empresa/homeEmpresa/HomeEmpresa';
 import HomeUsuario from './component/_Usuario/homeUsuario/HomeUsuario';
 
-// Importando os dados iniciais do arquivo JSON estruturado
-import dadosIniciais from './dados.json';
-
 function App() {
     const [tela, setTela] = useState('login');
     const [usuarioLogado, setUsuarioLogado] = useState(null);
 
-    // Inicializando estados diretamente com os dados estruturados
-    const [contas, setContas] = useState(dadosIniciais.contas || []);
-    const [doacoes, setDoacoes] = useState(dadosIniciais.doacoes || []);
+    const [contas, setContas] = useState([]);
+    const [doacoes, setDoacoes] = useState([]);
+
+    // Carregar dados direto do servidor JSON ao iniciar o app
+    useEffect(() => {
+        fetch('http://localhost:3001/api/dados')
+            .then(res => res.json())
+            .then(data => {
+                setContas(data.contas || []);
+                setDoacoes(data.doacoes || []);
+            })
+            .catch(err => console.error('Erro ao buscar dados do servidor:', err));
+    }, []);
+
+    // Função auxiliar para salvar o estado atualizado direto no servidor JSON físico
+    const salvarNoServidor = (novasContas, novasDoacoes) => {
+        fetch('http://localhost:3001/api/dados', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contas: novasContas, doacoes: novasDoacoes })
+        })
+        .catch(err => console.error('Erro ao salvar no servidor:', err));
+    };
 
     // Cadastrar conta
     const handleCadastrarConta = (dadosConta) => {
@@ -41,10 +58,11 @@ function App() {
             tipo: dadosConta.tipo
         };
 
-        setContas(estadoAtual => [
-            ...estadoAtual,
-            novaConta
-        ]);
+        const novasContasAtualizadas = [...contas, novaConta];
+        setContas(novasContasAtualizadas);
+        
+        // Salva fisicamente no JSON do servidor
+        salvarNoServidor(novasContasAtualizadas, doacoes);
 
         return {
             sucesso: true,
@@ -93,8 +111,7 @@ function App() {
 
         const doacaoCompleta = {
             ...novaDoacao,
-            // Se o usuário tentar enviar uma imagem pesada em base64, tratamos para evitar excessos
-            imagem: novaDoacao.imagem && novaDoacao.imagem.length > 500000 ? '' : novaDoacao.imagem,
+            imagem: '', // Limpo para garantir leveza no JSON físico
             id: `doacao-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
             empresaId: usuarioLogado.id,
             empresaNome: usuarioLogado.nome,
@@ -102,10 +119,11 @@ function App() {
             dataCadastro: new Date().toISOString()
         };
 
-        setDoacoes(estadoAtual => [
-            doacaoCompleta,
-            ...estadoAtual
-        ]);
+        const novasDoacoesAtualizadas = [doacaoCompleta, ...doacoes];
+        setDoacoes(novasDoacoesAtualizadas);
+
+        // Salva fisicamente no JSON do servidor
+        salvarNoServidor(contas, novasDoacoesAtualizadas);
     };
 
     // Excluir doação sincronizada para todos
@@ -114,9 +132,11 @@ function App() {
             return;
         }
 
-        setDoacoes(estadoAtual =>
-            estadoAtual.filter(doacao => doacao.id !== idParaExcluir)
-        );
+        const novasDoacoesAtualizadas = doacoes.filter(doacao => doacao.id !== idParaExcluir);
+        setDoacoes(novasDoacoesAtualizadas);
+
+        // Atualiza fisicamente o JSON no servidor
+        salvarNoServidor(contas, novasDoacoesAtualizadas);
     };
 
     // Logout
