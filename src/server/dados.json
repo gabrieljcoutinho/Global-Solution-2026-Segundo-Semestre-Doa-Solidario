@@ -1,4 +1,19 @@
 {
-  "contas": [],
+  "contas": [
+    {
+      "id": "conta-1793976549712-1hkwp40",
+      "nome": "empresa1",
+      "email": "empresa1@gmail.com",
+      "senha": "111111",
+      "tipo": "empresa"
+    },
+    {
+      "id": "conta-1793976570944-c06dnir",
+      "nome": "teste",
+      "email": "teste@gmail.com",
+      "senha": "111111",
+      "tipo": "usuario"
+    }
+  ],
   "doacoes": []
 }
