@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import './MinhasDoacoes.css';
-import '../../../doacaoConcluida.css';
 
 const rotuloStatus = {
     disponivel: 'Disponível',
     pendente: 'Aguardando resposta da empresa',
-    concluida: 'Doação concluída'
 };
 
 function MinhasDoacoes({ usuario, doacoes = [], onOferecerDoacao }) {
     const [processandoId, setProcessandoId] = useState(null);
 
-    // Mostra as doações disponíveis e as que esta ONG já ofereceu ou concluiu.
-    // Doações pendentes ou concluídas de outras ONGs ficam ocultas.
+    // Mostra as doações disponíveis e as que esta ONG ofereceu e ainda aguardam resposta.
+    // Concluídas saem daqui e ficam só em "Doação Concluída".
+    // Pendentes ou concluídas de outras ONGs ficam ocultas.
     const visiveis = doacoes.filter(doacao => {
         const status = doacao.status ?? 'disponivel';
 
+        if (status === 'concluida') return false;
         if (status === 'disponivel') return true;
 
         return doacao.doadorId === usuario?.id;
@@ -50,15 +50,11 @@ function MinhasDoacoes({ usuario, doacoes = [], onOferecerDoacao }) {
 
                     {visiveis.map((doacao) => {
                         const status = doacao.status ?? 'disponivel';
-                        const concluida = status === 'concluida';
                         const ofereciPorMim = doacao.doadorId === usuario?.id;
                         const emEspera = processandoId === doacao.id || (status === 'pendente' && ofereciPorMim);
 
                         return (
-                            <div
-                                key={doacao.id}
-                                className={`doacaoCard ${concluida ? 'doacaoCardConcluida' : ''}`}
-                            >
+                            <div key={doacao.id} className="doacaoCard">
 
                                 <div className="doacaoCardBanner">
 

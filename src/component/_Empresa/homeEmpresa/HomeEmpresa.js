@@ -18,9 +18,14 @@ function HomeEmpresa({
 }) {
     const [abaAtiva, setAbaAtiva] = useState('cadastrar-doacao');
 
-    // Filtra somente as publicações da empresa logada
+    // Todas as publicações da empresa logada (inclusive concluídas, usadas no histórico)
     const minhasDoacoes = doacoes.filter(
         doacao => doacao.empresaId === usuario?.id
+    );
+
+    // Lista de cadastradas: deixa de fora as concluídas, que ficam só no histórico
+    const doacoesCadastradas = minhasDoacoes.filter(
+        doacao => doacao.status !== 'concluida'
     );
 
     return (
@@ -43,7 +48,7 @@ function HomeEmpresa({
 
                 {abaAtiva === 'minhas-doacoes' && (
                     <MinhasDoacoes
-                        doacoes={minhasDoacoes}
+                        doacoes={doacoesCadastradas}
                         onExcluir={onExcluirDoacao}
                         onResponder={onResponderDoacao}
                     />
