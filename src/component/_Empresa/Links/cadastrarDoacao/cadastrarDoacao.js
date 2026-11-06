@@ -1,6 +1,6 @@
-
 import React, { useState, useRef } from 'react';
 import './cadastrarDoacao.css';
+import { buscarCoordenadas } from '../../../../utils/geocodificacao';
 
 const CadastrarDoacao = ({ onPublicar }) => {
 
@@ -12,6 +12,7 @@ const CadastrarDoacao = ({ onPublicar }) => {
     const [localizacao, setLocalizacao] = useState('');
     const [descricao, setDescricao] = useState('');
     const [imagem, setImagem] = useState(null);
+    const [buscando, setBuscando] = useState(false);
 
     const fileInputRef = useRef(null);
 
@@ -43,41 +44,60 @@ const CadastrarDoacao = ({ onPublicar }) => {
     };
 
     // Publicar necessidade
-    const handlePublicar = () => {
+    const handlePublicar = async () => {
 
-        if (!item.trim() || !quantidade.trim()) {
-            alert('Preencha pelo menos o Item e a Quantidade.');
+        if (!item.trim() || !quantidade.trim() || !localizacao.trim()) {
+            alert('Preencha o Item, a Quantidade e a Localização.');
             return;
         }
 
-        // Envia os dados para publicação
-        onPublicar({
-            item: item.trim(),
-            tamanho: tamanho.trim(),
-            quantidade: quantidade.trim(),
-            urgencia,
-            prazo: prazo.trim(),
-            localizacao: localizacao.trim(),
-            descricao: descricao.trim(),
-            imagem
-        });
+        setBuscando(true);
 
-        // Limpa todos os campos
-        setItem('');
-        setTamanho('');
-        setQuantidade('');
-        setUrgencia('Alta');
-        setPrazo('');
-        setLocalizacao('');
-        setDescricao('');
-        setImagem(null);
+        try {
+            // Converte o endereço em coordenadas para aparecer no mapa
+            const coords = await buscarCoordenadas(localizacao.trim());
 
-        // Limpa o campo de upload
-        if (fileInputRef.current) {
-            fileInputRef.current.value = '';
+            if (!coords) {
+                alert('Endereço não encontrado. Informe rua, número, bairro e cidade.');
+                return;
+            }
+
+            onPublicar({
+                item: item.trim(),
+                tamanho: tamanho.trim(),
+                quantidade: quantidade.trim(),
+                urgencia,
+                prazo: prazo.trim(),
+                localizacao: localizacao.trim(),
+                descricao: descricao.trim(),
+                imagem,
+                lat: coords.lat,
+                lng: coords.lng
+            });
+
+            // Limpa todos os campos
+            setItem('');
+            setTamanho('');
+            setQuantidade('');
+            setUrgencia('Alta');
+            setPrazo('');
+            setLocalizacao('');
+            setDescricao('');
+            setImagem(null);
+
+            // Limpa o campo de upload
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+
+            alert('Necessidade publicada com sucesso!');
+
+        } catch (err) {
+            console.error('Erro ao buscar endereço:', err);
+            alert('Não foi possível buscar o endereço. Verifique sua conexão e tente de novo.');
+        } finally {
+            setBuscando(false);
         }
-
-        alert('Necessidade publicada com sucesso!');
     };
 
     return (
@@ -198,7 +218,7 @@ const CadastrarDoacao = ({ onPublicar }) => {
                         {/* Localização */}
                         <div className="doacaoInputGroup">
 
-                            <label>Localização</label>
+                            <label>Localização *</label>
 
                             <div className="doacaoInputWrapper">
 
@@ -206,7 +226,7 @@ const CadastrarDoacao = ({ onPublicar }) => {
                                     type="text"
                                     value={localizacao}
                                     onChange={(e) => setLocalizacao(e.target.value)}
-                                    placeholder="Digite o endereço"
+                                    placeholder="Rua, número, bairro, cidade - UF"
                                 />
 
                             </div>
@@ -295,8 +315,9 @@ const CadastrarDoacao = ({ onPublicar }) => {
                         type="button"
                         className="doacaoSubmitBtn"
                         onClick={handlePublicar}
+                        disabled={buscando}
                     >
-                        Publicar Necessidade
+                        {buscando ? 'Buscando endereço...' : 'Publicar Necessidade'}
 
                         <span className="btnArrow">→</span>
 

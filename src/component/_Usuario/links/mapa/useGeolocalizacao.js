@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 
-// Fórmula de Haversine para cálculo de distância em quilómetros
+// Fórmula de Haversine para cálculo de distância em quilômetros
 function calcularDistanciaKm(lat1, lon1, lat2, lon2) {
-    const R = 6371; 
+    const R = 6371;
     const dLat = (lat2 - lat1) * (Math.PI / 180);
     const dLon = (lon2 - lon1) * (Math.PI / 180);
     const a =
@@ -25,7 +25,7 @@ export function useGeolocalizacao(doacoes = [], raioMaximoKm = 50) {
             return;
         }
 
-        // Monitoriza a posição do utilizador em tempo real (foreground)
+        // Monitora a posição do usuário em tempo real (foreground)
         const watchId = navigator.geolocation.watchPosition(
             (position) => {
                 const { latitude, longitude } = position.coords;
@@ -46,24 +46,34 @@ export function useGeolocalizacao(doacoes = [], raioMaximoKm = 50) {
         return () => navigator.geolocation.clearWatch(watchId);
     }, []);
 
-    // Processa e filtra rigorosamente doações a um raio máximo de 50 km
-    const doacoesFiltradas = doacoes.map((doacao, index) => {
-        const latDoacao = doacao.lat || (posicaoUsuario ? posicaoUsuario[0] + ((index % 3) - 1) * 0.15 : -23.5505);
-        const lngDoacao = doacao.lng || (posicaoUsuario ? posicaoUsuario[1] + ((index % 2) === 0 ? 1 : -1) * 0.15 : -46.6333);
-
-        const distancia = posicaoUsuario 
-            ? calcularDistanciaKm(posicaoUsuario[0], posicaoUsuario[1], latDoacao, lngDoacao) 
-            : 0;
-
+    // Sem posição do usuário, não há como calcular o raio: não mostra pontos
+    if (!posicaoUsuario) {
         return {
-            ...doacao,
-            coords: [latDoacao, lngDoacao],
-            distanciaKm: Number(distancia.toFixed(1))
+            posicaoUsuario,
+            statusPermissao,
+            erro,
+            doacoesFiltradas: []
         };
-    }).filter(doacao => {
-        if (!posicaoUsuario) return true;
-        return doacao.distanciaKm <= raioMaximoKm; // Regra estrita dos 50 km
-    });
+    }
+
+    // Considera apenas doações com coordenadas reais salvas no cadastro
+    const doacoesFiltradas = doacoes
+        .filter(doacao => typeof doacao.lat === 'number' && typeof doacao.lng === 'number')
+        .map(doacao => {
+            const distancia = calcularDistanciaKm(
+                posicaoUsuario[0],
+                posicaoUsuario[1],
+                doacao.lat,
+                doacao.lng
+            );
+
+            return {
+                ...doacao,
+                coords: [doacao.lat, doacao.lng],
+                distanciaKm: Number(distancia.toFixed(1))
+            };
+        })
+        .filter(doacao => doacao.distanciaKm <= raioMaximoKm);
 
     return {
         posicaoUsuario,
