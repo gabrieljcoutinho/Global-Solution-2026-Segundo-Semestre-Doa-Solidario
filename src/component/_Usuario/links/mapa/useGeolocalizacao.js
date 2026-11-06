@@ -1,5 +1,10 @@
 import { useState, useEffect } from 'react';
 
+// false = usa a localização real do navegador (GPS/Wi-Fi/IP)
+// true = usa a posição fixa de teste abaixo
+const MODO_TESTE = false;
+const POSICAO_TESTE = [-23.5505, -46.6333];
+
 // Fórmula de Haversine para cálculo de distância em quilômetros
 function calcularDistanciaKm(lat1, lon1, lat2, lon2) {
     const R = 6371;
@@ -19,6 +24,13 @@ export function useGeolocalizacao(doacoes = [], raioMaximoKm = 50) {
     const [erro, setErro] = useState(null);
 
     useEffect(() => {
+        // Modo teste: ignora o GPS e usa a posição fixa
+        if (MODO_TESTE) {
+            setPosicaoUsuario(POSICAO_TESTE);
+            setStatusPermissao('concedida');
+            return;
+        }
+
         if (!("geolocation" in navigator)) {
             setErro("Geolocalização não suportada pelo navegador.");
             setStatusPermissao('negada');

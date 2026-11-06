@@ -92,3 +92,46 @@
 .linkRotaMaps:hover {
   text-decoration: underline;
 }
+
+
+.avisoRota {
+  background-color: #ffedd5;
+  color: #FF0000;
+  padding: 10px 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.avisoRota p {
+  margin: 0 0 6px 0;
+}
+
+.avisoRotaAcoes {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.btnLimparRota {
+  background: none;
+  border: 1px solid #FF0000 ;
+  color: #FF0000 ;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.btnTracarRota {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.btnTracarRota:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}

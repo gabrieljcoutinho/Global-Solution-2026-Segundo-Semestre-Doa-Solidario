@@ -15,40 +15,5 @@
       "tipo": "empresa"
     }
   ],
-  "doacoes": [
-    {
-      "item": "asd",
-      "tamanho": "asd",
-      "quantidade": "asd",
-      "urgencia": "Alta",
-      "prazo": "asd",
-      "localizacao": "Av. Paulista, 1000, São Paulo - SP",
-      "descricao": "asd",
-      "imagem": "",
-      "lat": -23.5648865,
-      "lng": -46.651918,
-      "id": "doacao-1793988949459-aj2tvk8",
-      "empresaId": "conta-1793988871297-r09neb3",
-      "empresaNome": "1",
-      "empresaEmail": "1@gmail.com",
-      "dataCadastro": "2026-11-06T18:15:49.459Z"
-    },
-    {
-      "item": "werw",
-      "tamanho": "werwer",
-      "quantidade": "wer",
-      "urgencia": "Alta",
-      "prazo": "wrwer",
-      "localizacao": "rua nadia 172",
-      "descricao": "wqrw",
-      "imagem": "",
-      "lat": -22.7739847,
-      "lng": -43.540819,
-      "id": "doacao-1793988897651-h03axnw",
-      "empresaId": "conta-1793988871297-r09neb3",
-      "empresaNome": "1",
-      "empresaEmail": "1@gmail.com",
-      "dataCadastro": "2026-11-06T18:14:57.651Z"
-    }
-  ]
+  "doacoes": []
 }
