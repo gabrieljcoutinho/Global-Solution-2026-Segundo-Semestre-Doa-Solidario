@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import { useGeolocalizacao } from './useGeolocalizacao';
 import './MapaDoacoes.css';
 
@@ -22,17 +23,25 @@ const iconeUsuario = new L.Icon({
     shadowSize: [41, 41]
 });
 
-// Componente para forçar o Leaflet a atualizar o tamanho e as ruas aparecerem
+// Recalcula o tamanho do mapa e centraliza apenas na primeira posição recebida
 const ForcarRedenrizacaoMapa = ({ center }) => {
     const map = useMap();
+    const centradoRef = useRef(false);
+
+    // Recalcula o tamanho do mapa uma vez ao montar
     useEffect(() => {
-        setTimeout(() => {
-            map.invalidateSize(); // Força o mapa a recalcular os tiles das ruas
-            if (center) {
-                map.setView(center, 13, { animate: false });
-            }
-        }, 250);
+        const t = setTimeout(() => map.invalidateSize(), 250);
+        return () => clearTimeout(t);
+    }, [map]);
+
+    // Centraliza somente na primeira posição; as atualizações seguintes não redesenham o mapa
+    useEffect(() => {
+        if (center && !centradoRef.current) {
+            map.setView(center, 13, { animate: false });
+            centradoRef.current = true;
+        }
     }, [center, map]);
+
     return null;
 };
 
@@ -45,7 +54,7 @@ function MapaDoacoes({ doacoes = [] }) {
     return (
         <div className="mapaDoacoesContainer">
             <h2 className="mapaDoacoesTitulo">Mapa de Pontos de Doação Próximos</h2>
-            
+
             {statusPermissao === 'pendente' && (
                 <div className="avisoPermissaoGeo">
                     <p>📍 O <strong>DoaCerto</strong> precisa aceder à sua localização para exibir campanhas e ONGs num raio de até 50 km.</p>
@@ -59,16 +68,16 @@ function MapaDoacoes({ doacoes = [] }) {
             )}
 
             <p className="mapaDoacoesSubtitulo">
-                {posicaoUsuario 
+                {posicaoUsuario
                     ? `A exibir campanhas de doação cadastradas a até 50 km da sua localização atual.`
                     : `A carregar a sua posição em tempo real...`}
             </p>
 
             <div className="mapaWrapperReal">
-                <MapContainer 
-                    center={centroMapa} 
-                    zoom={13} 
-                    scrollWheelZoom={true} 
+                <MapContainer
+                    center={centroMapa}
+                    zoom={13}
+                    scrollWheelZoom={true}
                     style={{ width: '100%', height: '100%' }}
                 >
                     <ForcarRedenrizacaoMapa center={posicaoUsuario} />
@@ -76,6 +85,7 @@ function MapaDoacoes({ doacoes = [] }) {
                     <TileLayer
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        maxZoom={19}
                     />
 
                     {/* Ponto azul da posição atual do utilizador */}
@@ -100,9 +110,9 @@ function MapaDoacoes({ doacoes = [] }) {
                                     <p><strong>Local:</strong> {doacao.localizacao || 'Endereço informado'}</p>
                                     <p><strong>Distância:</strong> aprox. {doacao.distanciaKm} km de você</p>
                                     <p><strong>Quantidade:</strong> {doacao.quantidade} peças</p>
-                                    <a 
-                                        href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(doacao.localizacao || 'São Paulo')}`} 
-                                        target="_blank" 
+                                    <a
+                                        href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(doacao.localizacao || 'São Paulo')}`}
+                                        target="_blank"
                                         rel="noopener noreferrer"
                                         className="linkRotaMaps"
                                     >

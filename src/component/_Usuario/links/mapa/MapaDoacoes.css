@@ -23,28 +23,24 @@
   flex-shrink: 0;
 }
 
-/* MAPA OCUPA O ESPAÇO RESTANTE DA TELA PERFEITAMENTE SEM SOBRAS */
+/* O wrapper ocupa o espaço restante da tela */
 .mapaWrapperReal {
   width: 100%;
-  flex: 1 !important;
-  min-height: 450px !important;
+  flex: 1;
+  min-height: 450px;
   background-color: #27272a;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   border: 1px solid #3f3f46;
   position: relative;
-  display: flex;
 }
 
-/* O mapa do Leaflet preenche 100% da caixa */
-.leaflet-container {
-  width: 100% !important;
-  height: 100% !important;
+/* O mapa do Leaflet preenche a caixa do wrapper */
+.mapaWrapperReal .leaflet-container {
+  width: 100%;
+  height: 100%;
   background-color: #1a1a1a;
-  position: absolute !important;
-  top: 0;
-  left: 0;
 }
 
 .avisoPermissaoGeo {
