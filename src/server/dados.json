@@ -17,23 +17,6 @@
   ],
   "doacoes": [
     {
-      "item": "Itaim Bibi",
-      "tamanho": "Itaim Bibi",
-      "quantidade": "Itaim Bibi",
-      "urgencia": "Alta",
-      "prazo": "Itaim Bibi",
-      "localizacao": "Itaim Bibi",
-      "descricao": "Itaim Bibi",
-      "imagem": "",
-      "lat": -23.5843807,
-      "lng": -46.6784441,
-      "id": "doacao-1794001050182-96an875",
-      "empresaId": "conta-1793988871297-r09neb3",
-      "empresaNome": "1",
-      "empresaEmail": "1@gmail.com",
-      "dataCadastro": "2026-11-06T21:37:30.182Z"
-    },
-    {
       "item": "1",
       "tamanho": "1",
       "quantidade": "1",
@@ -44,45 +27,16 @@
       "imagem": "",
       "lat": -5.1122961,
       "lng": -42.7845775,
-      "id": "doacao-1794000921863-obqmfvr",
+      "id": "doacao-1794002744272-981zd28",
       "empresaId": "conta-1793988871297-r09neb3",
       "empresaNome": "1",
       "empresaEmail": "1@gmail.com",
-      "dataCadastro": "2026-11-06T21:35:21.863Z"
-    },
-    {
-      "item": "Roupas adulto",
-      "tamanho": "G",
-      "quantidade": "40",
-      "urgencia": "Média",
-      "prazo": "15/05/2027",
-      "localizacao": "Praça da Sé, s/n — Sé, São Paulo - SP",
-      "descricao": "",
-      "imagem": "",
-      "lat": -23.5495618,
-      "lng": -46.6338657,
-      "id": "doacao-1793995944850-0klnmsm",
-      "empresaId": "conta-1793988871297-r09neb3",
-      "empresaNome": "1",
-      "empresaEmail": "1@gmail.com",
-      "dataCadastro": "2026-11-06T20:12:24.850Z"
-    },
-    {
-      "item": "Teste",
-      "tamanho": "tesre",
-      "quantidade": "rere",
-      "urgencia": "Alta",
-      "prazo": "rewwe",
-      "localizacao": "Av. Paulista, 1106 - Bela Vista",
-      "descricao": "Precismaso de rouasp infanties",
-      "imagem": "",
-      "lat": -23.564324,
-      "lng": -46.6527132,
-      "id": "doacao-1793995879368-ft7p434",
-      "empresaId": "conta-1793988871297-r09neb3",
-      "empresaNome": "1",
-      "empresaEmail": "1@gmail.com",
-      "dataCadastro": "2026-11-06T20:11:19.368Z"
+      "status": "pendente",
+      "doadorId": "conta-1793985252574-l857au0",
+      "doadorNome": "teste",
+      "doadorEmail": "teste@gmail.com",
+      "dataOferta": "2026-11-06T22:06:05.741Z",
+      "dataCadastro": "2026-11-06T22:05:44.272Z"
     }
   ]
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './MinhasDoacoes.css';
 
 const rotuloStatus = {
@@ -8,8 +8,9 @@ const rotuloStatus = {
 };
 
 function MinhasDoacoes({ usuario, doacoes = [], onOferecerDoacao }) {
+    const [processandoId, setProcessandoId] = useState(null);
 
-    // Mostra as doações disponíveis e as que esta ONG já ofereceu para doar.
+    // Mostra as doações disponíveis e as que esta ONG já ofereceu.
     // Doações pendentes ou concluídas de outras ONGs ficam ocultas.
     const visiveis = doacoes.filter(doacao => {
         const status = doacao.status ?? 'disponivel';
@@ -18,6 +19,16 @@ function MinhasDoacoes({ usuario, doacoes = [], onOferecerDoacao }) {
 
         return doacao.doadorId === usuario?.id;
     });
+
+    const oferecer = async (id) => {
+        setProcessandoId(id);
+
+        try {
+            await onOferecerDoacao?.(id);
+        } finally {
+            setProcessandoId(null);
+        }
+    };
 
     return (
         <div className="minhasDoacoesContainer">
@@ -40,6 +51,7 @@ function MinhasDoacoes({ usuario, doacoes = [], onOferecerDoacao }) {
                         const status = doacao.status ?? 'disponivel';
                         const concluida = status === 'concluida';
                         const ofereciPorMim = doacao.doadorId === usuario?.id;
+                        const emEspera = processandoId === doacao.id || (status === 'pendente' && ofereciPorMim);
 
                         return (
                             <div
@@ -73,7 +85,10 @@ function MinhasDoacoes({ usuario, doacoes = [], onOferecerDoacao }) {
                                     <div
                                         className={`doacaoBadge ${
                                             doacao.urgencia
-                                                ? doacao.urgencia.toLowerCase()
+                                                ? doacao.urgencia
+                                                    .normalize('NFD')
+                                                    .replace(/[\u0300-\u036f]/g, '')
+                                                    .toLowerCase()
                                                 : ''
                                         }`}
                                     >
@@ -83,7 +98,7 @@ function MinhasDoacoes({ usuario, doacoes = [], onOferecerDoacao }) {
 
                                     <div className="doacaoStatus">
                                         <span className={`statusTag status-${status}`}>
-                                            {rotuloStatus[status]}
+                                            {rotuloStatus[status] ?? status}
                                         </span>
                                     </div>
 
@@ -99,7 +114,9 @@ function MinhasDoacoes({ usuario, doacoes = [], onOferecerDoacao }) {
                                         <div>
                                             <span>Quantidade</span>
                                             <strong>
-                                                {doacao.quantidade || 'Não informada'} peças
+                                                {doacao.quantidade
+                                                    ? `${doacao.quantidade} peças`
+                                                    : 'Não informada'}
                                             </strong>
                                         </div>
 
@@ -127,21 +144,23 @@ function MinhasDoacoes({ usuario, doacoes = [], onOferecerDoacao }) {
                                         </p>
                                     )}
 
-                                    {/* Botão para oferecer a doação (somente se estiver disponível) */}
-                                    {status === 'disponivel' && (
+                                    {status === 'disponivel' && !emEspera && (
                                         <button
                                             type="button"
                                             className="btnQueroDoar"
-                                            onClick={() => onOferecerDoacao && onOferecerDoacao(doacao.id)}
+                                            onClick={() => oferecer(doacao.id)}
                                         >
                                             Quero doar
                                         </button>
                                     )}
 
-                                    {/* Estado depois do clique, enquanto a empresa não responde */}
-                                    {status === 'pendente' && ofereciPorMim && (
-                                        <button type="button" className="btnQueroDoar" disabled>
-                                            Aguardando resposta
+                                    {emEspera && (
+                                        <button
+                                            type="button"
+                                            className="btnEmEspera"
+                                            disabled
+                                        >
+                                            Em espera...
                                         </button>
                                     )}
 

@@ -1,0 +1,71 @@
+/* Área de resposta da empresa à oferta da ONG */
+.doacaoOferta {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.doacaoOferta p {
+  margin: 0 0 10px;
+  font-size: 0.95rem;
+  color: #e5e7eb;
+}
+
+.doacaoOfertaAcoes {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.doacaoOfertaAcoes button {
+  flex: 1 1 0;
+  min-width: 120px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: none;
+  color: #fff;
+  transition: filter 0.2s ease, opacity 0.2s ease;
+}
+
+.doacaoOfertaAcoes button:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+/* Confirmar: verde */
+.btnConfirmar {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+}
+
+/* Cancelar: vermelho */
+.btnCancelarOferta {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+/* Aguardando resposta do servidor: amarelo */
+/* Botão "Em espera..." na tela da ONG */
+.btnEmEspera {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #eab308, #ca8a04);
+  color: #1a1a1a;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-align: center;
+  cursor: not-allowed;
+  opacity: 0.9;
+  box-shadow: 0 4px 14px rgba(234, 179, 8, 0.3);
+}
+
+.doacaoOfertaAcoes button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

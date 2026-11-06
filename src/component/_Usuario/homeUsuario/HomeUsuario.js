@@ -6,7 +6,7 @@ import InicioUsuario from '../links/Inicio/InicioUsuario';
 import MinhasDoacoes from '../links/minhasDoacoes/MinhasDoacoes';
 import MapaDoacoes from '../links/mapa/MapaDoacoes';
 
-function HomeUsuario({ usuario, onLogout, doacoes = [] }) {
+function HomeUsuario({ usuario, onLogout, doacoes = [], onOferecerDoacao }) {
     const [abaAtiva, setAbaAtiva] = useState('inicio');
 
     return (
@@ -31,6 +31,7 @@ function HomeUsuario({ usuario, onLogout, doacoes = [] }) {
                     <MinhasDoacoes
                         usuario={usuario}
                         doacoes={doacoes}
+                        onOferecerDoacao={onOferecerDoacao}
                     />
                 )}
 
