@@ -4,7 +4,7 @@ import './minhasDoacoes.css';
 const MinhasDoacoes = ({ doacoes = [], onExcluir }) => {
   return (
     <div className="minhasDoacoesContainer">
-      <h2 className="minhasDoacoesTitulo">Minhas Doações</h2>
+      <h2 className="minhasDoacoesTitulo">Doações Cadastradas</h2>
 
       {doacoes.length === 0 ? (
         <p className="minhasDoacoesVazio">
