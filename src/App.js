@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
 import Login from './component/login/Login';
@@ -11,43 +12,70 @@ function App() {
     const [tela, setTela] = useState('login');
     const [usuarioLogado, setUsuarioLogado] = useState(null);
 
-    // Estado global ou centralizado das doações para permitir a exclusão
-    const [doacoes, setDoacoes] = useState([
-        {
-            id: 1,
-            item: 'Roupas Infantis',
-            urgencia: 'Média',
-            tamanho: '2 a 8 anos',
-            quantidade: 100,
-            prazo: '15/05/2025',
-            localizacao: 'Av. Solidariedade, 123 - São Paulo/SP',
-            descricao: 'yguygytgyugtuyg',
-            imagem: ''
+    // Carrega as doações salvas no navegador
+    const [doacoes, setDoacoes] = useState(() => {
+        try {
+            const dadosSalvos = localStorage.getItem('doacoes');
+            return dadosSalvos ? JSON.parse(dadosSalvos) : [];
+        } catch (error) {
+            console.error('Erro ao carregar doações:', error);
+            return [];
         }
-    ]);
+    });
 
-    // Função para excluir a doação pelo ID (filtra tirando a doação clicada)
-    const handleExcluirDoacao = (idParaExcluir) => {
-        setDoacoes((estadoAtual) => estadoAtual.filter((doacao) => doacao.id !== idParaExcluir));
+    // Salva automaticamente sempre que as doações forem alteradas
+    useEffect(() => {
+        try {
+            localStorage.setItem('doacoes', JSON.stringify(doacoes));
+        } catch (error) {
+            console.error('Erro ao salvar doações:', error);
+            alert('Não foi possível salvar as doações no navegador.');
+        }
+    }, [doacoes]);
+
+    // Adiciona uma nova doação
+    const handleAdicionarDoacao = (novaDoacao) => {
+        const doacaoCompleta = {
+            ...novaDoacao,
+            id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+            dataCadastro: new Date().toISOString()
+        };
+
+        setDoacoes((estadoAtual) => [
+            doacaoCompleta,
+            ...estadoAtual
+        ]);
     };
 
+    // Exclui uma doação somente quando solicitado
+    const handleExcluirDoacao = (idParaExcluir) => {
+        setDoacoes((estadoAtual) =>
+            estadoAtual.filter(
+                (doacao) => doacao.id !== idParaExcluir
+            )
+        );
+    };
+
+    // Autenticação
     const handleLogin = (email) => {
         if (email.toLowerCase().trim() === 'empresa@gmail.com') {
             setUsuarioLogado({
                 email,
                 tipo: 'empresa'
             });
+
             setTela('homeEmpresa');
         } else {
             setUsuarioLogado({
                 email,
                 tipo: 'usuario'
             });
+
             setTela('homeUsuario');
         }
     };
 
-    // Função para deslogar: limpa o usuário e volta para a tela de login
+    // Logout
     const handleLogout = () => {
         setUsuarioLogado(null);
         setTela('login');
@@ -72,7 +100,9 @@ function App() {
                 <HomeEmpresa
                     usuario={usuarioLogado}
                     onLogout={handleLogout}
-                    onMudarTela={setTela}
+                    doacoes={doacoes}
+                    onPublicarDoacao={handleAdicionarDoacao}
+                    onExcluirDoacao={handleExcluirDoacao}
                 />
             )}
 
@@ -80,7 +110,6 @@ function App() {
                 <HomeUsuario
                     usuario={usuarioLogado}
                     doacoes={doacoes}
-                    onExcluirDoacao={handleExcluirDoacao}
                     onLogout={handleLogout}
                 />
             )}
