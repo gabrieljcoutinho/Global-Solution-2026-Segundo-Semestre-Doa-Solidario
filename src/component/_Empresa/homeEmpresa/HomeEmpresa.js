@@ -4,7 +4,7 @@ import CadastrarDoacao from '../../../component/_Empresa/Links/cadastrarDoacao/c
 import MinhasDoacoes from '../../../component/_Empresa/Links/minhasDoacoes/minhasDoacoes';
 import './HomeEmpresa.css';
 
-function HomeEmpresa({ usuario }) {
+function HomeEmpresa({ usuario, onLogout }) {
     const [abaAtiva, setAbaAtiva] = useState('cadastrar-doacao');
     const [doacoes, setDoacoes] = useState([]);
 
@@ -29,6 +29,7 @@ function HomeEmpresa({ usuario }) {
                 usuario={usuario}
                 abaAtiva={abaAtiva}
                 setAbaAtiva={setAbaAtiva}
+                onLogout={onLogout}
             />
 
             <main className="content-empresa">
