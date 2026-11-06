@@ -1,5 +1,6 @@
 
 import React from 'react';
+import './MinhasDoacoes.css';
 
 function MinhasDoacoes({ usuario }) {
 

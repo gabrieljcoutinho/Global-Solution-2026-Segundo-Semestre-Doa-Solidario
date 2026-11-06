@@ -1,5 +1,6 @@
 
 import React from 'react';
+import './InicioUsuario.css';
 
 
 function InicioUsuario({ usuario }) {
