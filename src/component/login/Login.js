@@ -50,7 +50,7 @@ const Login = ({ onMudarTela, onLogin }) => {
 
                     <div className="form-header">
                         <span className="welcome-tag">
-                            BEM-VINDO À REDE HADES
+                            BEM-VINDO À REDE DOA SOLIDÁRIO
                         </span>
 
                         <h1>Que bom ter você aqui.</h1>

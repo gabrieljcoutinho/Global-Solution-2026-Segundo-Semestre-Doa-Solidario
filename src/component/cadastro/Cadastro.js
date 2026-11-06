@@ -34,7 +34,7 @@ const Cadastro = ({ onMudarTela }) => {
       <div className="cadastro-right-side">
         <div className="cadastro-form-wrapper">
           <div className="cadastro-form-header">
-            <span className="cadastro-welcome-tag">BEM-VINDO À REDE HADES</span>
+            <span className="cadastro-welcome-tag">BEM-VINDO À REDE DOA SOLIDÁRIO</span>
             <h1>Comece a fazer parte.</h1>
             <p>Crie sua conta e faça a solidariedade circular.</p>
           </div>
