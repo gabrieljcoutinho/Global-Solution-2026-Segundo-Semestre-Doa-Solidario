@@ -8,71 +8,151 @@ import Cadastro from './component/cadastro/Cadastro';
 import HomeEmpresa from './component/_Empresa/homeEmpresa/HomeEmpresa';
 import HomeUsuario from './component/_Usuario/homeUsuario/HomeUsuario';
 
+const carregarDados = (chave) => {
+    try {
+        const dadosSalvos = localStorage.getItem(chave);
+        return dadosSalvos ? JSON.parse(dadosSalvos) : [];
+    } catch (error) {
+        console.error(`Erro ao carregar ${chave}:`, error);
+        return [];
+    }
+};
+
 function App() {
     const [tela, setTela] = useState('login');
     const [usuarioLogado, setUsuarioLogado] = useState(null);
 
-    // Carrega as doações salvas no navegador
-    const [doacoes, setDoacoes] = useState(() => {
-        try {
-            const dadosSalvos = localStorage.getItem('doacoes');
-            return dadosSalvos ? JSON.parse(dadosSalvos) : [];
-        } catch (error) {
-            console.error('Erro ao carregar doações:', error);
-            return [];
-        }
-    });
+    const [contas, setContas] = useState(() =>
+        carregarDados('contas')
+    );
 
-    // Salva automaticamente sempre que as doações forem alteradas
+    const [doacoes, setDoacoes] = useState(() =>
+        carregarDados('doacoes')
+    );
+
+    // Salvar contas
+    useEffect(() => {
+        try {
+            localStorage.setItem('contas', JSON.stringify(contas));
+        } catch (error) {
+            console.error('Erro ao salvar contas:', error);
+            alert('Não foi possível salvar as contas.');
+        }
+    }, [contas]);
+
+    // Salvar doações
     useEffect(() => {
         try {
             localStorage.setItem('doacoes', JSON.stringify(doacoes));
         } catch (error) {
             console.error('Erro ao salvar doações:', error);
-            alert('Não foi possível salvar as doações no navegador.');
+            alert('Não foi possível salvar as doações. Verifique o espaço disponível.');
         }
     }, [doacoes]);
 
-    // Adiciona uma nova doação
+    // Cadastrar conta
+    const handleCadastrarConta = (dadosConta) => {
+        const emailNormalizado = dadosConta.email.trim().toLowerCase();
+
+        const emailExiste = contas.some(
+            conta => conta.email.toLowerCase() === emailNormalizado
+        );
+
+        if (emailExiste) {
+            return {
+                sucesso: false,
+                mensagem: 'Este e-mail já está cadastrado.'
+            };
+        }
+
+        const novaConta = {
+            id: `conta-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+            nome: dadosConta.nome.trim(),
+            email: emailNormalizado,
+            senha: dadosConta.senha,
+            tipo: dadosConta.tipo
+        };
+
+        setContas(estadoAtual => [
+            ...estadoAtual,
+            novaConta
+        ]);
+
+        return {
+            sucesso: true,
+            mensagem: 'Conta criada com sucesso!'
+        };
+    };
+
+    // Login
+    const handleLogin = (email, senha) => {
+        const emailNormalizado = email.trim().toLowerCase();
+
+        const contaEncontrada = contas.find(
+            conta =>
+                conta.email.toLowerCase() === emailNormalizado &&
+                conta.senha === senha
+        );
+
+        if (!contaEncontrada) {
+            return {
+                sucesso: false,
+                mensagem: 'E-mail ou senha incorretos.'
+            };
+        }
+
+        const { senha: senhaSalva, ...dadosUsuario } = contaEncontrada;
+
+        setUsuarioLogado(dadosUsuario);
+
+        if (dadosUsuario.tipo === 'empresa') {
+            setTela('homeEmpresa');
+        } else {
+            setTela('homeUsuario');
+        }
+
+        return {
+            sucesso: true
+        };
+    };
+
+    // Publicar doação
     const handleAdicionarDoacao = (novaDoacao) => {
+        if (!usuarioLogado || usuarioLogado.tipo !== 'empresa') {
+            alert('Somente empresas podem publicar doações.');
+            return;
+        }
+
         const doacaoCompleta = {
             ...novaDoacao,
-            id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+            id: `doacao-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+            empresaId: usuarioLogado.id,
+            empresaNome: usuarioLogado.nome,
+            empresaEmail: usuarioLogado.email,
             dataCadastro: new Date().toISOString()
         };
 
-        setDoacoes((estadoAtual) => [
+        setDoacoes(estadoAtual => [
             doacaoCompleta,
             ...estadoAtual
         ]);
     };
 
-    // Exclui uma doação somente quando solicitado
+    // Excluir doação: somente a empresa proprietária
     const handleExcluirDoacao = (idParaExcluir) => {
-        setDoacoes((estadoAtual) =>
-            estadoAtual.filter(
-                (doacao) => doacao.id !== idParaExcluir
-            )
-        );
-    };
-
-    // Autenticação
-    const handleLogin = (email) => {
-        if (email.toLowerCase().trim() === 'empresa@gmail.com') {
-            setUsuarioLogado({
-                email,
-                tipo: 'empresa'
-            });
-
-            setTela('homeEmpresa');
-        } else {
-            setUsuarioLogado({
-                email,
-                tipo: 'usuario'
-            });
-
-            setTela('homeUsuario');
+        if (!usuarioLogado || usuarioLogado.tipo !== 'empresa') {
+            return;
         }
+
+        setDoacoes(estadoAtual =>
+            estadoAtual.filter(doacao => {
+                if (doacao.id !== idParaExcluir) {
+                    return true;
+                }
+
+                return doacao.empresaId !== usuarioLogado.id;
+            })
+        );
     };
 
     // Logout
@@ -93,10 +173,11 @@ function App() {
             {tela === 'cadastro' && (
                 <Cadastro
                     onMudarTela={setTela}
+                    onCadastrarConta={handleCadastrarConta}
                 />
             )}
 
-            {tela === 'homeEmpresa' && (
+            {tela === 'homeEmpresa' && usuarioLogado?.tipo === 'empresa' && (
                 <HomeEmpresa
                     usuario={usuarioLogado}
                     onLogout={handleLogout}
@@ -106,7 +187,7 @@ function App() {
                 />
             )}
 
-            {tela === 'homeUsuario' && (
+            {tela === 'homeUsuario' && usuarioLogado?.tipo === 'usuario' && (
                 <HomeUsuario
                     usuario={usuarioLogado}
                     doacoes={doacoes}

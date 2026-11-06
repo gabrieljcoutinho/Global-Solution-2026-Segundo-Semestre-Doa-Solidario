@@ -23,6 +23,7 @@ function HomeUsuario({ usuario, onLogout, doacoes = [] }) {
                 {abaAtiva === 'inicio' && (
                     <InicioUsuario
                         usuario={usuario}
+                        doacoes={doacoes}
                     />
                 )}
 

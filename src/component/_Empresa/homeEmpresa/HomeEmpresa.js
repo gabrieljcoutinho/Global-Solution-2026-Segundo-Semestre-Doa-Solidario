@@ -12,11 +12,16 @@ import './HomeEmpresa.css';
 function HomeEmpresa({
     usuario,
     onLogout,
-    doacoes,
+    doacoes = [],
     onPublicarDoacao,
     onExcluirDoacao
 }) {
     const [abaAtiva, setAbaAtiva] = useState('cadastrar-doacao');
+
+    // Filtra somente as publicações da empresa logada
+    const minhasDoacoes = doacoes.filter(
+        doacao => doacao.empresaId === usuario?.id
+    );
 
     return (
         <div className="home-empresa-container">
@@ -38,7 +43,7 @@ function HomeEmpresa({
 
                 {abaAtiva === 'minhas-doacoes' && (
                     <MinhasDoacoes
-                        doacoes={doacoes}
+                        doacoes={minhasDoacoes}
                         onExcluir={onExcluirDoacao}
                     />
                 )}

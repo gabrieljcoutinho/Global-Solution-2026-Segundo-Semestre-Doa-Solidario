@@ -252,29 +252,73 @@
     color: var(--text-main);
 }
 
-.cadastro-input-group input {
+/* Inputs e seletor com o mesmo padrão visual */
+
+.cadastro-input-group input,
+.cadastro-input-group select {
     width: 100%;
-    background: var(--bg-card);
+    height: 48px;
+    background-color: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    padding: 14px 16px;
+    padding: 0 16px;
     color: var(--text-main);
     font-size: 14px;
     outline: none;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease,
+        background-color 0.3s ease;
 }
 
 .cadastro-input-group input::placeholder {
     color: #52525b;
 }
 
-.cadastro-input-group input:focus {
+/* Foco dos campos */
+
+.cadastro-input-group input:focus,
+.cadastro-input-group select:focus {
     border-color: var(--accent-red);
     box-shadow: 0 0 0 3px rgba(255, 51, 102, 0.08);
 }
 
 /* =========================================================
-   10. BOTÃO DE CADASTRO
+   10. SELETOR DE TIPO DE CONTA
+   ========================================================= */
+
+.cadastro-input-group select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    cursor: pointer;
+
+    padding-right: 42px;
+
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ff3366' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 16px;
+}
+
+.cadastro-input-group select:hover {
+    border-color: #44444b;
+}
+
+.cadastro-input-group select:focus {
+    border-color: var(--accent-red);
+}
+
+/* Opções abertas do seletor */
+
+.cadastro-input-group select option {
+    background-color: #141417;
+    color: #ffffff;
+    padding: 12px;
+}
+
+/* =========================================================
+   11. BOTÃO DE CADASTRO
    ========================================================= */
 
 .cadastro-submit-btn {
@@ -296,8 +340,12 @@
     transform: translateY(-1px);
 }
 
+.cadastro-submit-btn:active {
+    transform: translateY(0);
+}
+
 /* =========================================================
-   11. BOTÃO CONTINUAR SEM CADASTRO
+   12. BOTÃO CONTINUAR SEM CADASTRO
    ========================================================= */
 
 .cadastro-guest-btn {
@@ -320,7 +368,7 @@
 }
 
 /* =========================================================
-   12. TEXTO DE SEGURANÇA
+   13. TEXTO DE SEGURANÇA
    ========================================================= */
 
 .cadastro-security-footer-text {
@@ -331,7 +379,7 @@
 }
 
 /* =========================================================
-   13. RESPONSIVIDADE
+   14. RESPONSIVIDADE
    ========================================================= */
 
 @media (max-width: 900px) {
@@ -371,7 +419,13 @@
         gap: 20px;
     }
 
-    .cadastro-input-group input {
-        padding: 13px 14px;
+    .cadastro-input-group input,
+    .cadastro-input-group select {
+        padding-left: 14px;
+    }
+
+    .cadastro-input-group select {
+        padding-right: 38px;
+        background-position: right 12px center;
     }
 }

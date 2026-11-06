@@ -5,7 +5,6 @@ import './login.css';
 import imagemLogin from '../../img/telaLogim.png';
 
 const Login = ({ onMudarTela, onLogin }) => {
-
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -17,13 +16,18 @@ const Login = ({ onMudarTela, onLogin }) => {
             return;
         }
 
-        onLogin(email);
+        const resultado = onLogin(email, password);
+
+        if (!resultado?.sucesso) {
+            alert(resultado?.mensagem || 'Não foi possível realizar o login.');
+        }
     };
 
     return (
         <div className="login-container">
 
             <div className="login-left-side login-bg-unico">
+
                 <img
                     src={imagemLogin}
                     alt="Login Background"
@@ -33,14 +37,17 @@ const Login = ({ onMudarTela, onLogin }) => {
                 <div className="side-overlay"></div>
 
                 <div className="left-header">
+
                     <div className="logo-icon">D</div>
 
                     <div className="logo-text">
                         <span>DOA</span>
+
                         <span className="logo-subtitle">
                             Solidário
                         </span>
                     </div>
+
                 </div>
             </div>
 
@@ -113,6 +120,7 @@ const Login = ({ onMudarTela, onLogin }) => {
                                 placeholder="Mínimo de 6 caracteres"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                minLength={6}
                                 required
                             />
 
@@ -126,8 +134,6 @@ const Login = ({ onMudarTela, onLogin }) => {
                         </button>
 
                     </form>
-
-                    
 
                     <span className="security-footer-text">
                         Acesso seguro para doadores e organizações.
