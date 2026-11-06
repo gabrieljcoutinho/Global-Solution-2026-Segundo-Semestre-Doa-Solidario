@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './MinhasDoacoes.css';
+import '../../../doacaoConcluida.css';
 
 const rotuloStatus = {
     disponivel: 'Disponível',
@@ -10,7 +11,7 @@ const rotuloStatus = {
 function MinhasDoacoes({ usuario, doacoes = [], onOferecerDoacao }) {
     const [processandoId, setProcessandoId] = useState(null);
 
-    // Mostra as doações disponíveis e as que esta ONG já ofereceu.
+    // Mostra as doações disponíveis e as que esta ONG já ofereceu ou concluiu.
     // Doações pendentes ou concluídas de outras ONGs ficam ocultas.
     const visiveis = doacoes.filter(doacao => {
         const status = doacao.status ?? 'disponivel';

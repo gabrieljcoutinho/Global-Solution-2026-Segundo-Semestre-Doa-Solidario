@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './minhasDoacoes.css';
 import './acoesOferta.css';
+import '../../../doacaoConcluida.css';
 
 const rotuloStatus = {
   disponivel: 'Disponível',
@@ -56,14 +57,16 @@ const MinhasDoacoes = ({ doacoes = [], onExcluir, onResponder }) => {
                     <div className="doacaoCardPlaceholder">Sem imagem</div>
                   )}
 
-                  <button
-                    type="button"
-                    className="doacaoBtnExcluir"
-                    onClick={() => onExcluir && onExcluir(doacao.id)}
-                    title="Excluir doação"
-                  >
-                    ✕
-                  </button>
+                  {!concluida && (
+                    <button
+                      type="button"
+                      className="doacaoBtnExcluir"
+                      onClick={() => onExcluir && onExcluir(doacao.id)}
+                      title="Excluir doação"
+                    >
+                      ✕
+                    </button>
+                  )}
                 </div>
 
                 <div className="doacaoCardBody">

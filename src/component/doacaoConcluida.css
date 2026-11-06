@@ -1,0 +1,10 @@
+/* Card de doação concluída: cinza, sem destaque de ação */
+.doacaoCard.doacaoCardConcluida {
+  filter: grayscale(1);
+  opacity: 0.7;
+}
+
+.doacaoCard.doacaoCardConcluida .doacaoCardBanner img,
+.doacaoCard.doacaoCardConcluida .doacaoCardPlaceholder {
+  filter: grayscale(1);
+}

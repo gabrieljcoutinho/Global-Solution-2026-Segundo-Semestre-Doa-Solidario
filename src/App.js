@@ -177,6 +177,7 @@ function App() {
         return ok;
     };
 
+    // Doações concluídas não podem ser excluídas: ficam no histórico
     const handleExcluirDoacao = (idParaExcluir) => {
         if (!usuarioLogado || usuarioLogado.tipo !== 'empresa') {
             return;
@@ -185,6 +186,10 @@ function App() {
         const alvo = doacoes.find(d => d.id === idParaExcluir);
 
         if (!alvo || alvo.empresaId !== usuarioLogado.id) {
+            return;
+        }
+
+        if (alvo.status === 'concluida') {
             return;
         }
 
