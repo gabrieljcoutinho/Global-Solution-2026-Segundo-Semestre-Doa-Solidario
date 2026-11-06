@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 
 import Login from './component/login/Login';
@@ -7,47 +7,16 @@ import Cadastro from './component/cadastro/Cadastro';
 import HomeEmpresa from './component/_Empresa/homeEmpresa/HomeEmpresa';
 import HomeUsuario from './component/_Usuario/homeUsuario/HomeUsuario';
 
-const carregarDados = (chave) => {
-    try {
-        const dadosSalvos = localStorage.getItem(chave);
-        return dadosSalvos ? JSON.parse(dadosSalvos) : [];
-    } catch (error) {
-        console.error(`Erro ao carregar ${chave}:`, error);
-        return [];
-    }
-};
+// Importando os dados iniciais do arquivo JSON estruturado
+import dadosIniciais from './dados.json';
 
 function App() {
     const [tela, setTela] = useState('login');
     const [usuarioLogado, setUsuarioLogado] = useState(null);
 
-    const [contas, setContas] = useState(() =>
-        carregarDados('contas')
-    );
-
-    const [doacoes, setDoacoes] = useState(() =>
-        carregarDados('doacoes')
-    );
-
-    // Salvar contas
-    useEffect(() => {
-        try {
-            localStorage.setItem('contas', JSON.stringify(contas));
-        } catch (error) {
-            console.error('Erro ao salvar contas:', error);
-            alert('Não foi possível salvar as contas.');
-        }
-    }, [contas]);
-
-    // Salvar doações e propagar para todos os componentes conectados
-    useEffect(() => {
-        try {
-            localStorage.setItem('doacoes', JSON.stringify(doacoes));
-        } catch (error) {
-            console.error('Erro ao salvar doações:', error);
-            alert('Não foi possível salvar as doações. Verifique o espaço disponível.');
-        }
-    }, [doacoes]);
+    // Inicializando estados diretamente com os dados estruturados
+    const [contas, setContas] = useState(dadosIniciais.contas || []);
+    const [doacoes, setDoacoes] = useState(dadosIniciais.doacoes || []);
 
     // Cadastrar conta
     const handleCadastrarConta = (dadosConta) => {
@@ -115,7 +84,7 @@ function App() {
         };
     };
 
-    // Publicar doação
+    // Publicar doação / produto
     const handleAdicionarDoacao = (novaDoacao) => {
         if (!usuarioLogado || usuarioLogado.tipo !== 'empresa') {
             alert('Somente empresas podem publicar doações.');
@@ -124,6 +93,8 @@ function App() {
 
         const doacaoCompleta = {
             ...novaDoacao,
+            // Se o usuário tentar enviar uma imagem pesada em base64, tratamos para evitar excessos
+            imagem: novaDoacao.imagem && novaDoacao.imagem.length > 500000 ? '' : novaDoacao.imagem,
             id: `doacao-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
             empresaId: usuarioLogado.id,
             empresaNome: usuarioLogado.nome,
@@ -137,7 +108,7 @@ function App() {
         ]);
     };
 
-    // Excluir doação: remove instantaneamente do estado global e do localStorage para todos
+    // Excluir doação sincronizada para todos
     const handleExcluirDoacao = (idParaExcluir) => {
         if (!usuarioLogado || usuarioLogado.tipo !== 'empresa') {
             return;
