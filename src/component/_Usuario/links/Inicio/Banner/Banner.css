@@ -1,13 +1,12 @@
 /* ==========================================
-   BANNER DE DOAÇÃO - ESTILIZAÇÃO E RESPONSIVIDADE
-   ========================================== */
+   BANNER DE DOAÇÃO - TEMA VERMELHO
+========================================== */
 
-/* Banner de Doação estendido de ponta a ponta na largura disponível */
 .inicio-usuario-container .banner-doacao {
     position: relative;
     width: 100% !important;
     max-width: none !important;
-    height: clamp(220px, 24vw, 340px);
+    height: clamp(170px, 19vw, 240px);
     background-image: url('../../../../../img/ImgHomeUser.png');
     background-size: cover;
     background-position: center 35%;
@@ -20,21 +19,21 @@
     align-self: stretch;
 }
 
-/* Camada escura por cima da imagem para dar contraste ao texto */
+/* Overlay escuro com tonalidade avermelhada */
 .banner-overlay {
     position: absolute;
     inset: 0;
     background: linear-gradient(
         90deg,
-        rgba(10, 15, 13, 0.95) 0%,
-        rgba(10, 15, 13, 0.7) 35%,
-        rgba(10, 15, 13, 0.1) 70%,
+        rgba(20, 5, 12, 0.96) 0%,
+        rgba(35, 5, 17, 0.78) 35%,
+        rgba(35, 5, 17, 0.2) 70%,
         transparent 100%
     );
     z-index: 1;
 }
 
-/* Conteúdo interno do banner (Textos e Botão) */
+/* Conteúdo interno */
 .banner-conteudo {
     position: relative;
     z-index: 2;
@@ -45,7 +44,7 @@
     gap: 16px;
 }
 
-/* Título principal do banner */
+/* Título */
 .banner-titulo {
     font-family: 'Inter', sans-serif;
     font-size: 2.5rem;
@@ -55,9 +54,9 @@
     margin: 0;
 }
 
-/* Destaque verde no texto */
+/* Destaque vermelho */
 .destaque-verde {
-    color: #34d399;
+    color: #ff2969;
 }
 
 /* Descrição */
@@ -69,14 +68,14 @@
     line-height: 1.5;
 }
 
-/* Botão de Doação estilizado */
+/* Botão */
 .banner-botao {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     background: transparent;
-    color: #34d399;
-    border: 1.5px solid #34d399;
+    color: #ff2969;
+    border: 1.5px solid #ff2969;
     padding: 12px 24px;
     border-radius: 8px;
     font-size: 1rem;
@@ -84,20 +83,20 @@
     cursor: pointer;
     transition: all 0.3s ease;
     width: fit-content;
-    box-shadow: 0 0 15px rgba(52, 211, 153, 0.15);
+    box-shadow: 0 0 15px rgba(255, 41, 105, 0.15);
     margin-top: 8px;
 }
 
 .banner-botao:hover {
-    background: #34d399;
-    color: #0a0f0d;
-    box-shadow: 0 0 20px rgba(52, 211, 153, 0.4);
+    background: #ff2969;
+    color: #ffffff;
+    box-shadow: 0 0 20px rgba(255, 41, 105, 0.4);
     transform: translateY(-2px);
 }
 
 /* ==========================================
-   RESPONSIVIDADE DO BANNER PARA QUALQUER TELA
-   ========================================== */
+   RESPONSIVIDADE
+========================================== */
 
 @media screen and (max-width: 1024px) {
     .banner-conteudo {
@@ -113,7 +112,7 @@
 @media screen and (max-width: 768px) {
     .inicio-usuario-container .banner-doacao {
         height: auto;
-        min-height: 240px;
+        min-height: 190px;
     }
 
     .banner-conteudo {
@@ -131,7 +130,7 @@
 
 @media screen and (max-width: 480px) {
     .inicio-usuario-container .banner-doacao {
-        min-height: 220px;
+        min-height: 175px;
         border-radius: 12px;
     }
 
