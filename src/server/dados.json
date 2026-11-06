@@ -15,5 +15,21 @@
       "tipo": "usuario"
     }
   ],
-  "doacoes": []
+  "doacoes": [
+    {
+      "item": "tes",
+      "tamanho": "sdt",
+      "quantidade": "sdt",
+      "urgencia": "Alta",
+      "prazo": "123424",
+      "localizacao": "wetwe",
+      "descricao": "234243",
+      "imagem": "",
+      "id": "doacao-1793981440403-m1vtku4",
+      "empresaId": "conta-1793976549712-1hkwp40",
+      "empresaNome": "empresa1",
+      "empresaEmail": "empresa1@gmail.com",
+      "dataCadastro": "2026-11-06T16:10:40.403Z"
+    }
+  ]
 }

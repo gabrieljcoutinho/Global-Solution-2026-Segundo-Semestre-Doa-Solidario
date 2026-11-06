@@ -8,8 +8,26 @@ import HomeEmpresa from './component/_Empresa/homeEmpresa/HomeEmpresa';
 import HomeUsuario from './component/_Usuario/homeUsuario/HomeUsuario';
 
 function App() {
-    const [tela, setTela] = useState('login');
-    const [usuarioLogado, setUsuarioLogado] = useState(null);
+    // Inicializa a tela e o usuário pegando do localStorage para o F5 não deslogar
+    const [usuarioLogado, setUsuarioLogado] = useState(() => {
+        try {
+            const salvo = localStorage.getItem('usuarioLogado');
+            return salvo ? JSON.parse(salvo) : null;
+        } catch (e) {
+            return null;
+        }
+    });
+
+    const [tela, setTela] = useState(() => {
+        try {
+            const salvo = localStorage.getItem('usuarioLogado');
+            if (salvo) {
+                const user = JSON.parse(salvo);
+                return user.tipo === 'empresa' ? 'homeEmpresa' : 'homeUsuario';
+            }
+        } catch (e) {}
+        return 'login';
+    });
 
     const [contas, setContas] = useState([]);
     const [doacoes, setDoacoes] = useState([]);
@@ -24,6 +42,19 @@ function App() {
             })
             .catch(err => console.error('Erro ao buscar dados do servidor:', err));
     }, []);
+
+    // Atualiza o localStorage sempre que o usuário logar ou deslogar
+    useEffect(() => {
+        try {
+            if (usuarioLogado) {
+                localStorage.setItem('usuarioLogado', JSON.stringify(usuarioLogado));
+            } else {
+                localStorage.removeItem('usuarioLogado');
+            }
+        } catch (e) {
+            console.error('Erro ao salvar sessão:', e);
+        }
+    }, [usuarioLogado]);
 
     // Função auxiliar para salvar o estado atualizado direto no servidor JSON físico
     const salvarNoServidor = (novasContas, novasDoacoes) => {
@@ -143,6 +174,7 @@ function App() {
     const handleLogout = () => {
         setUsuarioLogado(null);
         setTela('login');
+        localStorage.removeItem('usuarioLogado');
     };
 
     return (
