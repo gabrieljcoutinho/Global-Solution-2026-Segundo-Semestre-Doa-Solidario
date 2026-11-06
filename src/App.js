@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
@@ -40,7 +39,7 @@ function App() {
         }
     }, [contas]);
 
-    // Salvar doações
+    // Salvar doações e propagar para todos os componentes conectados
     useEffect(() => {
         try {
             localStorage.setItem('doacoes', JSON.stringify(doacoes));
@@ -138,20 +137,14 @@ function App() {
         ]);
     };
 
-    // Excluir doação: somente a empresa proprietária
+    // Excluir doação: remove instantaneamente do estado global e do localStorage para todos
     const handleExcluirDoacao = (idParaExcluir) => {
         if (!usuarioLogado || usuarioLogado.tipo !== 'empresa') {
             return;
         }
 
         setDoacoes(estadoAtual =>
-            estadoAtual.filter(doacao => {
-                if (doacao.id !== idParaExcluir) {
-                    return true;
-                }
-
-                return doacao.empresaId !== usuarioLogado.id;
-            })
+            estadoAtual.filter(doacao => doacao.id !== idParaExcluir)
         );
     };
 
