@@ -16,15 +16,15 @@
 }
 
 /* ==========================================================================
-   2. LAYOUT MASTER (LARGURA AUMENTADA E ALTURA REDUZIDA)
+   2. LAYOUT MASTER (ALINHADO EMBAIXO DO TOPO, IA À ESQUERDA)
    ================================================================---------- */
 .chat-master-container {
   display: flex;
   flex-direction: row;
   width: 100%;
-  max-width: 920px;      /* Largura bem maior (esticado na horizontal) */
-  height: 420px;         /* Altura bem reduzida (compacto na vertical) */
-  margin: 0 auto;
+  max-width: 950px;      /* Largura ampla conforme solicitado */
+  height: 400px;         /* Altura compacta */
+  margin: 20px auto 0 auto; /* Alinhado logo abaixo do início do bloco superior */
   background-color: var(--chat-bg-dark);
   font-family: var(--chat-font);
   color: var(--chat-text-main);
@@ -35,10 +35,10 @@
 }
 
 /* ==========================================================================
-   3. BARRA LATERAL ESQUERDA (SIDEBAR)
+   3. BARRA LATERAL / IA À ESQUERDA
    ================================================================---------- */
 .chat-sidebar-left {
-  width: 240px;          
+  width: 260px;          
   background-color: var(--chat-sidebar-bg);
   border-right: 1px solid var(--chat-border-line);
   display: flex;
@@ -46,7 +46,7 @@
   align-items: center;
   justify-content: center;
   padding: 14px;
-  gap: 10px;
+  gap: 12px;
   flex-shrink: 0;
   text-align: center;
 }
@@ -60,8 +60,8 @@
 
 .chat-avatar-glow {
   position: absolute;
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(0, 168, 132, 0.4) 0%, transparent 75%);
   animation: pulse-glow 2s infinite;
@@ -69,8 +69,8 @@
 
 .chat-brand-avatar {
   position: relative;
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   background: #1f2c34;
   color: var(--chat-accent-teal);
@@ -81,9 +81,9 @@
 }
 
 .chat-sidebar-info h3 {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
-  margin: 0 0 3px 0;
+  margin: 0 0 4px 0;
   color: var(--chat-text-main);
 }
 
@@ -104,7 +104,7 @@
 }
 
 /* ==========================================================================
-   4. PAINEL PRINCIPAL DO CHAT
+   4. PAINEL PRINCIPAL DO CHAT À DIREITA
    ================================================================---------- */
 .chat-main-panel {
   flex: 1;
@@ -302,6 +302,7 @@
 @media screen and (max-width: 950px) {
   .chat-master-container {
     max-width: 100%;
+    margin: 10px 0 0 0;
   }
 }
 
@@ -323,13 +324,13 @@
   }
 
   .chat-brand-avatar {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
   }
 
   .chat-avatar-glow {
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
   }
 
   .chat-sidebar-info {

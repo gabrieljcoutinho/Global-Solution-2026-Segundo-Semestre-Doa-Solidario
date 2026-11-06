@@ -36,12 +36,12 @@ const Chat = () => {
 
   return (
     <div className="chat-master-container">
-      {/* Barra Lateral Esquerda */}
+      {/* Bloco da IA à Esquerda (Posicionado embaixo do início superior) */}
       <aside className="chat-sidebar-left">
         <div className="chat-brand-box">
           <div className="chat-avatar-glow"></div>
           <div className="chat-brand-avatar">
-            <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round">
+            <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10"></circle>
               <path d="M2 12h20"></path>
               <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
@@ -57,7 +57,7 @@ const Chat = () => {
         </div>
       </aside>
 
-      {/* Janela Principal do Chat */}
+      {/* Janela Principal do Chat à Direita */}
       <div className="chat-main-panel">
         <header className="chat-top-header">
           <h2>Assistente Virtual</h2>
