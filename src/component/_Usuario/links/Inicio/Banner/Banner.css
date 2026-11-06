@@ -1,0 +1,150 @@
+/* ==========================================
+   BANNER DE DOAÇÃO - ESTILIZAÇÃO E RESPONSIVIDADE
+   ========================================== */
+
+/* Banner de Doação estendido de ponta a ponta na largura disponível */
+.inicio-usuario-container .banner-doacao {
+    position: relative;
+    width: 100% !important;
+    max-width: none !important;
+    height: clamp(220px, 24vw, 340px);
+    background-image: url('../../../../../img/ImgHomeUser.png');
+    background-size: cover;
+    background-position: center 35%;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
+    align-self: stretch;
+}
+
+/* Camada escura por cima da imagem para dar contraste ao texto */
+.banner-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        90deg,
+        rgba(10, 15, 13, 0.95) 0%,
+        rgba(10, 15, 13, 0.7) 35%,
+        rgba(10, 15, 13, 0.1) 70%,
+        transparent 100%
+    );
+    z-index: 1;
+}
+
+/* Conteúdo interno do banner (Textos e Botão) */
+.banner-conteudo {
+    position: relative;
+    z-index: 2;
+    padding: 48px;
+    max-width: 650px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Título principal do banner */
+.banner-titulo {
+    font-family: 'Inter', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.2;
+    margin: 0;
+}
+
+/* Destaque verde no texto */
+.destaque-verde {
+    color: #34d399;
+}
+
+/* Descrição */
+.banner-descricao {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1rem;
+    color: #e2e8f0;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Botão de Doação estilizado */
+.banner-botao {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    color: #34d399;
+    border: 1.5px solid #34d399;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: fit-content;
+    box-shadow: 0 0 15px rgba(52, 211, 153, 0.15);
+    margin-top: 8px;
+}
+
+.banner-botao:hover {
+    background: #34d399;
+    color: #0a0f0d;
+    box-shadow: 0 0 20px rgba(52, 211, 153, 0.4);
+    transform: translateY(-2px);
+}
+
+/* ==========================================
+   RESPONSIVIDADE DO BANNER PARA QUALQUER TELA
+   ========================================== */
+
+@media screen and (max-width: 1024px) {
+    .banner-conteudo {
+        padding: 30px;
+        max-width: 100%;
+    }
+
+    .banner-titulo {
+        font-size: 2rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .inicio-usuario-container .banner-doacao {
+        height: auto;
+        min-height: 240px;
+    }
+
+    .banner-conteudo {
+        padding: 20px;
+    }
+
+    .banner-titulo {
+        font-size: 1.6rem;
+    }
+
+    .banner-descricao {
+        font-size: 0.95rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .inicio-usuario-container .banner-doacao {
+        min-height: 220px;
+        border-radius: 12px;
+    }
+
+    .banner-conteudo {
+        padding: 16px;
+    }
+
+    .banner-titulo {
+        font-size: 1.35rem;
+    }
+
+    .banner-botao {
+        width: 100%;
+        padding: 10px;
+    }
+}
