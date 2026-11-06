@@ -1,0 +1,81 @@
+.mapaDoacoesContainer {
+  width: 100%;
+  height: 100vh; /* Ocupa a altura total da tela para forçar o carregamento */
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #121212;
+}
+
+.mapaDoacoesTitulo {
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.mapaDoacoesSubtitulo {
+  font-size: 14px;
+  color: #a1a1aa;
+  margin-bottom: 20px;
+}
+
+.mapaWrapperReal {
+  width: 100%;
+  flex: 1;
+  min-height: 450px;
+  background-color: #27272a;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  border: 1px solid #3f3f46;
+  position: relative;
+  z-index: 1;
+}
+
+/* Garante que o mapa do Leaflet ocupe 100% da caixa */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  background-color: #1a1a1a;
+}
+
+.popupMapaCard {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #18181b;
+  max-width: 200px;
+}
+
+.popupMapaCard h3 {
+  font-size: 16px;
+  margin-bottom: 6px;
+  color: #09090b;
+}
+
+.popupMapaCard p {
+  font-size: 13px;
+  margin: 4px 0;
+}
+
+.linkRotaMaps {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 12px;
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.linkRotaMaps:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .mapaDoacoesContainer {
+    padding: 10px;
+  }
+  .mapaWrapperReal {
+    min-height: 350px;
+  }
+}
