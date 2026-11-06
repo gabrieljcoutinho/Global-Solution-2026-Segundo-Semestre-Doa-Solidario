@@ -4,8 +4,8 @@ import './HomeUsuario.css';
 
 import SidebarUsuario from '../navBar/SidebarUsuario';
 
-import InicioUsuario from '../links/InicioUsuario';
-import MinhasDoacoes from '../links/MinhasDoacoes';
+import InicioUsuario from '../links/Inicio/InicioUsuario';
+import MinhasDoacoes from '../links/minhasDoacoes/MinhasDoacoes';
 
 function HomeUsuario({ usuario }) {
 
