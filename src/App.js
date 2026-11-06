@@ -70,36 +70,49 @@ function App() {
         };
     };
 
-    // Login
-    const handleLogin = (email, senha) => {
+    // Login validando diretamente no servidor Node.js
+    const handleLogin = async (email, senha) => {
         const emailNormalizado = email.trim().toLowerCase();
 
-        const contaEncontrada = contas.find(
-            conta =>
-                conta.email.toLowerCase() === emailNormalizado &&
-                conta.senha === senha
-        );
+        try {
+            const resposta = await fetch('http://localhost:3001/api/dados');
+            const dados = await resposta.json();
+            
+            const contasServidor = dados.contas || [];
 
-        if (!contaEncontrada) {
+            const contaEncontrada = contasServidor.find(
+                conta =>
+                    conta.email.toLowerCase() === emailNormalizado &&
+                    conta.senha === senha
+            );
+
+            if (!contaEncontrada) {
+                return {
+                    sucesso: false,
+                    mensagem: 'E-mail ou senha incorretos.'
+                };
+            }
+
+            const { senha: senhaSalva, ...dadosUsuario } = contaEncontrada;
+
+            setUsuarioLogado(dadosUsuario);
+
+            if (dadosUsuario.tipo === 'empresa') {
+                setTela('homeEmpresa');
+            } else {
+                setTela('homeUsuario');
+            }
+
+            return {
+                sucesso: true
+            };
+        } catch (erro) {
+            console.error('Erro ao conectar com o servidor de login:', erro);
             return {
                 sucesso: false,
-                mensagem: 'E-mail ou senha incorretos.'
+                mensagem: 'Erro ao conectar com o servidor.'
             };
         }
-
-        const { senha: senhaSalva, ...dadosUsuario } = contaEncontrada;
-
-        setUsuarioLogado(dadosUsuario);
-
-        if (dadosUsuario.tipo === 'empresa') {
-            setTela('homeEmpresa');
-        } else {
-            setTela('homeUsuario');
-        }
-
-        return {
-            sucesso: true
-        };
     };
 
     // Publicar doação / produto
