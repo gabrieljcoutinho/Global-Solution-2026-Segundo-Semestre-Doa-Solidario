@@ -229,3 +229,44 @@
     padding: 14px;
   }
 }
+
+
+.btnQueroDoar {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding: 11px 16px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.btnQueroDoar:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(22, 163, 74, 0.45);
+  filter: brightness(1.08);
+}
+
+.btnQueroDoar:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btnQueroDoar:focus-visible {
+  outline: 2px solid #86efac;
+  outline-offset: 2px;
+}
+
+.btnQueroDoar:disabled {
+  background: linear-gradient(135deg, #854d0e, #713f12);
+  color: #fef3c7;
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.9;
+}

@@ -68,9 +68,13 @@ export function useGeolocalizacao(doacoes = [], raioMaximoKm = 50) {
         };
     }
 
-    // Considera apenas doações com coordenadas reais salvas no cadastro
+    // Mostra no mapa apenas doações com coordenadas reais e status disponível
     const doacoesFiltradas = doacoes
-        .filter(doacao => typeof doacao.lat === 'number' && typeof doacao.lng === 'number')
+        .filter(doacao =>
+            typeof doacao.lat === 'number' &&
+            typeof doacao.lng === 'number' &&
+            (doacao.status ?? 'disponivel') === 'disponivel'
+        )
         .map(doacao => {
             const distancia = calcularDistanciaKm(
                 posicaoUsuario[0],

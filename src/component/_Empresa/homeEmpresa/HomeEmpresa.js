@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 
 import SidebarEmpresa from '../navBar/SidebarEmpresa';
@@ -14,7 +13,8 @@ function HomeEmpresa({
     onLogout,
     doacoes = [],
     onPublicarDoacao,
-    onExcluirDoacao
+    onExcluirDoacao,
+    onResponderDoacao
 }) {
     const [abaAtiva, setAbaAtiva] = useState('cadastrar-doacao');
 
@@ -45,6 +45,7 @@ function HomeEmpresa({
                     <MinhasDoacoes
                         doacoes={minhasDoacoes}
                         onExcluir={onExcluirDoacao}
+                        onResponder={onResponderDoacao}
                     />
                 )}
 
