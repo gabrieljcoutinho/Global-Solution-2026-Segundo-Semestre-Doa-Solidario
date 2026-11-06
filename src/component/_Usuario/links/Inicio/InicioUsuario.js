@@ -6,13 +6,9 @@ import './InicioUsuario.css';
 function InicioUsuario({ usuario }) {
 
     return (
-        <div className="pagina-inicio-usuario">
+        <div className="">
 
-            <h1>Bem-vindo à plataforma!</h1>
-
-            <p>
-                Encontre oportunidades para ajudar e transformar vidas.
-            </p>
+           
 
         </div>
     );
