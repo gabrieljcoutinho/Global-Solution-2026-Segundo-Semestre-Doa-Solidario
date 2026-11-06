@@ -3,51 +3,31 @@ import React from 'react';
 import './MinhasDoacoes.css';
 
 function MinhasDoacoes({ usuario, doacoes = [] }) {
-
     return (
-        <div className="pagina-minhas-doacoes">
+        <div className="minhasDoacoesContainer">
 
-            <div className="usuarioDoacoesHeader">
-                <div>
-                    <h1>Minhas Doações</h1>
-                    <p>
-                        Confira as necessidades publicadas pelas empresas
-                        e encontre oportunidades para ajudar.
-                    </p>
-                </div>
-
-                <span className="usuarioDoacoesContador">
-                    {doacoes.length} {doacoes.length === 1 ? 'necessidade' : 'necessidades'}
-                </span>
-            </div>
+            <h2 className="minhasDoacoesTitulo">
+                Doações Disponíveis
+            </h2>
 
             {doacoes.length === 0 ? (
 
-                <div className="usuarioDoacoesVazio">
-                    <div className="usuarioDoacoesVazioIcon">
-                        ♡
-                    </div>
-
-                    <h2>Nenhuma necessidade disponível</h2>
-
-                    <p>
-                        Quando uma empresa publicar uma nova necessidade,
-                        ela aparecerá aqui para você.
-                    </p>
-                </div>
+                <p className="minhasDoacoesVazio">
+                    Nenhuma doação disponível no momento.
+                </p>
 
             ) : (
 
-                <div className="usuarioDoacoesGrid">
+                <div className="minhasDoacoesGrid">
 
                     {doacoes.map((doacao) => (
 
-                        <article
+                        <div
                             key={doacao.id}
-                            className="usuarioDoacaoCard"
+                            className="doacaoCard"
                         >
 
-                            <div className="usuarioDoacaoBanner">
+                            <div className="doacaoCardBanner">
 
                                 {doacao.imagem ? (
 
@@ -58,40 +38,40 @@ function MinhasDoacoes({ usuario, doacoes = [] }) {
 
                                 ) : (
 
-                                    <div className="usuarioDoacaoPlaceholder">
-                                        <span>Sem imagem</span>
+                                    <div className="doacaoCardPlaceholder">
+                                        Sem imagem
                                     </div>
 
                                 )}
 
                             </div>
 
-                            <div className="usuarioDoacaoBody">
+                            <div className="doacaoCardBody">
 
                                 <h3>{doacao.item}</h3>
 
                                 <div
-                                    className={`usuarioDoacaoBadge ${
+                                    className={`doacaoBadge ${
                                         doacao.urgencia
                                             ? doacao.urgencia.toLowerCase()
                                             : ''
                                     }`}
                                 >
                                     <span className="dot"></span>
-                                    {doacao.urgencia || 'Não informada'} Prioridade
+                                    {doacao.urgencia} Prioridade
                                 </div>
 
-                                <div className="usuarioDoacaoInfo">
+                                <div className="doacaoInfo">
 
                                     <div>
-                                        <span>Tamanho / Especificação</span>
+                                        <span>Tamanho</span>
                                         <strong>
                                             {doacao.tamanho || 'Não informado'}
                                         </strong>
                                     </div>
 
                                     <div>
-                                        <span>Quantidade necessária</span>
+                                        <span>Quantidade</span>
                                         <strong>
                                             {doacao.quantidade || 'Não informada'} peças
                                         </strong>
@@ -107,30 +87,23 @@ function MinhasDoacoes({ usuario, doacoes = [] }) {
                                     </div>
 
                                     <div>
-                                        <span>Localização</span>
+                                        <span>Local</span>
                                         <strong>
-                                            {doacao.localizacao || 'Não informada'}
+                                            {doacao.localizacao || 'Não informado'}
                                         </strong>
                                     </div>
 
                                 </div>
 
                                 {doacao.descricao && (
-                                    <div className="usuarioDoacaoDescricao">
-                                        <p>{doacao.descricao}</p>
-                                    </div>
-                                )}
-
-                                <div className="usuarioDoacaoFooter">
-                                    <span>♡</span>
-                                    <p>
-                                        Sua ajuda pode fazer a diferença!
+                                    <p className="doacaoDescricao">
+                                        {doacao.descricao}
                                     </p>
-                                </div>
+                                )}
 
                             </div>
 
-                        </article>
+                        </div>
 
                     ))}
 

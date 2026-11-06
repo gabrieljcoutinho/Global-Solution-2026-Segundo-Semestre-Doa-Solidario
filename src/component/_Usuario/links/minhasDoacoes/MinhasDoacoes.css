@@ -1,248 +1,231 @@
-
-.pagina-minhas-doacoes {
-    width: 100%;
-    padding: 35px;
-    box-sizing: border-box;
+/* ==========================================
+   CONTAINER PRINCIPAL
+   ========================================== */
+.minhasDoacoesContainer {
+  padding: 32px 24px;
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  min-height: 100vh;
+  background-color: #0b0d10;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.usuarioDoacoesHeader {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    margin-bottom: 30px;
+/* ==========================================
+   TÍTULOS E ESTADOS VAZIOS
+   ========================================== */
+.minhasDoacoesTitulo {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0 0 28px 0;
+  color: #f3f4f6;
 }
 
-.usuarioDoacoesHeader h1 {
-    color: #222;
-    font-size: 28px;
-    font-weight: 700;
-    margin: 0 0 10px;
+.minhasDoacoesVazio {
+  color: #9ca3af;
+  font-size: 15px;
 }
 
-.usuarioDoacoesHeader p {
-    color: #777;
-    font-size: 14px;
-    margin: 0;
-    line-height: 1.6;
+/* ==========================================
+   GRID DE CARDS (RESPONSIVO)
+   ========================================== */
+.minhasDoacoesGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  width: 100%;
 }
 
-.usuarioDoacoesContador {
-    background: #fff0f1;
-    color: #e63946;
-    padding: 10px 16px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 600;
-    white-space: nowrap;
+/* ==========================================
+   CARD DE DOAÇÃO
+   ========================================== */
+.doacaoCard {
+  width: 320px;
+  max-width: 100%;
+  background-color: #16101a;
+  border: 1px solid #3a1f2e;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  transition: transform 0.15s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
-.usuarioDoacoesGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-    gap: 24px;
+.doacaoCard:hover {
+  transform: translateY(-3px);
 }
 
-.usuarioDoacaoCard {
-    background: #fff;
-    border: 1px solid #ededed;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+/* ==========================================
+   BANNER E BOTÃO DE EXCLUSÃO
+   ========================================== */
+.doacaoCardBanner {
+  height: 140px;
+  background: linear-gradient(160deg, #ff7a95 0%, #ff6b9d 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
 }
 
-.usuarioDoacaoCard:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+.doacaoCardBanner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.usuarioDoacaoBanner {
-    width: 100%;
-    height: 190px;
-    background: #f5f5f5;
-    overflow: hidden;
+.doacaoCardPlaceholder {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
 }
 
-.usuarioDoacaoBanner img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
+/* Botão de Excluir (X com bola vermelha e fundo branco) */
+.doacaoBtnExcluir {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 2px solid #e11d48;
+  color: #e11d48;
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  z-index: 2;
 }
 
-.usuarioDoacaoPlaceholder {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #999;
-    font-size: 14px;
+.doacaoBtnExcluir:hover {
+  background-color: #e11d48;
+  color: #ffffff;
+  transform: scale(1.08);
 }
 
-.usuarioDoacaoBody {
-    padding: 20px;
+/* ==========================================
+   CORPO DO CARD E INFORMAÇÕES
+   ========================================== */
+.doacaoCardBody {
+  padding: 18px 18px 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
-.usuarioDoacaoBody h3 {
-    color: #252525;
-    font-size: 19px;
-    font-weight: 700;
-    margin: 0 0 14px;
-    overflow-wrap: anywhere;
+.doacaoCardBody h3 {
+  margin: 0 0 10px 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
 }
 
-.usuarioDoacaoBadge {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    padding: 7px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    margin-bottom: 20px;
-    background: #f1f1f1;
-    color: #666;
+/* Badge de Urgência */
+.doacaoBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 14px;
+  width: fit-content;
 }
 
-.usuarioDoacaoBadge .dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: currentColor;
+.doacaoBadge.alta {
+  background-color: rgba(225, 29, 72, 0.18);
+  border: 1px solid rgba(225, 29, 72, 0.35);
+  color: #ff8aa6;
 }
 
-.usuarioDoacaoBadge.alta {
-    background: #fff0f0;
-    color: #e53945;
+.doacaoBadge.média,
+.doacaoBadge.media {
+  background-color: rgba(234, 179, 8, 0.15);
+  border: 1px solid rgba(234, 179, 8, 0.3);
+  color: #fbbf24;
 }
 
-.usuarioDoacaoBadge.média,
-.usuarioDoacaoBadge.media {
-    background: #fff7e6;
-    color: #d99116;
+.doacaoBadge.baixa {
+  background-color: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #4ade80;
 }
 
-.usuarioDoacaoBadge.baixa {
-    background: #eaf8ef;
-    color: #299653;
+.doacaoBadge .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: currentColor;
 }
 
-.usuarioDoacaoInfo {
-    display: flex;
-    flex-direction: column;
-    gap: 13px;
+/* Seção de Informações */
+.doacaoInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
-.usuarioDoacaoInfo > div {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    padding-bottom: 11px;
-    border-bottom: 1px solid #f0f0f0;
+.doacaoInfo > div {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13.5px;
 }
 
-.usuarioDoacaoInfo span {
-    color: #999;
-    font-size: 12px;
+.doacaoInfo span {
+  color: #9ca3af;
 }
 
-.usuarioDoacaoInfo strong {
-    color: #444;
-    font-size: 13px;
-    font-weight: 600;
-    overflow-wrap: anywhere;
+.doacaoInfo strong {
+  color: #e5e7eb;
+  font-weight: 500;
+  text-align: right;
+  max-width: 180px;
+  word-break: break-word;
 }
 
-.usuarioDoacaoDescricao {
-    margin-top: 16px;
-    padding: 12px;
-    border-radius: 9px;
-    background: #fafafa;
+.doacaoDescricao {
+  margin: 0;
+  font-size: 13px;
+  color: #d1d5db;
+  line-height: 1.4;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 10px 12px;
+  border-radius: 10px;
 }
 
-.usuarioDoacaoDescricao p {
-    margin: 0;
-    color: #666;
-    font-size: 13px;
-    line-height: 1.6;
-    overflow-wrap: anywhere;
-}
-
-.usuarioDoacaoFooter {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    margin-top: 18px;
-    padding-top: 14px;
-    border-top: 1px solid #eee;
-}
-
-.usuarioDoacaoFooter span {
-    color: #e63946;
-    font-size: 20px;
-}
-
-.usuarioDoacaoFooter p {
-    color: #777;
-    font-size: 12px;
-    margin: 0;
-}
-
-.usuarioDoacoesVazio {
-    background: #fff;
-    border: 1px dashed #ddd;
-    border-radius: 16px;
-    padding: 65px 25px;
-    text-align: center;
-}
-
-.usuarioDoacoesVazioIcon {
-    color: #e63946;
-    font-size: 48px;
-    margin-bottom: 15px;
-}
-
-.usuarioDoacoesVazio h2 {
-    color: #333;
-    font-size: 19px;
-    margin: 0 0 10px;
-}
-
-.usuarioDoacoesVazio p {
-    color: #888;
-    font-size: 14px;
-    line-height: 1.6;
-    max-width: 430px;
-    margin: auto;
-}
-
+/* ==========================================
+   RESPONSIVIDADE PARA QUALQUER TELA
+   ========================================== */
 @media (max-width: 768px) {
-    .pagina-minhas-doacoes {
-        padding: 20px;
-    }
+  .minhasDoacoesContainer {
+    padding: 16px 12px;
+  }
 
-    .usuarioDoacoesHeader {
-        align-items: flex-start;
-        flex-direction: column;
-    }
+  .minhasDoacoesGrid {
+    justify-content: center;
+    gap: 16px;
+  }
 
-    .usuarioDoacoesGrid {
-        grid-template-columns: 1fr;
-    }
+  .doacaoCard {
+    width: 100%;
+  }
 }
 
 @media (max-width: 480px) {
-    .pagina-minhas-doacoes {
-        padding: 15px;
-    }
+  .minhasDoacoesTitulo {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
 
-    .usuarioDoacoesHeader h1 {
-        font-size: 23px;
-    }
-
-    .usuarioDoacaoBanner {
-        height: 170px;
-    }
+  .doacaoCardBody {
+    padding: 14px;
+  }
 }
