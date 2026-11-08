@@ -190,8 +190,32 @@ function App() {
         return ok;
     };
 
-    // Empresa exclui uma doação. Concluídas também podem ser excluídas (a confirmação é feita na tela).
-    // Só ficam protegidas as que têm oferta pendente.
+    // Marca uma doação concluída como oculta para um dos lados (empresa ou ONG).
+    // Só remove de vez do servidor quando os dois lados já ocultaram.
+    const ocultarConcluida = (id, campo) => {
+        const anteriores = doacoes;
+        const outroCampo = campo === 'ocultaEmpresa' ? 'ocultaUsuario' : 'ocultaEmpresa';
+
+        const novasDoacoes = doacoes.flatMap(d => {
+            if (d.id !== id) return [d];
+
+            const atualizada = { ...d, [campo]: true };
+            return atualizada[outroCampo] ? [] : [atualizada];
+        });
+
+        setDoacoes(novasDoacoes);
+
+        salvarNoServidor(contas, novasDoacoes).then(ok => {
+            if (!ok) {
+                setDoacoes(anteriores);
+                alert('Não foi possível excluir. Tente novamente.');
+            }
+        });
+    };
+
+    // Empresa exclui uma doação.
+    // Concluída: some só da visão da empresa (a ONG continua vendo).
+    // Disponível: é removida de vez. Pendente: precisa responder a oferta antes.
     const handleExcluirDoacao = (idParaExcluir) => {
         if (!usuarioLogado || usuarioLogado.tipo !== 'empresa') {
             return;
@@ -208,9 +232,29 @@ function App() {
             return;
         }
 
+        if (alvo.status === 'concluida') {
+            ocultarConcluida(idParaExcluir, 'ocultaEmpresa');
+            return;
+        }
+
         const novasDoacoesAtualizadas = doacoes.filter(doacao => doacao.id !== idParaExcluir);
         setDoacoes(novasDoacoesAtualizadas);
         salvarNoServidor(contas, novasDoacoesAtualizadas);
+    };
+
+    // ONG exclui uma doação concluída do próprio histórico (não afeta a empresa)
+    const handleExcluirConclusaoUsuario = (idParaExcluir) => {
+        if (!usuarioLogado || usuarioLogado.tipo !== 'usuario') {
+            return;
+        }
+
+        const alvo = doacoes.find(d => d.id === idParaExcluir);
+
+        if (!alvo || alvo.doadorId !== usuarioLogado.id || alvo.status !== 'concluida') {
+            return;
+        }
+
+        ocultarConcluida(idParaExcluir, 'ocultaUsuario');
     };
 
     // ONG oferece uma quantidade da doação (1 até a quantidade pedida pela empresa)
@@ -362,6 +406,7 @@ function App() {
                     doacoes={doacoes}
                     onLogout={handleLogout}
                     onOferecerDoacao={handleOferecerDoacao}
+                    onExcluirConclusao={handleExcluirConclusaoUsuario}
                 />
             )}
         </div>
