@@ -31,11 +31,11 @@
       "empresaId": "conta-1793988871297-r09neb3",
       "empresaNome": "1",
       "empresaEmail": "1@gmail.com",
-      "status": "disponivel",
-      "doadorId": null,
-      "doadorNome": null,
-      "doadorEmail": null,
-      "dataOferta": null,
+      "status": "pendente",
+      "doadorId": "conta-1793985252574-l857au0",
+      "doadorNome": "teste",
+      "doadorEmail": "teste@gmail.com",
+      "dataOferta": "2026-11-08T21:12:15.428Z",
       "dataCadastro": "2026-11-08T19:43:42.113Z"
     },
     {
