@@ -7,7 +7,13 @@ import MinhasDoacoes from '../links/minhasDoacoes/MinhasDoacoes';
 import MapaDoacoes from '../links/mapa/MapaDoacoes';
 import DoacoesConcluidas from '../links/doacoesConcluidas/DoacoesConcluidas';
 
-function HomeUsuario({ usuario, onLogout, doacoes = [], onOferecerDoacao }) {
+function HomeUsuario({
+    usuario,
+    onLogout,
+    doacoes = [],
+    onOferecerDoacao,
+    onExcluirConclusao
+}) {
     const [abaAtiva, setAbaAtiva] = useState('inicio');
 
     return (
@@ -46,6 +52,7 @@ function HomeUsuario({ usuario, onLogout, doacoes = [], onOferecerDoacao }) {
                     <DoacoesConcluidas
                         usuario={usuario}
                         doacoes={doacoes}
+                        onExcluir={onExcluirConclusao}
                     />
                 )}
 

@@ -42,31 +42,6 @@
     {
       "item": "teste",
       "tamanho": "2342",
-      "quantidade": 1,
-      "urgencia": "Alta",
-      "prazo": "234234",
-      "localizacao": "Rua nadia",
-      "descricao": "23423",
-      "imagem": "",
-      "lat": -23.5591584,
-      "lng": -46.9200881,
-      "id": "doacao-1794174201409-7e00u9e",
-      "empresaId": "conta-1793988871297-r09neb3",
-      "empresaNome": "1",
-      "empresaEmail": "1@gmail.com",
-      "status": "concluida",
-      "doadorId": "conta-1793985252574-l857au0",
-      "doadorNome": "teste",
-      "doadorEmail": "teste@gmail.com",
-      "quantidadeOferecida": 1,
-      "dataOferta": "2026-11-08T21:47:45.413Z",
-      "dataCadastro": "2026-11-08T21:43:21.409Z",
-      "dataConclusao": "2026-11-08T21:47:50.701Z",
-      "ocultaEmpresa": true
-    },
-    {
-      "item": "teste",
-      "tamanho": "2342",
       "quantidade": 5,
       "urgencia": "Alta",
       "prazo": "234234",
@@ -86,7 +61,8 @@
       "quantidadeOferecida": 5,
       "dataOferta": "2026-11-08T21:43:50.724Z",
       "dataCadastro": "2026-11-08T21:43:21.409Z",
-      "dataConclusao": "2026-11-08T21:43:55.276Z"
+      "dataConclusao": "2026-11-08T21:43:55.276Z",
+      "ocultaUsuario": true
     },
     {
       "item": "teste",
@@ -110,32 +86,8 @@
       "quantidadeOferecida": 6,
       "dataOferta": "2026-11-08T21:43:29.940Z",
       "dataCadastro": "2026-11-08T21:43:21.409Z",
-      "dataConclusao": "2026-11-08T21:43:34.621Z"
-    },
-    {
-      "item": "Roupas e acessósrio",
-      "tamanho": "Todas",
-      "quantidade": "50",
-      "urgencia": "Alta",
-      "prazo": "20/09/2026",
-      "localizacao": "Av. Paulista, 1106",
-      "descricao": "PRecismo dfsdfsdfsdfd......",
-      "imagem": "",
-      "lat": -23.564324,
-      "lng": -46.6527132,
-      "id": "doacao-1794166954625-5okw083",
-      "empresaId": "conta-1793988871297-r09neb3",
-      "empresaNome": "1",
-      "empresaEmail": "1@gmail.com",
-      "status": "concluida",
-      "doadorId": "conta-1793985252574-l857au0",
-      "doadorNome": "teste",
-      "doadorEmail": "teste@gmail.com",
-      "dataOferta": "2026-11-08T21:42:34.900Z",
-      "dataCadastro": "2026-11-08T19:42:34.625Z",
-      "quantidadeOferecida": 50,
-      "dataConclusao": "2026-11-08T21:42:39.381Z",
-      "ocultaEmpresa": true
+      "dataConclusao": "2026-11-08T21:43:34.621Z",
+      "ocultaUsuario": true
     }
   ]
 }

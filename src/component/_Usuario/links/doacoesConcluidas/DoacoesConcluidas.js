@@ -54,6 +54,7 @@ const DoacoesConcluidas = ({ usuario, doacoes = [], onExcluir }) => {
                     className="doacaoBtnExcluir"
                     onClick={() => confirmarExclusao(doacao.id)}
                     title="Excluir do meu histórico"
+                    aria-label="Excluir do meu histórico"
                   >
                     ✕
                   </button>
