@@ -142,6 +142,13 @@ function App() {
             return;
         }
 
+        const quantidade = Number(novaDoacao.quantidade);
+
+        if (!Number.isInteger(quantidade) || quantidade < 1) {
+            alert('A quantidade precisa ser um número inteiro maior que zero.');
+            return;
+        }
+
         const coords = await buscarCoordenadas(novaDoacao.localizacao);
 
         if (!coords) {
@@ -151,6 +158,7 @@ function App() {
 
         const doacaoCompleta = {
             ...novaDoacao,
+            quantidade,
             lat: coords.lat,
             lng: coords.lng,
             imagem: '',
