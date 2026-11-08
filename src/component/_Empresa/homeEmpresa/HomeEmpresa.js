@@ -57,6 +57,7 @@ function HomeEmpresa({
                 {abaAtiva === 'doacoes-concluidas' && (
                     <DoacoesConcluidas
                         doacoes={minhasDoacoes}
+                        onExcluir={onExcluirDoacao}
                     />
                 )}
 

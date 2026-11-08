@@ -5,11 +5,19 @@ import './doacoesConcluidas.css';
 const formatarData = (iso) =>
   iso ? new Date(iso).toLocaleDateString('pt-BR') : 'Não informada';
 
-const DoacoesConcluidas = ({ doacoes = [] }) => {
+const DoacoesConcluidas = ({ doacoes = [], onExcluir }) => {
   // "doacoes" já chega filtrada pela empresa logada (feito no HomeEmpresa)
   const concluidas = doacoes
     .filter((doacao) => doacao.status === 'concluida')
     .sort((a, b) => (b.dataConclusao || '').localeCompare(a.dataConclusao || ''));
+
+  const confirmarExclusao = (id) => {
+    const certo = window.confirm(
+      'Excluir esta doação concluída do histórico? Essa ação não pode ser desfeita.'
+    );
+
+    if (certo) onExcluir?.(id);
+  };
 
   return (
     <div className="minhasDoacoesContainer">
@@ -33,6 +41,17 @@ const DoacoesConcluidas = ({ doacoes = [] }) => {
                   <img src={doacao.imagem} alt={doacao.item} />
                 ) : (
                   <div className="doacaoCardPlaceholder">Sem imagem</div>
+                )}
+
+                {onExcluir && (
+                  <button
+                    type="button"
+                    className="doacaoBtnExcluir"
+                    onClick={() => confirmarExclusao(doacao.id)}
+                    title="Excluir do histórico"
+                  >
+                    ✕
+                  </button>
                 )}
               </div>
 

@@ -40,30 +40,6 @@
       "quantidadeOferecida": null
     },
     {
-      "item": "tete",
-      "tamanho": "tes",
-      "quantidade": 34,
-      "urgencia": "Alta",
-      "prazo": "teste",
-      "localizacao": "Av. Lins de Vasconcelos, 1264",
-      "descricao": "",
-      "imagem": "",
-      "lat": -23.5743927,
-      "lng": -46.6235475,
-      "id": "doacao-1794173338476-09lkgt6",
-      "empresaId": "conta-1793988871297-r09neb3",
-      "empresaNome": "1",
-      "empresaEmail": "1@gmail.com",
-      "status": "concluida",
-      "doadorId": "conta-1793985252574-l857au0",
-      "doadorNome": "teste",
-      "doadorEmail": "teste@gmail.com",
-      "dataOferta": "2026-11-08T21:28:51.868Z",
-      "dataCadastro": "2026-11-08T19:43:42.113Z",
-      "quantidadeOferecida": 34,
-      "dataConclusao": "2026-11-08T21:28:58.476Z"
-    },
-    {
       "item": "Roupas e acessósrio",
       "tamanho": "Todas",
       "quantidade": "50",
@@ -84,29 +60,6 @@
       "doadorEmail": null,
       "dataOferta": null,
       "dataCadastro": "2026-11-08T19:42:34.625Z"
-    },
-    {
-      "item": "1",
-      "tamanho": "1",
-      "quantidade": "1",
-      "urgencia": "Alta",
-      "prazo": "1",
-      "localizacao": "1",
-      "descricao": "1",
-      "imagem": "",
-      "lat": -5.1122961,
-      "lng": -42.7845775,
-      "id": "doacao-1794006807661-gtezxpa",
-      "empresaId": "conta-1793988871297-r09neb3",
-      "empresaNome": "1",
-      "empresaEmail": "1@gmail.com",
-      "status": "concluida",
-      "doadorId": "conta-1793985252574-l857au0",
-      "doadorNome": "teste",
-      "doadorEmail": "teste@gmail.com",
-      "dataOferta": "2026-11-06T23:13:47.980Z",
-      "dataCadastro": "2026-11-06T23:13:27.661Z",
-      "dataConclusao": "2026-11-06T23:13:51.092Z"
     }
   ]
 }

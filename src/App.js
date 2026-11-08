@@ -190,7 +190,8 @@ function App() {
         return ok;
     };
 
-    // Doações concluídas não podem ser excluídas: ficam no histórico
+    // Empresa exclui uma doação. Concluídas também podem ser excluídas (a confirmação é feita na tela).
+    // Só ficam protegidas as que têm oferta pendente.
     const handleExcluirDoacao = (idParaExcluir) => {
         if (!usuarioLogado || usuarioLogado.tipo !== 'empresa') {
             return;
@@ -202,7 +203,8 @@ function App() {
             return;
         }
 
-        if (alvo.status === 'concluida') {
+        if (alvo.status === 'pendente') {
+            alert('Responda a oferta antes de excluir esta doação.');
             return;
         }
 
