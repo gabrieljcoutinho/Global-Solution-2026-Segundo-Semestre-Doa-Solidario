@@ -5,14 +5,24 @@ import './doacoesConcluidas.css';
 const formatarData = (iso) =>
   iso ? new Date(iso).toLocaleDateString('pt-BR') : 'Não informada';
 
-const DoacoesConcluidas = ({ usuario, doacoes = [] }) => {
-  // Mostra só as doações concluídas em que esta ONG é a doadora
+const DoacoesConcluidas = ({ usuario, doacoes = [], onExcluir }) => {
+  // Mostra só as concluídas em que esta ONG é a doadora e que ela ainda não ocultou
   const concluidas = doacoes
     .filter(
       (doacao) =>
-        doacao.status === 'concluida' && doacao.doadorId === usuario?.id
+        doacao.status === 'concluida' &&
+        doacao.doadorId === usuario?.id &&
+        !doacao.ocultaUsuario
     )
     .sort((a, b) => (b.dataConclusao || '').localeCompare(a.dataConclusao || ''));
+
+  const confirmarExclusao = (id) => {
+    const certo = window.confirm(
+      'Excluir esta doação do seu histórico? A empresa continua vendo o registro.'
+    );
+
+    if (certo) onExcluir?.(id);
+  };
 
   return (
     <div className="minhasDoacoesContainer">
@@ -36,6 +46,17 @@ const DoacoesConcluidas = ({ usuario, doacoes = [] }) => {
                   <img src={doacao.imagem} alt={doacao.item} />
                 ) : (
                   <div className="doacaoCardPlaceholder">Sem imagem</div>
+                )}
+
+                {onExcluir && (
+                  <button
+                    type="button"
+                    className="doacaoBtnExcluir"
+                    onClick={() => confirmarExclusao(doacao.id)}
+                    title="Excluir do meu histórico"
+                  >
+                    ✕
+                  </button>
                 )}
               </div>
 
