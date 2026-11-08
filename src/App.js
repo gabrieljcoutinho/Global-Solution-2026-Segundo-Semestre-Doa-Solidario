@@ -7,6 +7,8 @@ import Cadastro from './component/cadastro/Cadastro';
 import HomeEmpresa from './component/_Empresa/homeEmpresa/HomeEmpresa';
 import HomeUsuario from './component/_Usuario/homeUsuario/HomeUsuario';
 
+import { buscarCoordenadas } from './utils/geocodificacao';
+
 function App() {
     const [usuarioLogado, setUsuarioLogado] = useState(() => {
         try {
@@ -133,14 +135,24 @@ function App() {
         };
     };
 
-    const handleAdicionarDoacao = (novaDoacao) => {
+    // Geocodifica o endereço antes de salvar, para que a doação apareça no mapa
+    const handleAdicionarDoacao = async (novaDoacao) => {
         if (!usuarioLogado || usuarioLogado.tipo !== 'empresa') {
             alert('Somente empresas podem publicar doações.');
             return;
         }
 
+        const coords = await buscarCoordenadas(novaDoacao.localizacao);
+
+        if (!coords) {
+            alert('Não foi possível localizar este endereço no mapa. Verifique e tente novamente.');
+            return;
+        }
+
         const doacaoCompleta = {
             ...novaDoacao,
+            lat: coords.lat,
+            lng: coords.lng,
             imagem: '',
             id: `doacao-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
             empresaId: usuarioLogado.id,

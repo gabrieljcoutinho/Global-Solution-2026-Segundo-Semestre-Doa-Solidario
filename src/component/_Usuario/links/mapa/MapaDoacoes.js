@@ -5,7 +5,6 @@ import 'leaflet/dist/leaflet.css';
 import { useGeolocalizacao } from './useGeolocalizacao';
 import './MapaDoacoes.css';
 
-// Correção dos ícones padrão do Leaflet no React
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
     iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
@@ -13,7 +12,6 @@ L.Icon.Default.mergeOptions({
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-// Ícone azul para a posição do usuário
 const iconeUsuario = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
@@ -23,7 +21,6 @@ const iconeUsuario = new L.Icon({
     shadowSize: [41, 41]
 });
 
-// Ícone vermelho para as doações
 const iconeDoacao = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
@@ -33,7 +30,6 @@ const iconeDoacao = new L.Icon({
     shadowSize: [41, 41]
 });
 
-// Busca o caminho pelas ruas entre dois pontos [lat, lng] (OSRM, sem chave)
 async function buscarRota(origem, destino) {
     const url = `https://router.project-osrm.org/route/v1/driving/${origem[1]},${origem[0]};${destino[1]},${destino[0]}?overview=full&geometries=geojson`;
 
@@ -52,15 +48,25 @@ async function buscarRota(origem, destino) {
     };
 }
 
-// Recalcula o tamanho do mapa, centraliza na primeira posição e ajusta a tela à rota
-const ForcarRedenrizacaoMapa = ({ center, rota }) => {
+// Recalcula o tamanho do mapa quando o contêiner muda de tamanho
+const AjustarTamanhoMapa = () => {
     const map = useMap();
-    const centradoRef = useRef(false);
 
     useEffect(() => {
-        const t = setTimeout(() => map.invalidateSize(), 250);
-        return () => clearTimeout(t);
+        map.whenReady(() => map.invalidateSize());
+
+        const observer = new ResizeObserver(() => map.invalidateSize());
+        observer.observe(map.getContainer());
+
+        return () => observer.disconnect();
     }, [map]);
+
+    return null;
+};
+
+const CentralizarMapa = ({ center, rota }) => {
+    const map = useMap();
+    const centradoRef = useRef(false);
 
     useEffect(() => {
         if (center && !centradoRef.current) {
@@ -69,7 +75,6 @@ const ForcarRedenrizacaoMapa = ({ center, rota }) => {
         }
     }, [center, map]);
 
-    // Quando uma rota é traçada, enquadra o mapa para mostrar o caminho inteiro
     useEffect(() => {
         if (rota && rota.pontos.length > 0) {
             map.fitBounds(rota.pontos, { padding: [40, 40] });
@@ -122,7 +127,6 @@ function MapaDoacoes({ doacoes = [] }) {
         setErroRota(null);
     };
 
-    // Link para o Google Maps com a sua posição como origem (para escolher outro caminho)
     const linkGoogleMaps = (doacao) =>
         `https://www.google.com/maps/dir/?api=1&origin=${posicaoUsuario[0]},${posicaoUsuario[1]}&destination=${doacao.coords[0]},${doacao.coords[1]}&travelmode=driving`;
 
@@ -154,7 +158,12 @@ function MapaDoacoes({ doacoes = [] }) {
                         🛣️ Rota até <strong>{doacaoRota.item}</strong>: {rota.distanciaKm} km, aprox. {rota.minutos} min de carro.
                     </p>
                     <div className="avisoRotaAcoes">
-                        <a href={linkGoogleMaps(doacaoRota)} target="_blank" rel="noopener noreferrer" className="linkRotaMaps">
+                        <a
+                            href={linkGoogleMaps(doacaoRota)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="linkRotaMaps"
+                        >
                             Ver outras opções no Google Maps
                         </a>
                         <button type="button" className="btnLimparRota" onClick={limparRota}>
@@ -166,26 +175,29 @@ function MapaDoacoes({ doacoes = [] }) {
 
             <p className="mapaDoacoesSubtitulo">
                 {posicaoUsuario
-                    ? `A exibir campanhas de doação cadastradas a até 50 km da sua localização atual.`
-                    : `A carregar a sua posição em tempo real...`}
+                    ? 'A exibir campanhas de doação cadastradas a até 50 km da sua localização atual.'
+                    : 'A carregar a sua posição em tempo real...'}
             </p>
 
-            <div className="mapaWrapperReal">
+            <div
+                className="mapaWrapperReal"
+                style={{ width: '100%', height: '600px', position: 'relative' }}
+            >
                 <MapContainer
                     center={centroMapa}
                     zoom={13}
                     scrollWheelZoom={true}
                     style={{ width: '100%', height: '100%' }}
                 >
-                    <ForcarRedenrizacaoMapa center={posicaoUsuario} rota={rota} />
+                    <AjustarTamanhoMapa />
+                    <CentralizarMapa center={posicaoUsuario} rota={rota} />
 
                     <TileLayer
-                        attribution='Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS'
-                        url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}"
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         maxZoom={19}
                     />
 
-                    {/* Linha da rota traçada, em laranja */}
                     {rota && (
                         <Polyline
                             positions={rota.pontos}
@@ -193,7 +205,6 @@ function MapaDoacoes({ doacoes = [] }) {
                         />
                     )}
 
-                    {/* Ponto azul da posição atual do utilizador */}
                     {posicaoUsuario && (
                         <Marker position={posicaoUsuario} icon={iconeUsuario}>
                             <Popup>
@@ -205,7 +216,6 @@ function MapaDoacoes({ doacoes = [] }) {
                         </Marker>
                     )}
 
-                    {/* Pontos vermelhos das doações filtradas até 50 km */}
                     {doacoesFiltradas.map((doacao) => (
                         <Marker key={doacao.id} position={doacao.coords} icon={iconeDoacao}>
                             <Popup>
