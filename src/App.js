@@ -162,6 +162,7 @@ function App() {
             doadorId: null,
             doadorNome: null,
             doadorEmail: null,
+            quantidadeOferecida: null,
             dataOferta: null,
             dataCadastro: new Date().toISOString()
         };
@@ -210,8 +211,8 @@ function App() {
         salvarNoServidor(contas, novasDoacoesAtualizadas);
     };
 
-    // ONG oferece a doação
-    const handleOferecerDoacao = async (id) => {
+    // ONG oferece uma quantidade da doação (1 até a quantidade pedida pela empresa)
+    const handleOferecerDoacao = async (id, quantidadeOferecida) => {
         if (!usuarioLogado || usuarioLogado.tipo !== 'usuario') return false;
 
         const alvo = doacoes.find(d => d.id === id);
@@ -221,8 +222,17 @@ function App() {
             return false;
         }
 
+        const qtd = Number(quantidadeOferecida);
+        const qtdMaxima = Number(alvo.quantidade);
+
+        if (!Number.isInteger(qtd) || qtd < 1 || qtd > qtdMaxima) {
+            alert(`Informe uma quantidade entre 1 e ${qtdMaxima}.`);
+            return false;
+        }
+
         const ok = await atualizarDoacao(id, {
             status: 'pendente',
+            quantidadeOferecida: qtd,
             doadorId: usuarioLogado.id,
             doadorNome: usuarioLogado.nome,
             doadorEmail: usuarioLogado.email,
@@ -236,7 +246,7 @@ function App() {
         return ok;
     };
 
-    // Empresa confirma ou cancela a oferta
+    // Empresa aceita ou recusa a oferta
     const handleResponderDoacao = async (id, aceitar) => {
         if (!usuarioLogado || usuarioLogado.tipo !== 'empresa') return false;
 
@@ -246,23 +256,65 @@ function App() {
             return false;
         }
 
-        const mudancas = aceitar
-            ? {
-                status: 'concluida',
-                dataConclusao: new Date().toISOString()
-            }
-            : {
-                status: 'disponivel',
-                doadorId: null,
-                doadorNome: null,
-                doadorEmail: null,
-                dataOferta: null,
-                dataConclusao: null
-            };
+        const agora = new Date().toISOString();
+        const limparOferta = {
+            doadorId: null,
+            doadorNome: null,
+            doadorEmail: null,
+            dataOferta: null,
+            quantidadeOferecida: null
+        };
 
-        const ok = await atualizarDoacao(id, mudancas);
+        const anteriores = doacoes;
+        let novasDoacoes;
+
+        if (aceitar) {
+            const oferecida = Number(alvo.quantidadeOferecida);
+            const restante = Number(alvo.quantidade) - oferecida;
+
+            if (restante <= 0) {
+                // Aceitou tudo: a doação inteira fica concluída
+                novasDoacoes = doacoes.map(d =>
+                    d.id === id
+                        ? { ...d, status: 'concluida', dataConclusao: agora }
+                        : d
+                );
+            } else {
+                // Aceitou parte: a parte aceita vira concluída e o restante volta a ficar disponível
+                const registroConcluido = {
+                    ...alvo,
+                    id: `doacao-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+                    quantidade: oferecida,
+                    status: 'concluida',
+                    dataConclusao: agora
+                };
+
+                const restanteDisponivel = {
+                    ...alvo,
+                    ...limparOferta,
+                    quantidade: restante,
+                    status: 'disponivel'
+                };
+
+                novasDoacoes = doacoes.flatMap(d =>
+                    d.id === id ? [restanteDisponivel, registroConcluido] : [d]
+                );
+            }
+        } else {
+            // Recusou: a doação volta a ficar disponível com a quantidade original
+            novasDoacoes = doacoes.map(d =>
+                d.id === id
+                    ? { ...d, ...limparOferta, status: 'disponivel' }
+                    : d
+            );
+        }
+
+        setDoacoes(novasDoacoes);
+
+        const ok = await salvarNoServidor(contas, novasDoacoes);
 
         if (!ok) {
+            setDoacoes(anteriores);
             alert('Não foi possível salvar a resposta. Tente novamente.');
         }
 

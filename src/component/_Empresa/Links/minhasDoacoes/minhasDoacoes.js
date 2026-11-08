@@ -91,7 +91,11 @@ const MinhasDoacoes = ({ doacoes = [], onExcluir, onResponder }) => {
                     <div>
                       <span>Quantidade</span>
                       <strong>
-                        {doacao.quantidade ? `${doacao.quantidade} peças` : 'Não informada'}
+                        {pendente && doacao.quantidadeOferecida
+                          ? `${doacao.quantidadeOferecida} de ${doacao.quantidade} peças`
+                          : doacao.quantidade
+                            ? `${doacao.quantidade} peças`
+                            : 'Não informada'}
                       </strong>
                     </div>
                     <div>
@@ -113,7 +117,7 @@ const MinhasDoacoes = ({ doacoes = [], onExcluir, onResponder }) => {
                   {pendente && (
                     <div className="doacaoOferta">
                       <p>
-                        Oferecida por <strong>{doacao.doadorNome || 'ONG'}</strong>
+                        Oferecida por <strong>{doacao.doadorNome || 'ONG'}</strong>: {doacao.quantidadeOferecida} peças
                       </p>
 
                       <div className="doacaoOfertaAcoes">

@@ -8,6 +8,8 @@ const rotuloStatus = {
 
 function MinhasDoacoes({ usuario, doacoes = [], onOferecerDoacao }) {
     const [processandoId, setProcessandoId] = useState(null);
+    const [quantidades, setQuantidades] = useState({});
+    const [erros, setErros] = useState({});
 
     // Mostra as doações disponíveis e as que esta ONG ofereceu e ainda aguardam resposta.
     // Concluídas saem daqui e ficam só em "Doação Concluída".
@@ -21,11 +23,27 @@ function MinhasDoacoes({ usuario, doacoes = [], onOferecerDoacao }) {
         return doacao.doadorId === usuario?.id;
     });
 
-    const oferecer = async (id) => {
-        setProcessandoId(id);
+    const alterarQuantidade = (id, valor) => {
+        setQuantidades(prev => ({ ...prev, [id]: valor }));
+        setErros(prev => ({ ...prev, [id]: null }));
+    };
+
+    const oferecer = async (doacao) => {
+        const qtd = Number(quantidades[doacao.id]);
+        const qtdMaxima = Number(doacao.quantidade);
+
+        if (!Number.isInteger(qtd) || qtd < 1 || qtd > qtdMaxima) {
+            setErros(prev => ({
+                ...prev,
+                [doacao.id]: `Digite um número entre 1 e ${qtdMaxima}.`
+            }));
+            return;
+        }
+
+        setProcessandoId(doacao.id);
 
         try {
-            await onOferecerDoacao?.(id);
+            await onOferecerDoacao?.(doacao.id, qtd);
         } finally {
             setProcessandoId(null);
         }
@@ -52,6 +70,7 @@ function MinhasDoacoes({ usuario, doacoes = [], onOferecerDoacao }) {
                         const status = doacao.status ?? 'disponivel';
                         const ofereciPorMim = doacao.doadorId === usuario?.id;
                         const emEspera = processandoId === doacao.id || (status === 'pendente' && ofereciPorMim);
+                        const qtdMaxima = Number(doacao.quantidade);
 
                         return (
                             <div key={doacao.id} className="doacaoCard">
@@ -142,13 +161,40 @@ function MinhasDoacoes({ usuario, doacoes = [], onOferecerDoacao }) {
                                     )}
 
                                     {status === 'disponivel' && !emEspera && (
-                                        <button
-                                            type="button"
-                                            className="btnQueroDoar"
-                                            onClick={() => oferecer(doacao.id)}
-                                        >
-                                            Quero doar
-                                        </button>
+                                        <div className="doacaoOferta">
+                                            <label className="doacaoOfertaLabel">
+                                                Quantas peças você vai doar? (até {qtdMaxima})
+                                            </label>
+                                            <input
+                                                type="number"
+                                                min="1"
+                                                max={qtdMaxima}
+                                                className="doacaoOfertaInput"
+                                                placeholder={`De 1 a ${qtdMaxima}`}
+                                                value={quantidades[doacao.id] ?? ''}
+                                                onChange={(e) => alterarQuantidade(doacao.id, e.target.value)}
+                                            />
+
+                                            {erros[doacao.id] && (
+                                                <p className="doacaoOfertaErro">
+                                                    {erros[doacao.id]}
+                                                </p>
+                                            )}
+
+                                            <button
+                                                type="button"
+                                                className="btnQueroDoar"
+                                                onClick={() => oferecer(doacao)}
+                                            >
+                                                Quero doar
+                                            </button>
+                                        </div>
+                                    )}
+
+                                    {status === 'pendente' && ofereciPorMim && (
+                                        <p className="doacaoOfertaInfo">
+                                            Você ofereceu {doacao.quantidadeOferecida} peças.
+                                        </p>
                                     )}
 
                                     {emEspera && (
