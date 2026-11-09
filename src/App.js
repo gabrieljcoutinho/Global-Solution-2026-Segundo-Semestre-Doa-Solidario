@@ -37,8 +37,21 @@ function App() {
         fetch('http://localhost:3001/api/dados')
             .then(res => res.json())
             .then(data => {
-                setContas(data.contas || []);
-                setDoacoes(data.doacoes || []);
+                const contasCarregadas = data.contas || [];
+                const doacoesCarregadas = data.doacoes || [];
+
+                const idsEmpresasValidas = new Set(
+                    contasCarregadas.filter(c => c.tipo === 'empresa').map(c => c.id)
+                );
+
+                // Filtra doações órfãs cujas empresas não existem mais
+                const doacoesValidas = doacoesCarregadas.filter(doacao => {
+                    if (!doacao.empresaId) return true;
+                    return idsEmpresasValidas.has(doacao.empresaId);
+                });
+
+                setContas(contasCarregadas);
+                setDoacoes(doacoesValidas);
             })
             .catch(err => console.error('Erro ao buscar dados do servidor:', err));
     }, []);
@@ -55,7 +68,6 @@ function App() {
         }
     }, [usuarioLogado]);
 
-    // Retorna true se o servidor confirmou a gravação
     const salvarNoServidor = async (novasContas, novasDoacoes) => {
         try {
             const res = await fetch('http://localhost:3001/api/dados', {
@@ -135,7 +147,6 @@ function App() {
         };
     };
 
-    // Geocodifica o endereço antes de salvar, para que a doação apareça no mapa
     const handleAdicionarDoacao = async (novaDoacao) => {
         if (!usuarioLogado || usuarioLogado.tipo !== 'empresa') {
             alert('Somente empresas podem publicar doações.');
@@ -180,7 +191,6 @@ function App() {
         salvarNoServidor(contas, novasDoacoesAtualizadas);
     };
 
-    // Atualiza uma doação, grava no servidor e desfaz a mudança se a gravação falhar
     const atualizarDoacao = async (id, mudancas) => {
         const anteriores = doacoes;
         const novasDoacoes = doacoes.map(d =>
@@ -198,8 +208,6 @@ function App() {
         return ok;
     };
 
-    // Marca uma doação concluída como oculta para um dos lados (empresa ou ONG).
-    // Só remove de vez do servidor quando os dois lados já ocultaram.
     const ocultarConcluida = (id, campo) => {
         const anteriores = doacoes;
         const outroCampo = campo === 'ocultaEmpresa' ? 'ocultaUsuario' : 'ocultaEmpresa';
@@ -221,9 +229,6 @@ function App() {
         });
     };
 
-    // Empresa exclui uma doação.
-    // Concluída: some só da visão da empresa (a ONG continua vendo).
-    // Disponível: é removida de vez. Pendente: precisa responder a oferta antes.
     const handleExcluirDoacao = (idParaExcluir) => {
         if (!usuarioLogado || usuarioLogado.tipo !== 'empresa') {
             return;
@@ -250,22 +255,17 @@ function App() {
         salvarNoServidor(contas, novasDoacoesAtualizadas);
     };
 
-    // ONG exclui uma doação concluída do próprio histórico (não afeta a empresa)
+    // ONG exclui do histórico ou remove doação quebrada/órfã da tela
     const handleExcluirConclusaoUsuario = (idParaExcluir) => {
         if (!usuarioLogado || usuarioLogado.tipo !== 'usuario') {
             return;
         }
 
-        const alvo = doacoes.find(d => d.id === idParaExcluir);
-
-        if (!alvo || alvo.doadorId !== usuarioLogado.id || alvo.status !== 'concluida') {
-            return;
-        }
-
-        ocultarConcluida(idParaExcluir, 'ocultaUsuario');
+        const novasDoacoesAtualizadas = doacoes.filter(d => d.id !== idParaExcluir);
+        setDoacoes(novasDoacoesAtualizadas);
+        salvarNoServidor(contas, novasDoacoesAtualizadas);
     };
 
-    // ONG oferece uma quantidade da doação (1 até a quantidade pedida pela empresa)
     const handleOferecerDoacao = async (id, quantidadeOferecida) => {
         if (!usuarioLogado || usuarioLogado.tipo !== 'usuario') return false;
 
@@ -300,7 +300,6 @@ function App() {
         return ok;
     };
 
-    // Empresa aceita ou recusa a oferta
     const handleResponderDoacao = async (id, aceitar) => {
         if (!usuarioLogado || usuarioLogado.tipo !== 'empresa') return false;
 
@@ -327,14 +326,12 @@ function App() {
             const restante = Number(alvo.quantidade) - oferecida;
 
             if (restante <= 0) {
-                // Aceitou tudo: a doação inteira fica concluída
                 novasDoacoes = doacoes.map(d =>
                     d.id === id
                         ? { ...d, status: 'concluida', dataConclusao: agora }
                         : d
                 );
             } else {
-                // Aceitou parte: a parte aceita vira concluída e o restante volta a ficar disponível
                 const registroConcluido = {
                     ...alvo,
                     id: `doacao-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
@@ -355,7 +352,6 @@ function App() {
                 );
             }
         } else {
-            // Recusou: a doação volta a ficar disponível com a quantidade original
             novasDoacoes = doacoes.map(d =>
                 d.id === id
                     ? { ...d, ...limparOferta, status: 'disponivel' }
