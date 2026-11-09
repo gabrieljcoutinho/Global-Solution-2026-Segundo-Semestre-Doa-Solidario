@@ -11,7 +11,8 @@ const app = express();
 const PORTA = 3001;
 const CAMINHO_JSON = path.join(__dirname, 'dados.json');
 
-app.use(express.json({ limit: '1mb' }));
+// Limite maior para acomodar fotos em base64
+app.use(express.json({ limit: '10mb' }));
 app.use(cors());
 
 // ==========================================
@@ -164,13 +165,21 @@ app.post('/api/dados', (req, res) => {
 // POST - CONVERSAR COM A INTELIGÊNCIA ARTIFICIAL
 // ==========================================
 
+const TIPOS_IMAGEM = ['image/jpeg', 'image/png', 'image/webp'];
+
 app.post('/api/chat', async (req, res) => {
     try {
-        const { mensagem, historico = [] } = req.body;
+        const { mensagem, historico = [], imagem } = req.body;
 
-        if (typeof mensagem !== 'string' || !mensagem.trim()) {
+        if (typeof mensagem !== 'string') {
             return res.status(400).json({
-                erro: 'Digite uma mensagem válida.'
+                erro: 'Mensagem inválida.'
+            });
+        }
+
+        if (!mensagem.trim() && !imagem) {
+            return res.status(400).json({
+                erro: 'Digite uma mensagem ou envie uma foto.'
             });
         }
 
@@ -180,12 +189,24 @@ app.post('/api/chat', async (req, res) => {
             });
         }
 
+        if (imagem) {
+            if (
+                !TIPOS_IMAGEM.includes(imagem.mimeType) ||
+                typeof imagem.data !== 'string'
+            ) {
+                return res.status(400).json({
+                    erro: 'Envie uma imagem JPEG, PNG ou WebP.'
+                });
+            }
+        }
+
         const dadosApp = lerDadosApp();
 
         const resposta = await enviarMensagem(
             mensagem,
             historico,
-            dadosApp
+            dadosApp,
+            imagem || null
         );
 
         return res.json({

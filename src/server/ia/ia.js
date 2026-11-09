@@ -15,14 +15,21 @@ const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // Remove respostas antigas que diziam não ter os dados, para não reforçar o erro
 const respostaRuim = (texto) =>
-    /não recebi|não consigo informar|não tenho acesso|não recebi os dados/i.test(texto);
+    /não recebi|não consigo informar|não tenho acesso/i.test(texto);
 
-async function enviarMensagem(mensagem, historico = [], dadosApp = null) {
+const INSTRUCAO_IMAGEM = `
+AVALIAÇÃO DE FOTOS
+Quando receber uma foto de roupa ou peça, avalie o estado visível como "novo", "bom", "regular" ou "com defeitos".
+Liste os motivos que você vê na imagem (manchas, desgaste, rasgos, bolinhas de tecido, descoloração).
+Deixe claro que é uma avaliação visual estimada e que a conferência final deve ser feita presencialmente pela instituição.
+Não diga que a peça está apta para doação com certeza. Não avalie odor nem defeitos internos que não aparecem na foto.`;
+
+async function enviarMensagem(mensagem, historico = [], dadosApp = null, imagem = null) {
     if (!process.env.GEMINI_API_KEY) {
         throw new Error('Configure GEMINI_API_KEY no arquivo .env.');
     }
 
-    if (typeof mensagem !== 'string' || !mensagem.trim()) {
+    if (typeof mensagem !== 'string') {
         throw new Error('Mensagem inválida.');
     }
 
@@ -45,22 +52,38 @@ async function enviarMensagem(mensagem, historico = [], dadosApp = null) {
     }
 
     // Os dados vão junto com a pergunta, na mensagem do usuário
+    const perguntaLimpa = mensagem.trim() || 'Avalie o estado destas peças na foto.';
+
     const textoComDados = dadosApp
         ? `DADOS ATUAIS DA PLATAFORMA (JSON):
 ${JSON.stringify(dadosApp)}
 
 PERGUNTA DO USUÁRIO:
-${mensagem.trim()}`
-        : mensagem.trim();
+${perguntaLimpa}`
+        : perguntaLimpa;
+
+    const parts = [];
+
+    if (imagem) {
+        parts.push({
+            inlineData: {
+                mimeType: imagem.mimeType,
+                data: imagem.data
+            }
+        });
+    }
+
+    parts.push({ text: textoComDados });
 
     contents.push({
         role: 'user',
-        parts: [{ text: textoComDados }]
+        parts
     });
 
     const systemInstruction = `${PROMPT_DOACERTO}
 
-Você recebe sempre os dados atuais da plataforma junto com a pergunta, no bloco "DADOS ATUAIS DA PLATAFORMA". Use esses dados para responder. Para quantidades, use o campo "resumo". Ao listar doações, mostre no máximo 10. Se a informação não estiver nos dados, diga que não encontrou.`;
+Você recebe sempre os dados atuais da plataforma junto com a pergunta, no bloco "DADOS ATUAIS DA PLATAFORMA". Use esses dados para responder. Para quantidades, use o campo "resumo". Ao listar doações, mostre no máximo 10. Se a informação não estiver nos dados, diga que não encontrou.
+${INSTRUCAO_IMAGEM}`;
 
     let ultimoErro;
 

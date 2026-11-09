@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
 import './chat.css';
 
 const Chat = () => {
@@ -17,7 +18,11 @@ const Chat = () => {
     const [inputText, setInputText] = useState('');
     const [loading, setLoading] = useState(false);
 
+    const [imagemSelecionada, setImagemSelecionada] = useState(null);
+    const [previewImagem, setPreviewImagem] = useState(null);
+
     const messagesEndRef = useRef(null);
+    const fileInputRef = useRef(null);
 
     // ==========================================
     // ROLAGEM AUTOMÁTICA
@@ -41,31 +46,74 @@ const Chat = () => {
     };
 
     // ==========================================
+    // FOTO: ESCOLHER E REMOVER
+    // ==========================================
+
+    const handleEscolherImagem = (e) => {
+        const arquivo = e.target.files?.[0];
+        if (!arquivo) return;
+
+        if (arquivo.size > 5 * 1024 * 1024) {
+            alert('A imagem precisa ter no máximo 5 MB.');
+            return;
+        }
+
+        const leitor = new FileReader();
+
+        leitor.onload = () => {
+            const base64 = leitor.result.split(',')[1];
+
+            setImagemSelecionada({
+                mimeType: arquivo.type,
+                data: base64
+            });
+
+            setPreviewImagem(leitor.result);
+        };
+
+        leitor.readAsDataURL(arquivo);
+    };
+
+    const removerImagem = () => {
+        setImagemSelecionada(null);
+        setPreviewImagem(null);
+
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+    };
+
+    // ==========================================
     // ENVIAR MENSAGEM PARA O GEMINI
     // ==========================================
 
     const handleSendMessage = async (e) => {
         e.preventDefault();
 
-        const mensagem = inputText.trim();
+        const textoDigitado = inputText.trim();
+        const imagem = imagemSelecionada;
+        const preview = previewImagem;
 
-        if (!mensagem || loading) return;
+        if ((!textoDigitado && !imagem) || loading) return;
+
+        const mensagem = textoDigitado || 'Avalie o estado destas peças na foto.';
 
         const novaMensagem = {
             sender: 'user',
             text: mensagem,
-            time: obterHorario()
+            time: obterHorario(),
+            preview
         };
 
-        // Adiciona a mensagem do usuário
         setMessages(prev => [...prev, novaMensagem]);
 
         setInputText('');
+        removerImagem();
         setLoading(true);
 
         try {
 
-            // Prepara o histórico sem a saudação inicial
+            // Histórico sem a saudação inicial e sem mensagens de erro
             const historico = messages
                 .slice(1)
                 .filter(msg => !msg.erro)
@@ -74,7 +122,6 @@ const Chat = () => {
                     text: msg.text
                 }));
 
-            // Envia a solicitação ao backend
             const response = await fetch('http://localhost:3001/api/chat', {
                 method: 'POST',
 
@@ -84,7 +131,8 @@ const Chat = () => {
 
                 body: JSON.stringify({
                     mensagem,
-                    historico
+                    historico,
+                    imagem
                 })
             });
 
@@ -96,7 +144,6 @@ const Chat = () => {
                 );
             }
 
-            // Adiciona a resposta da inteligência artificial
             const respostaIA = {
                 sender: 'bot',
                 text: dados.resposta,
@@ -218,9 +265,23 @@ const Chat = () => {
                                     {msg.sender === 'bot' ? 'Assistente' : 'Você'}
                                 </span>
 
-                                <p style={{ whiteSpace: 'pre-wrap' }}>
-                                    {msg.text}
-                                </p>
+                                {msg.preview && (
+                                    <img
+                                        src={msg.preview}
+                                        alt="Foto enviada"
+                                        style={{ maxWidth: '100%', borderRadius: 8, marginBottom: 6 }}
+                                    />
+                                )}
+
+                                {msg.sender === 'bot' && !msg.erro ? (
+                                    <div className="chat-markdown">
+                                        <ReactMarkdown>{msg.text}</ReactMarkdown>
+                                    </div>
+                                ) : (
+                                    <p style={{ whiteSpace: 'pre-wrap' }}>
+                                        {msg.text}
+                                    </p>
+                                )}
 
                                 <span className="chat-msg-time">
                                     {msg.time}
@@ -231,8 +292,6 @@ const Chat = () => {
                         </div>
 
                     ))}
-
-                    {/* INDICADOR DE RESPOSTA DA IA */}
 
                     {loading && (
 
@@ -275,33 +334,40 @@ const Chat = () => {
 
                 <footer className="chat-bottom-footer">
 
+                    {previewImagem && (
+                        <div style={{ padding: '8px 12px', display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <img
+                                src={previewImagem}
+                                alt="Prévia"
+                                style={{ maxHeight: 80, borderRadius: 8 }}
+                            />
+                            <button type="button" onClick={removerImagem}>
+                                Remover
+                            </button>
+                        </div>
+                    )}
+
                     <form
                         className="chat-input-wrapper-form"
                         onSubmit={handleSendMessage}
                     >
 
+                        <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp"
+                            onChange={handleEscolherImagem}
+                            style={{ display: 'none' }}
+                        />
+
                         <button
                             type="button"
                             className="chat-tool-icon-btn"
-                            title="Falar por voz"
+                            title="Enviar foto"
+                            onClick={() => fileInputRef.current?.click()}
+                            disabled={loading}
                         >
-
-                            <svg
-                                viewBox="0 0 24 24"
-                                width="21"
-                                height="21"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="1.8"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            >
-                                <rect x="9" y="2" width="6" height="13" rx="3" />
-                                <path d="M5 10v2a7 7 0 0 0 14 0v-2" />
-                                <path d="M12 19v3" />
-                                <path d="M8 22h8" />
-                            </svg>
-
+                            📷
                         </button>
 
                         <input
@@ -319,7 +385,7 @@ const Chat = () => {
                             type="submit"
                             className="chat-submit-btn"
                             title="Enviar mensagem"
-                            disabled={!inputText.trim() || loading}
+                            disabled={(!inputText.trim() && !imagemSelecionada) || loading}
                         >
 
                             <svg
