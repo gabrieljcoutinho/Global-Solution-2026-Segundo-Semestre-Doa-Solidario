@@ -16,6 +16,36 @@
     }
   ],
   "doacoes": [
-
+    {
+      "item": "1",
+      "tamanho": "1",
+      "quantidade": 1,
+      "urgencia": "Alta",
+      "prazo": "1",
+      "localizacao": "Paulista",
+      "descricao": "",
+      "imagem": "",
+      "lat": -7.9340069,
+      "lng": -34.868407,
+      "id": "doacao-1794231370340-s2v56hj",
+      "empresaId": "conta-1793988871297-r09neb3",
+      "empresaNome": "1",
+      "empresaEmail": "1@gmail.com",
+      "status": "disponivel",
+      "doadorId": null,
+      "doadorNome": null,
+      "doadorEmail": null,
+      "quantidadeOferecida": null,
+      "dataOferta": null,
+      "dataCadastro": "2026-11-09T13:36:10.340Z"
+    },
+    {
+      "status": "pendente",
+      "quantidadeOferecida": 123,
+      "doadorId": "conta-1793985252574-l857au0",
+      "doadorNome": "teste",
+      "doadorEmail": "teste@gmail.com",
+      "dataOferta": "2026-11-09T13:36:26.238Z"
+    }
   ]
 }

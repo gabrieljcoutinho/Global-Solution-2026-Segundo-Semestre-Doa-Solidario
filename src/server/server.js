@@ -15,7 +15,7 @@ app.use(express.json({ limit: '1mb' }));
 app.use(cors());
 
 // ==========================================
-// LIMPEZA DE DOAÇÕES FINALIZADAS
+// LIMPEZA DE DOAÇÕES REMOVIDAS PELA EMPRESA
 // ==========================================
 
 const limparDoacoesFinalizadas = (dados) => {
@@ -24,12 +24,7 @@ const limparDoacoesFinalizadas = (dados) => {
     return {
         ...dados,
         doacoes: dados.doacoes.filter(
-            (doacao) =>
-                !(
-                    doacao.status === 'concluida' &&
-                    doacao.ocultaEmpresa === true &&
-                    doacao.ocultaUsuario === true
-                )
+            (doacao) => doacao.ocultaEmpresa !== true
         ),
     };
 };
@@ -92,48 +87,6 @@ const lerDadosApp = () => {
         console.error('Não foi possível ler dados.json para a IA:', erro);
         return null;
     }
-};
-
-// ==========================================
-// FORMATAÇÃO DA LISTA DE DOAÇÕES (resposta direta)
-// ==========================================
-
-// Pega o primeiro campo preenchido entre as opções possíveis
-const pegarCampo = (doacao, ...chaves) => {
-    for (const chave of chaves) {
-        const valor = doacao[chave];
-        if (valor !== undefined && valor !== null && String(valor).trim() !== '') {
-            return valor;
-        }
-    }
-    return 'Não informado';
-};
-
-const formatarDoacoes = (doacoes) => {
-    return doacoes
-        .slice(0, 10)
-        .map((doacao, i) => {
-            const nome = pegarCampo(doacao, 'nome', 'titulo', 'title', 'campanha');
-            const descricao = pegarCampo(doacao, 'descricao', 'descrição', 'description', 'detalhes');
-            const prioridade = pegarCampo(doacao, 'prioridade', 'tipo', 'categoria');
-            const status = pegarCampo(doacao, 'status');
-            const tamanho = pegarCampo(doacao, 'tamanho', 'size');
-            const quantidade = pegarCampo(doacao, 'quantidade', 'qtd', 'quantity');
-            const prazo = pegarCampo(doacao, 'prazo', 'validade', 'deadline');
-            const local = pegarCampo(doacao, 'local', 'cidade', 'endereco', 'location');
-
-            return [
-                `**${i + 1}. ${nome}**`,
-                `- **Descrição:** ${descricao}`,
-                `- **Prioridade:** ${prioridade}`,
-                `- **Status:** ${status}`,
-                `- **Tamanho:** ${tamanho}`,
-                `- **Quantidade:** ${quantidade}`,
-                `- **Prazo:** ${prazo}`,
-                `- **Local:** ${local}`
-            ].join('\n');
-        })
-        .join('\n\n');
 };
 
 // ==========================================
@@ -228,36 +181,6 @@ app.post('/api/chat', async (req, res) => {
         }
 
         const dadosApp = lerDadosApp();
-
-        // ATALHO: perguntas sobre doações são respondidas direto pelo servidor
-        const mencionaDoacoes = /doa[cç][oõ]es/i.test(mensagem);
-        const pedeListaOuContagem = /quant[ao]s?|quais|lista|mostr|todas|dispon[ií]v/i.test(mensagem);
-
-        if (mencionaDoacoes && pedeListaOuContagem && dadosApp?.resumo) {
-            const { totalDoacoes, porStatus } = dadosApp.resumo;
-            const doacoes = Array.isArray(dadosApp.doacoes) ? dadosApp.doacoes : [];
-
-            const resumoStatus = Object.entries(porStatus)
-                .map(([status, qtd]) => `- **${status}:** ${qtd}`)
-                .join('\n');
-
-            const lista = doacoes.length > 0
-                ? `\n\n${formatarDoacoes(doacoes)}`
-                : '';
-
-            const aviso = doacoes.length > 10
-                ? `\n\n_Mostrando as 10 primeiras de ${doacoes.length}._`
-                : '';
-
-            return res.json({
-                sucesso: true,
-                resposta:
-                    `Há **${totalDoacoes}** doações cadastradas no momento.\n\n` +
-                    `${resumoStatus}` +
-                    `${lista}` +
-                    `${aviso}`
-            });
-        }
 
         const resposta = await enviarMensagem(
             mensagem,
