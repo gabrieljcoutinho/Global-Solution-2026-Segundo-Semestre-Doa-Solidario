@@ -5,16 +5,19 @@ const ai = new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY || ''
 });
 
-// Modelos em ordem de preferência. Se um falhar, tenta o próximo.
 const MODELOS = [
     'gemini-3.5-flash-lite',
     'gemini-3.5-flash',
     'gemini-3.8-flash'
 ];
 
-const esperar = (ms) => new Promise(r => setTimeout(r, ms));
+const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
 
-async function enviarMensagem(mensagem, historico = []) {
+// Remove respostas antigas que diziam não ter os dados, para não reforçar o erro
+const respostaRuim = (texto) =>
+    /não recebi|não consigo informar|não tenho acesso|não recebi os dados/i.test(texto);
+
+async function enviarMensagem(mensagem, historico = [], dadosApp = null) {
     if (!process.env.GEMINI_API_KEY) {
         throw new Error('Configure GEMINI_API_KEY no arquivo .env.');
     }
@@ -27,7 +30,12 @@ async function enviarMensagem(mensagem, historico = []) {
 
     if (Array.isArray(historico)) {
         for (const msg of historico) {
-            if (msg && (msg.role === 'user' || msg.role === 'model') && typeof msg.text === 'string') {
+            if (
+                msg &&
+                (msg.role === 'user' || msg.role === 'model') &&
+                typeof msg.text === 'string' &&
+                !(msg.role === 'model' && respostaRuim(msg.text))
+            ) {
                 contents.push({
                     role: msg.role,
                     parts: [{ text: msg.text }]
@@ -36,10 +44,23 @@ async function enviarMensagem(mensagem, historico = []) {
         }
     }
 
+    // Os dados vão junto com a pergunta, na mensagem do usuário
+    const textoComDados = dadosApp
+        ? `DADOS ATUAIS DA PLATAFORMA (JSON):
+${JSON.stringify(dadosApp)}
+
+PERGUNTA DO USUÁRIO:
+${mensagem.trim()}`
+        : mensagem.trim();
+
     contents.push({
         role: 'user',
-        parts: [{ text: mensagem.trim() }]
+        parts: [{ text: textoComDados }]
     });
+
+    const systemInstruction = `${PROMPT_DOACERTO}
+
+Você recebe sempre os dados atuais da plataforma junto com a pergunta, no bloco "DADOS ATUAIS DA PLATAFORMA". Use esses dados para responder. Para quantidades, use o campo "resumo". Ao listar doações, mostre no máximo 10. Se a informação não estiver nos dados, diga que não encontrou.`;
 
     let ultimoErro;
 
@@ -49,7 +70,7 @@ async function enviarMensagem(mensagem, historico = []) {
                 const resposta = await ai.models.generateContent({
                     model,
                     contents,
-                    config: { systemInstruction: PROMPT_DOACERTO }
+                    config: { systemInstruction }
                 });
 
                 if (!resposta.text) {
@@ -61,12 +82,11 @@ async function enviarMensagem(mensagem, historico = []) {
                 ultimoErro = erro;
                 console.error(`Falha com ${model} (tentativa ${tentativa}):`, erro.status || erro.message);
 
-                // 503 e 429 são temporários: espera e tenta de novo.
-                // 404 significa modelo indisponível: vai direto para o próximo.
                 if (erro.status === 503 || erro.status === 429) {
                     await esperar(1500);
                     continue;
                 }
+
                 break;
             }
         }
