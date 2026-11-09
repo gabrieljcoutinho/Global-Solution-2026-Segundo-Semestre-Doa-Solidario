@@ -18,12 +18,14 @@ function HomeEmpresa({
 }) {
     const [abaAtiva, setAbaAtiva] = useState('cadastrar-doacao');
 
-    // Todas as publicações da empresa logada (inclusive concluídas, usadas no histórico)
+    // Publicações da empresa logada, sem as que ela ocultou (exclusão)
     const minhasDoacoes = doacoes.filter(
-        doacao => doacao.empresaId === usuario?.id
+        doacao =>
+            doacao.empresaId === usuario?.id &&
+            !doacao.ocultaEmpresa
     );
 
-    // Lista de cadastradas: deixa de fora as concluídas, que ficam só no histórico
+    // Cadastradas: deixa de fora as concluídas, que ficam só no histórico
     const doacoesCadastradas = minhasDoacoes.filter(
         doacao => doacao.status !== 'concluida'
     );

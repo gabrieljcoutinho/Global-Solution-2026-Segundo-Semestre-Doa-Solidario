@@ -40,31 +40,6 @@
       "dataCadastro": "2026-11-08T21:48:12.706Z",
       "dataConclusao": "2026-11-09T11:57:43.786Z",
       "ocultaEmpresa": true
-    },
-    {
-      "item": "teste",
-      "tamanho": "2342",
-      "quantidade": 5,
-      "urgencia": "Alta",
-      "prazo": "234234",
-      "localizacao": "Rua nadia",
-      "descricao": "23423",
-      "imagem": "",
-      "lat": -23.5591584,
-      "lng": -46.9200881,
-      "id": "doacao-1794174235276-vat6nnf",
-      "empresaId": "conta-1793988871297-r09neb3",
-      "empresaNome": "1",
-      "empresaEmail": "1@gmail.com",
-      "status": "concluida",
-      "doadorId": "conta-1793985252574-l857au0",
-      "doadorNome": "teste",
-      "doadorEmail": "teste@gmail.com",
-      "quantidadeOferecida": 5,
-      "dataOferta": "2026-11-08T21:43:50.724Z",
-      "dataCadastro": "2026-11-08T21:43:21.409Z",
-      "dataConclusao": "2026-11-08T21:43:55.276Z",
-      "ocultaUsuario": true
     }
   ]
 }
