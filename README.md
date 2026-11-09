@@ -1,43 +1,77 @@
-# Doações Conectadas
+# DoaCerto
 
-Um espaço para conectar empresas que querem doar com ONGs que precisam de ajuda.
+Plataforma que conecta empresas com peças ou recursos para doar a doadores individuais e instituições que precisam deles. Projeto da Global Solution 2026 (2º semestre), na área de doação solidária.
 
-## Para que serve
+## Funcionalidades
 
-Empresas cadastram itens que precisam ser doados, como roupas, alimentos ou materiais, informando quantidade, urgência, prazo e onde podem ser entregues. As ONGs veem essas necessidades e podem se oferecer para receber a doação.
+- **Cadastro de doações pelas empresas:** a empresa registra o que tem para doar (quantidade, tamanho, prazo e localização).
+- **Oferta pelo usuário:** o usuário escolhe quantas peças quer doar de cada item disponível e envia a oferta. A doação fica "pendente" até a empresa responder.
+- **Mapa de doações:** visualização das campanhas e instituições por localização.
+- **Histórico de doações concluídas.**
+- **Assistente virtual com IA:** chat que responde dúvidas sobre a plataforma e informa, com base nos dados reais, quantas doações existem, quais estão disponíveis e onde.
 
-Quando a empresa confirma a entrega, a doação sai da lista de disponíveis e fica registrada na aba **Doação Concluída**. Assim, cada lado consegue acompanhar quantas doações já fez ou recebeu.
+## Tecnologias
 
-## O que cada um vê
+- **Frontend:** React (Create React App), CSS.
+- **Backend:** Node.js com Express, porta 3001.
+- **Persistência:** arquivo `dados.json` lido e gravado pelo servidor.
+- **IA:** Google Gemini via SDK `@google/genai`.
+- **Markdown no chat:** `react-markdown`.
 
-**Empresas**
-- Cadastram as necessidades de doação
-- Acompanham quem se ofereceu e confirmam ou cancelam
-- Veem o histórico de doações recebidas
+## Estrutura
 
-**ONGs**
-- Veem as doações disponíveis e um mapa com os pontos de entrega
-- Oferecem ajuda para as doações que quiserem atender
-- Veem o histórico de doações feitas
+```
+src/
+├── component/
+│   ├── _Empresa/      telas da empresa (cadastrar e acompanhar doações)
+│   ├── _Usuario/      telas do usuário (início com chat, doações, mapa)
+│   ├── cadastro/
+│   └── login/
+└── server/
+    ├── server.js      API Express: dados, salvar e chat
+    ├── dados.json     base de dados da plataforma
+    ├── .env           chave da API (não versionar)
+    └── ia/
+        ├── ia.js      integração com o Gemini
+        └── prompt.js  instruções do assistente
+```
 
-## Como rodar o projeto
+## Rotas da API
 
-1. Instale o Node.js.
-2. Instale as dependências:
+| Método | Rota            | Função                                                  |
+|--------|-----------------|---------------------------------------------------------|
+| GET    | `/api/dados`    | Retorna o `dados.json` completo                         |
+| POST   | `/api/dados`    | Salva os dados e remove doações ocultadas pela empresa  |
+| POST   | `/api/chat`     | Envia a pergunta ao assistente, com os dados da plataforma |
+
+## Como rodar
+
+1. Instale as dependências na raiz:
    ```bash
-   npm install express cors
    npm install
    ```
-3. Inicie o servidor:
+2. Crie o arquivo `src/server/.env` com a sua chave:
+   ```
+   GEMINI_API_KEY=sua_chave
+   ```
+3. Inicie o backend:
    ```bash
+   cd src/server
    node server.js
    ```
-4. Em outro terminal, inicie a aplicação:
+4. Em outro terminal, na raiz, inicie o frontend:
    ```bash
    npm start
    ```
-5. Abra `http://localhost:3000` no navegador.
+   O site abre em `http://localhost:3000`.
 
-## Observação
+## Observações
 
-Este é um protótipo de uso local, feito para testes e estudo. Ainda não deve ser usado com dados reais de pessoas.
+- O servidor remove campos sensíveis (senha, CPF, e-mail, telefone, token) antes de enviar os dados à IA.
+- A API de salvamento ainda não tem autenticação. Não publique o projeto em um servidor aberto sem antes protegê-la.
+- Os nomes dos modelos do Gemini em `ia/ia.js` devem ser confirmados com `listar-modelos.js` antes do uso.
+- Nunca suba o arquivo `.env` para o repositório.
+
+## Status
+
+Em desenvolvimento. Cadastro, oferta e chat funcionam localmente. Pendências: proteção da API, regras completas no prompt do assistente e validação de campos obrigatórios no cadastro.
