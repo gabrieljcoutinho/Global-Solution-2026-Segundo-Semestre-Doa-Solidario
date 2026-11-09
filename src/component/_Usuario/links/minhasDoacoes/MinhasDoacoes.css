@@ -282,3 +282,89 @@
   right: 10px;
   z-index: 3;
 }
+
+
+/* ==========================================
+   BLOCO DE OFERTA (QUANTAS PEÇAS)
+   ========================================== */
+.doacaoOferta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 14px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid #3a1f2e;
+  border-radius: 12px;
+}
+
+.doacaoOfertaLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: #d1d5db;
+  line-height: 1.4;
+}
+
+.doacaoOfertaInput {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #3a1f2e;
+  background-color: #0b0d10;
+  color: #f3f4f6;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  -moz-appearance: textfield;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.doacaoOfertaInput::placeholder {
+  color: #6b7280;
+}
+
+.doacaoOfertaInput:focus {
+  border-color: #ff6b9d;
+  box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.2);
+}
+
+/* Remove as setinhas do input number */
+.doacaoOfertaInput::-webkit-outer-spin-button,
+.doacaoOfertaInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.doacaoOfertaErro {
+  margin: 0;
+  font-size: 12.5px;
+  color: #ff8aa6;
+}
+
+/* Mensagem de "você ofereceu X peças" */
+.doacaoOfertaInfo {
+  margin: 14px 0 0;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #86efac;
+  background-color: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 10px;
+}
+
+/* Botão "Em espera..." */
+.btnEmEspera {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding: 11px 16px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #854d0e, #713f12);
+  color: #fef3c7;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: not-allowed;
+  opacity: 0.9;
+}
