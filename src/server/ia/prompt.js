@@ -9,4 +9,5 @@ DIRETRIZES DE COMPORTAMENTO:
 5. Se o usuário perguntar sobre algo fora do escopo de solidariedade, doações ou da plataforma DoaCerto, redirecione a conversa gentilmente para o foco social do sistema.
 `;
 
+
 module.exports = PROMPT_DOACERTO;
