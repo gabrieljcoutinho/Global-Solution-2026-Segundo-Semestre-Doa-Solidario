@@ -187,6 +187,22 @@ app.post('/api/chat', async (req, res) => {
 
         const dadosApp = lerDadosApp();
 
+        // ATALHO: contagem de doações calculada diretamente pelo servidor
+        const perguntaSobreTotal = /quant[ao]s?\s+doa[cç][oõ]es/i.test(mensagem);
+
+        if (perguntaSobreTotal && dadosApp?.resumo) {
+            const { totalDoacoes, porStatus } = dadosApp.resumo;
+
+            const detalhes = Object.entries(porStatus)
+                .map(([status, qtd]) => `- **${status}:** ${qtd}`)
+                .join('\n');
+
+            return res.json({
+                sucesso: true,
+                resposta: `Há **${totalDoacoes}** doações cadastradas no momento.\n\n${detalhes}`
+            });
+        }
+
         const resposta = await enviarMensagem(
             mensagem,
             historico,
