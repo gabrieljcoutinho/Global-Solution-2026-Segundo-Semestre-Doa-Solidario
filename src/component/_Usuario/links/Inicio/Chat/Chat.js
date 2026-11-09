@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import './chat.css';
 
 const Chat = () => {
+
     const [messages, setMessages] = useState([
         {
             sender: 'bot',
@@ -14,29 +15,118 @@ const Chat = () => {
     ]);
 
     const [inputText, setInputText] = useState('');
+    const [loading, setLoading] = useState(false);
+
     const messagesEndRef = useRef(null);
 
-    useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages]);
+    // ==========================================
+    // ROLAGEM AUTOMÁTICA
+    // ==========================================
 
-    const handleSendMessage = (e) => {
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({
+            behavior: 'smooth'
+        });
+    }, [messages, loading]);
+
+    // ==========================================
+    // HORÁRIO DAS MENSAGENS
+    // ==========================================
+
+    const obterHorario = () => {
+        return new Date().toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
+
+    // ==========================================
+    // ENVIAR MENSAGEM PARA O GEMINI
+    // ==========================================
+
+    const handleSendMessage = async (e) => {
         e.preventDefault();
 
-        if (!inputText.trim()) return;
+        const mensagem = inputText.trim();
 
-        const newMessage = {
+        if (!mensagem || loading) return;
+
+        const novaMensagem = {
             sender: 'user',
-            text: inputText.trim(),
-            time: new Date().toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit'
-            })
+            text: mensagem,
+            time: obterHorario()
         };
 
-        setMessages(prev => [...prev, newMessage]);
+        // Adiciona a mensagem do usuário
+        setMessages(prev => [...prev, novaMensagem]);
+
         setInputText('');
+        setLoading(true);
+
+        try {
+
+            // Prepara o histórico sem a saudação inicial
+            const historico = messages
+                .slice(1)
+                .filter(msg => !msg.erro)
+                .map(msg => ({
+                    role: msg.sender === 'user' ? 'user' : 'model',
+                    text: msg.text
+                }));
+
+            // Envia a solicitação ao backend
+            const response = await fetch('http://localhost:3001/api/chat', {
+                method: 'POST',
+
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify({
+                    mensagem,
+                    historico
+                })
+            });
+
+            const dados = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    dados.erro || 'Erro ao conversar com a IA.'
+                );
+            }
+
+            // Adiciona a resposta da inteligência artificial
+            const respostaIA = {
+                sender: 'bot',
+                text: dados.resposta,
+                time: obterHorario()
+            };
+
+            setMessages(prev => [...prev, respostaIA]);
+
+        } catch (erro) {
+
+            console.error('Erro ao enviar mensagem:', erro);
+
+            setMessages(prev => [
+                ...prev,
+                {
+                    sender: 'bot',
+                    text: erro.message || 'Não foi possível conectar ao assistente. Tente novamente.',
+                    time: obterHorario(),
+                    erro: true
+                }
+            ]);
+
+        } finally {
+            setLoading(false);
+        }
     };
+
+    // ==========================================
+    // INTERFACE DO CHAT
+    // ==========================================
 
     return (
         <div className="chat-master-container">
@@ -48,22 +138,33 @@ const Chat = () => {
                     <div className="chat-header-info">
 
                         <div className="chat-header-avatar">
-                            <svg viewBox="0 0 24 24" width="22" height="22"
-                                fill="none" stroke="currentColor" strokeWidth="1.8"
-                                strokeLinecap="round" strokeLinejoin="round">
+
+                            <svg
+                                viewBox="0 0 24 24"
+                                width="22"
+                                height="22"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="1.8"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
                                 <circle cx="12" cy="12" r="10" />
                                 <path d="M2 12h20" />
                                 <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
                             </svg>
+
                         </div>
 
                         <div>
+
                             <h2>Assistente Virtual</h2>
 
                             <div className="chat-header-status">
                                 <span></span>
                                 Online
                             </div>
+
                         </div>
 
                     </div>
@@ -82,18 +183,33 @@ const Chat = () => {
                     </div>
 
                     {messages.map((msg, index) => (
-                        <div key={index} className={`chat-msg-row ${msg.sender}`}>
+
+                        <div
+                            key={index}
+                            className={`chat-msg-row ${msg.sender}`}
+                        >
 
                             {msg.sender === 'bot' && (
+
                                 <div className="chat-message-avatar">
-                                    <svg viewBox="0 0 24 24" width="19" height="19"
-                                        fill="none" stroke="currentColor" strokeWidth="1.8"
-                                        strokeLinecap="round" strokeLinejoin="round">
+
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        width="19"
+                                        height="19"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="1.8"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    >
                                         <circle cx="12" cy="12" r="10" />
                                         <path d="M2 12h20" />
                                         <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
                                     </svg>
+
                                 </div>
+
                             )}
 
                             <div className={`chat-bubble-box ${msg.sender}`}>
@@ -102,7 +218,9 @@ const Chat = () => {
                                     {msg.sender === 'bot' ? 'Assistente' : 'Você'}
                                 </span>
 
-                                <p>{msg.text}</p>
+                                <p style={{ whiteSpace: 'pre-wrap' }}>
+                                    {msg.text}
+                                </p>
 
                                 <span className="chat-msg-time">
                                     {msg.time}
@@ -111,7 +229,45 @@ const Chat = () => {
                             </div>
 
                         </div>
+
                     ))}
+
+                    {/* INDICADOR DE RESPOSTA DA IA */}
+
+                    {loading && (
+
+                        <div className="chat-msg-row bot">
+
+                            <div className="chat-message-avatar">
+
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    width="19"
+                                    height="19"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="1.8"
+                                >
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path d="M2 12h20" />
+                                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                                </svg>
+
+                            </div>
+
+                            <div className="chat-bubble-box bot">
+
+                                <span className="chat-sender-name">
+                                    Assistente
+                                </span>
+
+                                <p>Estou preparando sua resposta...</p>
+
+                            </div>
+
+                        </div>
+
+                    )}
 
                     <div ref={messagesEndRef} />
 
@@ -119,21 +275,33 @@ const Chat = () => {
 
                 <footer className="chat-bottom-footer">
 
-                    <form className="chat-input-wrapper-form" onSubmit={handleSendMessage}>
+                    <form
+                        className="chat-input-wrapper-form"
+                        onSubmit={handleSendMessage}
+                    >
 
                         <button
                             type="button"
                             className="chat-tool-icon-btn"
                             title="Falar por voz"
                         >
-                            <svg viewBox="0 0 24 24" width="21" height="21"
-                                fill="none" stroke="currentColor" strokeWidth="1.8"
-                                strokeLinecap="round" strokeLinejoin="round">
+
+                            <svg
+                                viewBox="0 0 24 24"
+                                width="21"
+                                height="21"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="1.8"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
                                 <rect x="9" y="2" width="6" height="13" rx="3" />
                                 <path d="M5 10v2a7 7 0 0 0 14 0v-2" />
                                 <path d="M12 19v3" />
                                 <path d="M8 22h8" />
                             </svg>
+
                         </button>
 
                         <input
@@ -142,6 +310,7 @@ const Chat = () => {
                             placeholder="Escreva sua mensagem..."
                             value={inputText}
                             onChange={(e) => setInputText(e.target.value)}
+                            disabled={loading}
                         />
 
                         <span className="chat-input-separator"></span>
@@ -150,14 +319,23 @@ const Chat = () => {
                             type="submit"
                             className="chat-submit-btn"
                             title="Enviar mensagem"
-                            disabled={!inputText.trim()}
+                            disabled={!inputText.trim() || loading}
                         >
-                            <svg viewBox="0 0 24 24" width="20" height="20"
-                                fill="none" stroke="currentColor" strokeWidth="2"
-                                strokeLinecap="round" strokeLinejoin="round">
+
+                            <svg
+                                viewBox="0 0 24 24"
+                                width="20"
+                                height="20"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
                                 <path d="m22 2-7 20-4-9-9-4Z" />
                                 <path d="M22 2 11 13" />
                             </svg>
+
                         </button>
 
                     </form>
