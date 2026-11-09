@@ -57,10 +57,37 @@ const removerDadosSensiveis = (obj) => {
     return obj;
 };
 
+// ==========================================
+// RESUMO CALCULADO PELO SERVIDOR (para a IA)
+// ==========================================
+
+const gerarResumo = (dados) => {
+    const doacoes = Array.isArray(dados?.doacoes) ? dados.doacoes : [];
+
+    const porStatus = {};
+    for (const doacao of doacoes) {
+        const status = doacao.status ?? 'sem status';
+        porStatus[status] = (porStatus[status] || 0) + 1;
+    }
+
+    return {
+        totalDoacoes: doacoes.length,
+        porStatus
+    };
+};
+
 const lerDadosApp = () => {
     try {
         const conteudo = fs.readFileSync(CAMINHO_JSON, 'utf8');
-        return removerDadosSensiveis(JSON.parse(conteudo));
+        const dados = removerDadosSensiveis(JSON.parse(conteudo));
+
+        const resultado = {
+            ...dados,
+            resumo: gerarResumo(dados)
+        };
+
+        console.log('Resumo enviado para a IA:', resultado.resumo);
+        return resultado;
     } catch (erro) {
         console.error('Não foi possível ler dados.json para a IA:', erro);
         return null;
