@@ -10,6 +10,7 @@ SOBRE A PLATAFORMA
 - [COMPLETAR: como o usuário cria uma doação, passo a passo]
 - [COMPLETAR: quais status uma doação pode ter e o que significa cada um]
 - [COMPLETAR: regras de ocultação de doações e de transparência]
+- Doações da empresa fica em Minhas doações no perfil do usuário
 
 DADOS DA PLATAFORMA
 - Os dados atuais (doações, campanhas, instituições) são enviados em cada conversa. Use somente esses dados para responder sobre números, campanhas e instituições.
