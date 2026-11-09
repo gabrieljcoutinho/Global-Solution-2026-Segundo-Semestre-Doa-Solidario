@@ -35,6 +35,39 @@ const limparDoacoesFinalizadas = (dados) => {
 };
 
 // ==========================================
+// REMOÇÃO DE DADOS SENSÍVEIS (para a IA)
+// ==========================================
+
+const removerDadosSensiveis = (obj) => {
+    if (Array.isArray(obj)) {
+        return obj.map(removerDadosSensiveis);
+    }
+
+    if (obj && typeof obj === 'object') {
+        const limpo = {};
+
+        for (const [chave, valor] of Object.entries(obj)) {
+            if (/senha|password|cpf|email|telefone|token/i.test(chave)) continue;
+            limpo[chave] = removerDadosSensiveis(valor);
+        }
+
+        return limpo;
+    }
+
+    return obj;
+};
+
+const lerDadosApp = () => {
+    try {
+        const conteudo = fs.readFileSync(CAMINHO_JSON, 'utf8');
+        return removerDadosSensiveis(JSON.parse(conteudo));
+    } catch (erro) {
+        console.error('Não foi possível ler dados.json para a IA:', erro);
+        return null;
+    }
+};
+
+// ==========================================
 // GET - CARREGAR DADOS
 // ==========================================
 
@@ -113,10 +146,7 @@ app.post('/api/chat', async (req, res) => {
     try {
         const { mensagem, historico = [] } = req.body;
 
-        if (
-            typeof mensagem !== 'string' ||
-            !mensagem.trim()
-        ) {
+        if (typeof mensagem !== 'string' || !mensagem.trim()) {
             return res.status(400).json({
                 erro: 'Digite uma mensagem válida.'
             });
@@ -128,9 +158,12 @@ app.post('/api/chat', async (req, res) => {
             });
         }
 
+        const dadosApp = lerDadosApp();
+
         const resposta = await enviarMensagem(
             mensagem,
-            historico
+            historico,
+            dadosApp
         );
 
         return res.json({
