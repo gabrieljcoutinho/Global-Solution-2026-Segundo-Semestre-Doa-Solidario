@@ -19,6 +19,7 @@ const respostaRuim = (texto) =>
 
 const INSTRUCAO_IMAGEM = `
 AVALIAÇÃO DE FOTOS
+Se o usuário enviou uma foto, o assunto principal é a peça na foto. Responda primeiro sobre o estado dela, sem falar do site, a menos que a pessoa pergunte.
 Quando receber uma foto de roupa ou peça, avalie o estado visível como "novo", "bom", "regular" ou "com defeitos".
 Liste os motivos que você vê na imagem (manchas, desgaste, rasgos, bolinhas de tecido, descoloração).
 Deixe claro que é uma avaliação visual estimada e que a conferência final deve ser feita presencialmente pela instituição.

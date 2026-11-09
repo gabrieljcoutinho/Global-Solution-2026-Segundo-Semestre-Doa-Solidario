@@ -96,7 +96,9 @@ const Chat = () => {
 
         if ((!textoDigitado && !imagem) || loading) return;
 
-        const mensagem = textoDigitado || 'Avalie o estado destas peças na foto.';
+        const mensagem = imagem
+            ? (textoDigitado || 'Avalie o estado desta peça para doação.')
+            : textoDigitado;
 
         const novaMensagem = {
             sender: 'user',
