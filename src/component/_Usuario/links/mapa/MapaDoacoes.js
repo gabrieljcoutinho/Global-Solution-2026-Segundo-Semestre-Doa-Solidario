@@ -15,11 +15,9 @@ L.Icon.Default.mergeOptions({
 
 const iconeUsuario = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
     iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
+    iconAnchor: [12, 20],
+    popupAnchor: [1, -14],
 });
 
 const iconeDoacao = L.divIcon({
@@ -130,37 +128,65 @@ const CentralizarMapa = ({ center, rota }) => {
     return null;
 };
 
-// Um círculo por ponto da grade: colorido onde chove, branco onde não chove
-const CamadaChuva = ({ pontosChuva }) => (
-    <>
-        {pontosChuva.map((p, i) => {
-            const { cor, nivel } = classificarChuva(p.mm);
-            const chove = p.mm > 0;
-            return (
+// Um círculo por ponto da grade. O ponto central (sua posição) vira um círculo maior, que envolve o pino.
+const CamadaChuva = ({ pontosChuva, posicaoUsuario }) => {
+    const ehCentro = (p) =>
+        p.coords[0] === posicaoUsuario[0] && p.coords[1] === posicaoUsuario[1];
+
+    const pontoUsuario = pontosChuva.find(ehCentro);
+    const outros = pontosChuva.filter((p) => !ehCentro(p));
+    const corUsuario = pontoUsuario ? classificarChuva(pontoUsuario.mm) : null;
+
+    return (
+        <>
+            {outros.map((p, i) => {
+                const { cor, nivel } = classificarChuva(p.mm);
+                const chove = p.mm > 0;
+                return (
+                    <CircleMarker
+                        key={i}
+                        center={p.coords}
+                        radius={14}
+                        pathOptions={{
+                            color: chove ? cor : '#9ca3af',
+                            fillColor: cor,
+                            fillOpacity: chove ? 0.6 : 0.8,
+                            weight: 2
+                        }}
+                    >
+                        <Popup>
+                            <div className="popupMapaCard">
+                                <h3>{nivel}</h3>
+                                {chove
+                                    ? <p><strong>Precipitação:</strong> {p.mm.toFixed(1)} mm/h</p>
+                                    : <p>Nenhuma chuva neste ponto agora.</p>}
+                            </div>
+                        </Popup>
+                    </CircleMarker>
+                );
+            })}
+
+            {corUsuario && (
                 <CircleMarker
-                    key={i}
-                    center={p.coords}
-                    radius={14}
+                    center={posicaoUsuario}
+                    radius={24}
                     pathOptions={{
-                        color: chove ? cor : '#9ca3af',
-                        fillColor: cor,
-                        fillOpacity: chove ? 0.6 : 0.8,
+                        color: corUsuario.cor === '#ffffff' ? '#9ca3af' : corUsuario.cor,
+                        fillColor: corUsuario.cor,
+                        fillOpacity: 0.6,
                         weight: 2
                     }}
                 >
                     <Popup>
                         <div className="popupMapaCard">
-                            <h3>{nivel}</h3>
-                            {chove
-                                ? <p><strong>Precipitação:</strong> {p.mm.toFixed(1)} mm/h</p>
-                                : <p>Nenhuma chuva neste ponto agora.</p>}
+                            <h3>📍 Sua região: {corUsuario.nivel}</h3>
                         </div>
                     </Popup>
                 </CircleMarker>
-            );
-        })}
-    </>
-);
+            )}
+        </>
+    );
+};
 
 function MapaDoacoes({ doacoes = [] }) {
     const { posicaoUsuario, statusPermissao, doacoesFiltradas } = useGeolocalizacao(doacoes, 50);
@@ -303,7 +329,7 @@ function MapaDoacoes({ doacoes = [] }) {
                     className={`btnCamada ${mostrarChuva ? 'btnCamadaAtiva' : ''}`}
                     onClick={() => setMostrarChuva((v) => !v)}
                 >
-                    {mostrarChuva ? '🌧️ Ocultar chuva' : '🌧️ Mostrar chuva'}
+                    {mostrarChuva ? 'Ocultar chuva' : 'Mostrar chuva'}
                 </button>
             </div>
 
@@ -354,8 +380,8 @@ function MapaDoacoes({ doacoes = [] }) {
                         maxZoom={19}
                     />
 
-                    {mostrarChuva && pontosChuva.length > 0 && (
-                        <CamadaChuva pontosChuva={pontosChuva} />
+                    {mostrarChuva && pontosChuva.length > 0 && posicaoUsuario && (
+                        <CamadaChuva pontosChuva={pontosChuva} posicaoUsuario={posicaoUsuario} />
                     )}
 
                     {rota && (
