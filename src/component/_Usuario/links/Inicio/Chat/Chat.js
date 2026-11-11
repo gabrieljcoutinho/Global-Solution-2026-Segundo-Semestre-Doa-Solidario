@@ -61,14 +61,15 @@ const Chat = () => {
         const leitor = new FileReader();
 
         leitor.onload = () => {
-            const base64 = leitor.result.split(',')[1];
+            const base64Completo = leitor.result;
+            const base64Puro = base64Completo.split(',')[1];
 
             setImagemSelecionada({
                 mimeType: arquivo.type,
-                data: base64
+                data: base64Puro
             });
 
-            setPreviewImagem(leitor.result);
+            setPreviewImagem(base64Completo);
         };
 
         leitor.readAsDataURL(arquivo);
@@ -268,11 +269,13 @@ const Chat = () => {
                                 </span>
 
                                 {msg.preview && (
-                                    <img
-                                        src={msg.preview}
-                                        alt="Foto enviada"
-                                        style={{ maxWidth: '100%', borderRadius: 8, marginBottom: 6 }}
-                                    />
+                                    <div style={{ maxWidth: '220px', background: '#111', borderRadius: 8, padding: 4, marginBottom: 8, border: '1px solid rgba(255,255,255,0.1)' }}>
+                                        <img
+                                            src={msg.preview}
+                                            alt="Foto enviada"
+                                            style={{ width: '100%', maxHeight: '180px', objectFit: 'cover', borderRadius: 6, display: 'block', pointerEvents: 'none' }}
+                                        />
+                                    </div>
                                 )}
 
                                 {msg.sender === 'bot' && !msg.erro ? (
@@ -337,13 +340,52 @@ const Chat = () => {
                 <footer className="chat-bottom-footer">
 
                     {previewImagem && (
-                        <div style={{ padding: '8px 12px', display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <img
-                                src={previewImagem}
-                                alt="Prévia"
-                                style={{ maxHeight: 80, borderRadius: 8 }}
-                            />
-                            <button type="button" onClick={removerImagem}>
+                        <div style={{ 
+                            padding: '10px 14px', 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            gap: 12, 
+                            background: '#161616', 
+                            borderTop: '1px solid var(--border-color)',
+                            borderTopLeftRadius: 12,
+                            borderTopRightRadius: 12
+                        }}>
+                            <div style={{ 
+                                width: 44, 
+                                height: 44, 
+                                borderRadius: 8, 
+                                overflow: 'hidden', 
+                                background: '#0a0a0a', 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                justifyContent: 'center',
+                                border: '1px solid rgba(255,255,255,0.15)',
+                                flexShrink: 0
+                            }}>
+                                <img
+                                    src={previewImagem}
+                                    alt="Prévia"
+                                    style={{ width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }}
+                                />
+                            </div>
+                            <div style={{ flex: 1, fontSize: '0.85rem', color: '#fff', fontWeight: 500 }}>
+                                <span>Imagem pronta para envio</span>
+                            </div>
+                            <button 
+                                type="button" 
+                                onClick={removerImagem}
+                                style={{ 
+                                    background: 'var(--primary-red, #e50914)', 
+                                    color: '#fff', 
+                                    border: 'none', 
+                                    padding: '6px 12px', 
+                                    borderRadius: 6, 
+                                    cursor: 'pointer', 
+                                    fontSize: '0.8rem',
+                                    fontWeight: 600,
+                                    transition: 'background 0.2s'
+                                }}
+                            >
                                 Remover
                             </button>
                         </div>
