@@ -56,6 +56,9 @@ async function buscarRota(origem, destino) {
 // Grade de pontos ao redor da posição do usuário (aprox. 45 km de cada lado)
 const DESLOCAMENTOS = [-0.4, -0.2, 0, 0.2, 0.4];
 
+// Quantas horas à frente entram na previsão
+const JANELA_HORAS = 6;
+
 function gerarGrade([lat, lng]) {
     const pontos = [];
     DESLOCAMENTOS.forEach((dLat) => {
@@ -66,11 +69,14 @@ function gerarGrade([lat, lng]) {
     return pontos;
 }
 
-// Consulta a chuva atual em todos os pontos de uma vez (Open-Meteo)
+// Busca chuva atual e previsão horária em todos os pontos (Open-Meteo)
 async function buscarChuva(pontos) {
     const latitudes = pontos.map((p) => p[0].toFixed(4)).join(',');
     const longitudes = pontos.map((p) => p[1].toFixed(4)).join(',');
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitudes}&longitude=${longitudes}&current=precipitation&timezone=America%2FSao_Paulo`;
+    const url =
+        `https://api.open-meteo.com/v1/forecast?latitude=${latitudes}&longitude=${longitudes}` +
+        `&current=precipitation&hourly=precipitation,precipitation_probability` +
+        `&forecast_days=2&timezone=America%2FSao_Paulo`;
 
     const resposta = await fetch(url);
     if (!resposta.ok) throw new Error('Falha ao buscar dados de chuva.');
@@ -78,10 +84,34 @@ async function buscarChuva(pontos) {
     const dados = await resposta.json();
     const lista = Array.isArray(dados) ? dados : [dados];
 
-    return lista.map((item, i) => ({
-        coords: pontos[i],
-        mm: item.current?.precipitation ?? 0
-    }));
+    return lista.map((item, i) => {
+        const agora = item.current?.precipitation ?? 0;
+        const horas = item.hourly?.time ?? [];
+        const mmHoras = item.hourly?.precipitation ?? [];
+        const probHoras = item.hourly?.precipitation_probability ?? [];
+
+        // Começa na hora atual (formato "AAAA-MM-DDTHH:00", igual ao da API)
+        const chaveAgora = item.current?.time ? item.current.time.slice(0, 13) + ':00' : null;
+        let inicio = chaveAgora ? horas.findIndex((t) => t >= chaveAgora) : 0;
+        if (inicio < 0) inicio = 0;
+
+        const janela = horas.slice(inicio, inicio + JANELA_HORAS).map((t, j) => ({
+            hora: t,
+            mm: mmHoras[inicio + j] ?? 0,
+            prob: probHoras[inicio + j] ?? 0
+        }));
+
+        const pico = janela.reduce((a, b) => (b.mm > a.mm ? b : a), { hora: null, mm: 0 });
+        const probMax = janela.reduce((m, h) => Math.max(m, h.prob), 0);
+
+        return {
+            coords: pontos[i],
+            agora,
+            pico: pico.mm,
+            horaPico: pico.hora,
+            probMax
+        };
+    });
 }
 
 // Classificação por intensidade (mm/h)
@@ -89,7 +119,7 @@ function classificarChuva(mm) {
     if (mm >= 7.6) return { cor: '#dc2626', nivel: 'Risco de enchente' };
     if (mm >= 2.5) return { cor: '#f97316', nivel: 'Chuva forte' };
     if (mm > 0) return { cor: '#facc15', nivel: 'Chuva fraca' };
-    return { cor: '#ffffff', nivel: 'Sem chuva agora' };
+    return { cor: '#ffffff', nivel: 'Sem chuva' };
 }
 
 // Recalcula o tamanho do mapa quando o contêiner muda de tamanho
@@ -128,20 +158,60 @@ const CentralizarMapa = ({ center, rota }) => {
     return null;
 };
 
-// Um círculo por ponto da grade. O ponto central (sua posição) vira um círculo maior, que envolve o pino.
-const CamadaChuva = ({ pontosChuva, posicaoUsuario }) => {
+// Um círculo por ponto da grade. Em "agora" a cor é a chuva atual; em "previsao" é o pico previsto.
+const CamadaChuva = ({ dados, posicaoUsuario, modo }) => {
     const ehCentro = (p) =>
         p.coords[0] === posicaoUsuario[0] && p.coords[1] === posicaoUsuario[1];
 
-    const pontoUsuario = pontosChuva.find(ehCentro);
-    const outros = pontosChuva.filter((p) => !ehCentro(p));
-    const corUsuario = pontoUsuario ? classificarChuva(pontoUsuario.mm) : null;
+    const valorDo = (p) => (modo === 'previsao' ? p.pico : p.agora);
+
+    const pontoUsuario = dados.find(ehCentro);
+    const outros = dados.filter((p) => !ehCentro(p));
+
+    const textoPopup = (p) => {
+        const mm = valorDo(p);
+        const { nivel } = classificarChuva(mm);
+
+        if (modo === 'previsao') {
+            if (mm === 0) {
+                return (
+                    <>
+                        <h3>Sem chuva prevista</h3>
+                        <p>Nenhuma chuva prevista neste ponto nas próximas {JANELA_HORAS} horas.</p>
+                    </>
+                );
+            }
+            return (
+                <>
+                    <h3>{nivel} prevista</h3>
+                    <p><strong>Pico:</strong> {mm.toFixed(1)} mm/h às {p.horaPico?.slice(11, 16)}</p>
+                    <p><strong>Chance de chuva:</strong> {p.probMax}%</p>
+                </>
+            );
+        }
+
+        if (mm === 0) {
+            return (
+                <>
+                    <h3>Sem chuva agora</h3>
+                    <p>Nenhuma chuva neste ponto neste momento.</p>
+                </>
+            );
+        }
+        return (
+            <>
+                <h3>{nivel}</h3>
+                <p><strong>Precipitação:</strong> {mm.toFixed(1)} mm/h</p>
+            </>
+        );
+    };
 
     return (
         <>
             {outros.map((p, i) => {
-                const { cor, nivel } = classificarChuva(p.mm);
-                const chove = p.mm > 0;
+                const mm = valorDo(p);
+                const { cor } = classificarChuva(mm);
+                const chove = mm > 0;
                 return (
                     <CircleMarker
                         key={i}
@@ -155,31 +225,27 @@ const CamadaChuva = ({ pontosChuva, posicaoUsuario }) => {
                         }}
                     >
                         <Popup>
-                            <div className="popupMapaCard">
-                                <h3>{nivel}</h3>
-                                {chove
-                                    ? <p><strong>Precipitação:</strong> {p.mm.toFixed(1)} mm/h</p>
-                                    : <p>Nenhuma chuva neste ponto agora.</p>}
-                            </div>
+                            <div className="popupMapaCard">{textoPopup(p)}</div>
                         </Popup>
                     </CircleMarker>
                 );
             })}
 
-            {corUsuario && (
+            {pontoUsuario && (
                 <CircleMarker
                     center={posicaoUsuario}
                     radius={24}
                     pathOptions={{
-                        color: corUsuario.cor === '#ffffff' ? '#9ca3af' : corUsuario.cor,
-                        fillColor: corUsuario.cor,
+                        color: valorDo(pontoUsuario) > 0 ? classificarChuva(valorDo(pontoUsuario)).cor : '#9ca3af',
+                        fillColor: classificarChuva(valorDo(pontoUsuario)).cor,
                         fillOpacity: 0.6,
                         weight: 2
                     }}
                 >
                     <Popup>
                         <div className="popupMapaCard">
-                            <h3>📍 Sua região: {corUsuario.nivel}</h3>
+                            <h3>📍 Sua região</h3>
+                            {textoPopup(pontoUsuario)}
                         </div>
                     </Popup>
                 </CircleMarker>
@@ -196,17 +262,18 @@ function MapaDoacoes({ doacoes = [] }) {
     const [carregandoRota, setCarregandoRota] = useState(false);
     const [erroRota, setErroRota] = useState(null);
 
-    const [mostrarChuva, setMostrarChuva] = useState(false);
-    const [pontosChuva, setPontosChuva] = useState([]);
+    // null = camada oculta, 'agora' = chuva atual, 'previsao' = chuva prevista
+    const [modo, setModo] = useState(null);
+    const [dadosChuva, setDadosChuva] = useState([]);
     const [carregandoChuva, setCarregandoChuva] = useState(false);
     const [horaChuva, setHoraChuva] = useState(null);
 
     const centroPadrao = [-23.550520, -46.633308];
     const centroMapa = posicaoUsuario || centroPadrao;
 
-    // Busca a chuva na grade ao ativar a camada e atualiza a cada 10 minutos
+    // Busca os dados ao ativar qualquer modo e atualiza a cada 10 minutos
     useEffect(() => {
-        if (!mostrarChuva || !posicaoUsuario) return;
+        if (!modo || !posicaoUsuario) return;
         let cancelado = false;
 
         const carregar = async () => {
@@ -214,7 +281,7 @@ function MapaDoacoes({ doacoes = [] }) {
             try {
                 const resultado = await buscarChuva(gerarGrade(posicaoUsuario));
                 if (!cancelado) {
-                    setPontosChuva(resultado);
+                    setDadosChuva(resultado);
                     setHoraChuva(new Date());
                 }
             } catch (err) {
@@ -231,7 +298,9 @@ function MapaDoacoes({ doacoes = [] }) {
             cancelado = true;
             clearInterval(intervalo);
         };
-    }, [mostrarChuva, posicaoUsuario]);
+    }, [modo, posicaoUsuario]);
+
+    const alternarModo = (novo) => setModo((atual) => (atual === novo ? null : novo));
 
     const tracarRota = async (doacao) => {
         if (!posicaoUsuario) return;
@@ -272,7 +341,30 @@ function MapaDoacoes({ doacoes = [] }) {
         ? horaChuva.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo' })
         : null;
 
-    const totalComChuva = pontosChuva.filter((p) => p.mm > 0).length;
+    // Valor que define a cor de cada ponto, de acordo com o modo
+    const valorDo = (p) => (modo === 'previsao' ? p.pico : p.agora);
+    const pontosComChuva = dadosChuva.filter((p) => valorDo(p) > 0);
+    const totalComChuva = pontosComChuva.length;
+    const pontoMaisForte = pontosComChuva.reduce(
+        (a, b) => (valorDo(b) > valorDo(a) ? b : a),
+        pontosComChuva[0]
+    );
+
+    const textoOrientacao =
+        modo === 'previsao'
+            ? `Círculos mostram a chuva prevista para as próximas ${JANELA_HORAS} horas, na cor do pico esperado. Branco significa nenhuma chuva prevista naquele ponto.`
+            : 'Círculos mostram a chuva neste momento. O círculo grande é a sua região. Branco significa que não está chovendo naquele ponto.';
+
+    let resumo = null;
+    if (modo && !carregandoChuva && dadosChuva.length > 0) {
+        if (modo === 'previsao') {
+            resumo = totalComChuva > 0
+                ? `Vai chover em ${totalComChuva} de ${dadosChuva.length} pontos nas próximas ${JANELA_HORAS} horas. Pico de ${valorDo(pontoMaisForte).toFixed(1)} mm/h às ${pontoMaisForte.horaPico?.slice(11, 16)}.`
+                : `Nenhuma chuva prevista nas próximas ${JANELA_HORAS} horas.`;
+        } else {
+            resumo = `${totalComChuva} de ${dadosChuva.length} pontos com chuva agora · atualizado às ${horaFormatada}`;
+        }
+    }
 
     return (
         <div className="mapaDoacoesContainer">
@@ -326,26 +418,33 @@ function MapaDoacoes({ doacoes = [] }) {
             <div className="controlesMapa">
                 <button
                     type="button"
-                    className={`btnCamada ${mostrarChuva ? 'btnCamadaAtiva' : ''}`}
-                    onClick={() => setMostrarChuva((v) => !v)}
+                    className={`btnCamada ${modo === 'agora' ? 'btnCamadaAtiva' : ''}`}
+                    onClick={() => alternarModo('agora')}
                 >
-                    {mostrarChuva ? 'Ocultar chuva' : 'Mostrar chuva'}
+                    {modo === 'agora' ? 'Ocultar chuva' : 'Mostrar chuva'}
+                </button>
+
+                <button
+                    type="button"
+                    className={`btnCamada ${modo === 'previsao' ? 'btnCamadaAtiva' : ''}`}
+                    onClick={() => alternarModo('previsao')}
+                >
+                    {modo === 'previsao' ? 'Ocultar previsão' : 'Previsão'}
                 </button>
             </div>
 
-            {mostrarChuva && (
+            {modo && (
                 <div className="legendaChuva">
-                    {carregandoChuva && pontosChuva.length === 0 && (
+                    {carregandoChuva && dadosChuva.length === 0 && (
                         <span>Consultando chuva na região...</span>
                     )}
 
-                    {!carregandoChuva && horaFormatada && (
+                    {resumo && <span className="legendaTexto">{resumo}</span>}
+
+                    {resumo && (
                         <>
-                            <span className="legendaTexto">
-                                {totalComChuva} de {pontosChuva.length} pontos com chuva · atualizado às {horaFormatada}
-                            </span>
                             <span className="legendaItem">
-                                <span className="legendaBolinha" style={{ background: '#ffffff' }} /> Sem chuva agora
+                                <span className="legendaBolinha" style={{ background: '#ffffff' }} /> Sem chuva
                             </span>
                             <span className="legendaItem">
                                 <span className="legendaBolinha" style={{ background: '#facc15' }} /> Chuva fraca
@@ -358,6 +457,18 @@ function MapaDoacoes({ doacoes = [] }) {
                             </span>
                         </>
                     )}
+                </div>
+            )}
+
+            {modo && resumo && (
+                <p className="chuvaOrientacao">{textoOrientacao}</p>
+            )}
+
+            {modo && totalComChuva > 0 && (
+                <div className="avisoChuvaAtiva">
+                    ⚠️ {modo === 'previsao'
+                        ? `Previsão de chuva em ${totalComChuva} ponto(s) perto de você. Confira antes de sair para entregar ou retirar doações.`
+                        : `Está chovendo em ${totalComChuva} ponto(s) perto de você. Confira as condições antes de sair.`}
                 </div>
             )}
 
@@ -380,8 +491,8 @@ function MapaDoacoes({ doacoes = [] }) {
                         maxZoom={19}
                     />
 
-                    {mostrarChuva && pontosChuva.length > 0 && posicaoUsuario && (
-                        <CamadaChuva pontosChuva={pontosChuva} posicaoUsuario={posicaoUsuario} />
+                    {modo && dadosChuva.length > 0 && posicaoUsuario && (
+                        <CamadaChuva dados={dadosChuva} posicaoUsuario={posicaoUsuario} modo={modo} />
                     )}
 
                     {rota && (
