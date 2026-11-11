@@ -21,7 +21,7 @@
   margin-bottom: 20px;
 }
 
-/* O mapa ocupa todo o espaço que sobrar abaixo do título e da legenda */
+/* O mapa ocupa o espaço que sobrar abaixo dos controles */
 .mapaWrapperReal {
   flex: 1;
   width: 100%;
@@ -32,6 +32,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   border: 1px solid #3f3f46;
   position: relative;
+  margin-top: 14px;
 }
 
 .mapaWrapperReal .leaflet-container {
@@ -39,6 +40,7 @@
   height: 100%;
 }
 
+/* Avisos de permissão, rota e erro */
 .avisoPermissaoGeo {
   background-color: #fff3cd;
   color: #856404;
@@ -57,6 +59,36 @@
   font-size: 14px;
 }
 
+.avisoRota {
+  background-color: #ffedd5;
+  color: #b91c1c;
+  padding: 10px 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.avisoRota p {
+  margin: 0 0 6px 0;
+}
+
+.avisoRotaAcoes {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.btnLimparRota {
+  background: none;
+  border: 1px solid #b91c1c;
+  color: #b91c1c;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+/* Popups dos marcadores */
 .popupMapaCard {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #18181b;
@@ -87,35 +119,6 @@
   text-decoration: underline;
 }
 
-.avisoRota {
-  background-color: #ffedd5;
-  color: #ff0000;
-  padding: 10px 15px;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  font-size: 14px;
-}
-
-.avisoRota p {
-  margin: 0 0 6px 0;
-}
-
-.avisoRotaAcoes {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.btnLimparRota {
-  background: none;
-  border: 1px solid #ff0000;
-  color: #ff0000;
-  padding: 4px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 12px;
-}
-
 .btnTracarRota {
   background: none;
   border: none;
@@ -133,7 +136,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 4px;
+  margin-bottom: 14px;
 }
 
 .btnCamada {
@@ -170,7 +173,6 @@
   outline-offset: 2px;
 }
 
-/* Quando a chuva está visível, o botão vira vermelho */
 .btnCamadaAtiva {
   background: linear-gradient(135deg, #7f1d1d, #dc2626);
   border-color: #dc2626;
@@ -181,33 +183,60 @@
   box-shadow: 0 4px 14px rgba(220, 38, 38, 0.5);
 }
 
-/* Legenda da chuva */
+/* Painel com resumo e legenda da chuva */
 .legendaChuva {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 14px;
-  margin: 8px 0 10px;
+  gap: 8px 16px;
+  margin: 0 0 12px 0;
+  padding: 12px 16px;
+  background-color: #18181b;
+  border: 1px solid #3f3f46;
+  border-radius: 10px;
   font-size: 13px;
   color: #d4d4d8;
 }
 
 .legendaTexto {
-  color: #a1a1aa;
+  width: 100%;
+  font-size: 13px;
+  font-weight: 600;
+  color: #e4e4e7;
 }
 
 .legendaItem {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  font-size: 12px;
+  color: #a1a1aa;
 }
 
 .legendaBolinha {
   display: inline-block;
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   border: 1px solid #9ca3af;
+}
+
+.chuvaOrientacao {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #a1a1aa;
+  margin: 0 0 12px 0;
+  padding: 0 4px;
+}
+
+.avisoChuvaAtiva {
+  background-color: #fef3c7;
+  color: #78350f;
+  padding: 8px 14px;
+  border-radius: 8px;
+  margin: 0 0 16px 0;
+  font-size: 13px;
+  line-height: 1.4;
 }
 
 /* Marcadores de doação e de agrupamento */
